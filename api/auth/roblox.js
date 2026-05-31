@@ -1,3 +1,6 @@
+export const config = { api: { bodyParser: true } };
+
+
 // api/auth/roblox.js
 // Roblox doesn't have a standard OAuth for regular users.
 // This endpoint validates a Roblox username via the public API and returns the user.
@@ -6,13 +9,7 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: "Method not allowed" });
   }
 
-  let body = "";
-  await new Promise((resolve) => {
-    req.on("data", (chunk) => (body += chunk));
-    req.on("end", resolve);
-  });
-
-  const { username } = JSON.parse(body || "{}");
+const { username } = req.body || {};
   if (!username || typeof username !== "string") {
     return res.status(400).json({ error: "Username requis" });
   }

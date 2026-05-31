@@ -1,10 +1,1 @@
-{
-  "routes": [
-    { "src": "/api/auth/google", "dest": "/api/auth/google.js" },
-    { "src": "/api/auth/discord", "dest": "/api/auth/discord.js" },
-    { "src": "/api/auth/roblox", "dest": "/api/auth/roblox.js" },
-    { "src": "/api/auth/callback/google", "dest": "/api/auth/google-callback.js" },
-    { "src": "/api/auth/callback/discord", "dest": "/api/auth/discord-callback.js" },
-    { "src": "/(.*)", "dest": "/index.html" }
-  ]
-}
+{"routes":[{"src":"/(.*)","dest":"/index.html"}]}

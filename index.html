@@ -1,0 +1,1681 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>MM2 Hub — Collection, Values & Trading</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#07080f;--surface:#0d0e1a;--surface2:#13152a;--surface3:#1a1d35;
+  --border:#252840;--border2:#2e3355;
+  --red:#e63946;--red2:#ff6b6b;--gold:#f4a261;--gold2:#ffd166;
+  --cyan:#06d6a0;--cyan2:#4dffc3;--purple:#7b2d8b;--purple2:#c77dff;
+  --text:#e8eaf6;--muted:#7986cb;--dimmed:#3d4470;
+  --glow-red:0 0 20px rgba(230,57,70,.4);
+  --glow-gold:0 0 20px rgba(244,162,97,.4);
+  --glow-cyan:0 0 20px rgba(6,214,160,.4);
+  --font-head:'Orbitron',monospace;
+  --font-body:'Rajdhani',sans-serif;
+  --r:8px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:var(--font-body);font-size:15px;min-height:100vh;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 80% 50% at 50% -20%,rgba(123,45,139,.15),transparent),radial-gradient(ellipse 60% 40% at 80% 80%,rgba(230,57,70,.08),transparent);pointer-events:none;z-index:0}
+
+/* ══ AUTH ══ */
+#authScreen{position:fixed;inset:0;z-index:1000;display:flex;align-items:center;justify-content:center;background:var(--bg)}
+#authScreen::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 100% 80% at 50% 0%,rgba(230,57,70,.12),transparent),radial-gradient(ellipse 80% 60% at 20% 100%,rgba(123,45,139,.15),transparent)}
+.auth-box{position:relative;width:440px;max-width:95vw;background:var(--surface);border:1px solid var(--border2);border-radius:16px;padding:48px 40px;text-align:center;box-shadow:0 40px 80px rgba(0,0,0,.6),inset 0 1px 0 rgba(255,255,255,.05)}
+.auth-logo{font-family:var(--font-head);font-size:28px;font-weight:900;letter-spacing:3px;background:linear-gradient(135deg,var(--red),var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:4px}
+.auth-sub{color:var(--muted);font-size:13px;letter-spacing:2px;text-transform:uppercase;margin-bottom:36px}
+.auth-tabs{display:flex;gap:0;margin-bottom:28px;background:var(--surface2);border-radius:8px;padding:4px}
+.auth-tab{flex:1;padding:9px;border:none;background:transparent;color:var(--muted);font-family:var(--font-body);font-size:13px;font-weight:600;letter-spacing:1px;cursor:pointer;border-radius:6px;transition:all .2s;text-transform:uppercase}
+.auth-tab.active{background:var(--surface3);color:var(--text);box-shadow:0 2px 8px rgba(0,0,0,.3)}
+.auth-input{width:100%;background:var(--surface2);border:1px solid var(--border2);border-radius:8px;color:var(--text);padding:12px 16px;font-family:var(--font-body);font-size:15px;outline:none;margin-bottom:12px;transition:border-color .2s}
+.auth-input:focus{border-color:var(--red)}
+.auth-input::placeholder{color:var(--dimmed)}
+.auth-btn{width:100%;padding:13px;border:none;border-radius:8px;font-family:var(--font-head);font-size:13px;font-weight:700;letter-spacing:2px;cursor:pointer;transition:all .2s;margin-bottom:10px;text-transform:uppercase}
+.auth-btn.primary{background:linear-gradient(135deg,var(--red),#c1121f);color:#fff;box-shadow:var(--glow-red)}
+.auth-btn.primary:hover{transform:translateY(-1px);box-shadow:0 0 30px rgba(230,57,70,.6)}
+.auth-btn.google{background:var(--surface3);border:1px solid var(--border2);color:var(--text);display:flex;align-items:center;justify-content:center;gap:10px;width:100%}
+.auth-btn.google:hover{border-color:var(--muted)}
+.auth-btn.roblox{background:linear-gradient(135deg,#00b4d8,#0077b6);color:#fff;margin-bottom:0;display:flex;align-items:center;justify-content:center;gap:10px;width:100%}
+.auth-or{color:var(--dimmed);font-size:12px;letter-spacing:2px;text-transform:uppercase;margin:14px 0;position:relative}
+.auth-or::before,.auth-or::after{content:'';position:absolute;top:50%;width:40%;height:1px;background:var(--border)}
+.auth-or::before{left:0}.auth-or::after{right:0}
+.auth-error{color:var(--red2);font-size:12px;margin-bottom:10px;display:none}
+.auth-provider-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(0,180,216,.15);border:1px solid rgba(0,180,216,.3);border-radius:20px;padding:4px 12px;font-size:11px;color:var(--cyan);margin-top:8px}
+
+/* ══ APP ══ */
+#app{display:none;position:relative;z-index:1}
+
+/* TOPBAR */
+.topbar{position:sticky;top:0;z-index:100;background:rgba(7,8,15,.85);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:0 32px;display:flex;align-items:center;gap:0;height:60px}
+.topbar-logo{font-family:var(--font-head);font-size:16px;font-weight:900;letter-spacing:3px;background:linear-gradient(135deg,var(--red),var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-right:40px;white-space:nowrap}
+.nav{display:flex;gap:0;flex:1}
+.nav-btn{background:none;border:none;color:var(--muted);font-family:var(--font-body);font-size:14px;font-weight:600;letter-spacing:1px;text-transform:uppercase;padding:0 20px;height:60px;cursor:pointer;position:relative;transition:color .2s}
+.nav-btn::after{content:'';position:absolute;bottom:0;left:20px;right:20px;height:2px;background:var(--red);transform:scaleX(0);transition:transform .2s}
+.nav-btn.active,.nav-btn:hover{color:var(--text)}
+.nav-btn.active::after{transform:scaleX(1)}
+.topbar-user{margin-left:auto;display:flex;align-items:center;gap:12px}
+.user-avatar{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--red),var(--purple));display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;font-family:var(--font-head)}
+.user-name{font-size:13px;font-weight:600;color:var(--text)}
+.user-provider{font-size:10px;color:var(--cyan);letter-spacing:1px}
+.logout-btn{background:none;border:1px solid var(--border2);border-radius:6px;color:var(--muted);padding:6px 12px;font-size:12px;cursor:pointer;transition:all .2s}
+.logout-btn:hover{border-color:var(--red);color:var(--red)}
+
+/* PAGES */
+.page{display:none;min-height:calc(100vh - 60px);padding:28px 32px}
+.page.active{display:block}
+.page-header{margin-bottom:28px}
+.page-title{font-family:var(--font-head);font-size:22px;font-weight:700;letter-spacing:2px;margin-bottom:6px}
+.page-desc{color:var(--muted);font-size:14px}
+
+/* ══ COLLECTION ══ */
+.stats-bar{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px;margin-bottom:24px}
+.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:16px;text-align:center;position:relative;overflow:hidden}
+.stat-card::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,transparent 60%,rgba(255,255,255,.02));pointer-events:none}
+.stat-num{font-family:var(--font-head);font-size:26px;font-weight:700;color:var(--red2)}
+.stat-lbl{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-top:4px}
+.prog-wrap{display:flex;align-items:center;gap:12px;margin-bottom:24px}
+.prog-bar{flex:1;height:6px;background:var(--surface3);border-radius:3px;overflow:hidden}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--red),var(--gold));border-radius:3px;transition:width .4s ease}
+.prog-pct{font-family:var(--font-head);font-size:14px;color:var(--gold);min-width:44px;text-align:right}
+.controls{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px;align-items:center}
+.ctrl-input{background:var(--surface2);border:1px solid var(--border2);border-radius:var(--r);color:var(--text);padding:9px 14px;font-family:var(--font-body);font-size:14px;outline:none;flex:1;min-width:160px}
+.ctrl-input:focus{border-color:var(--red)}
+.ctrl-input::placeholder{color:var(--dimmed)}
+.ctrl-select{background:var(--surface2);border:1px solid var(--border2);border-radius:var(--r);color:var(--text);padding:9px 12px;font-family:var(--font-body);font-size:13px;outline:none;cursor:pointer}
+.ctrl-btn{background:var(--surface2);border:1px solid var(--border2);border-radius:var(--r);color:var(--muted);padding:9px 14px;font-family:var(--font-body);font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap;transition:all .2s}
+.ctrl-btn:hover{border-color:var(--text);color:var(--text)}
+.ctrl-btn.save{border-color:var(--cyan);color:var(--cyan)}
+.ctrl-btn.save:hover{background:rgba(6,214,160,.1)}
+.ctrl-btn.danger:hover{border-color:var(--red);color:var(--red)}
+.section{margin-bottom:16px;background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden}
+.sec-hdr{display:flex;align-items:center;gap:12px;padding:12px 18px;cursor:pointer;user-select:none;transition:background .15s}
+.sec-hdr:hover{background:var(--surface2)}
+.sec-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.sec-label{font-family:var(--font-head);font-size:12px;font-weight:700;letter-spacing:2px;flex:1}
+.sec-cnt{font-size:12px;color:var(--muted)}
+.sec-pct{font-size:11px;color:var(--dimmed)}
+.sec-arr{font-size:11px;color:var(--dimmed);transition:transform .2s}
+.sec-arr.open{transform:rotate(90deg)}
+.wgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:6px;padding:8px;background:var(--bg)}
+.wi{display:flex;flex-direction:column;align-items:center;gap:0;border-radius:8px;border:1px solid var(--border);background:var(--surface);cursor:pointer;transition:all .15s;overflow:hidden;position:relative}
+.wi:hover{border-color:var(--border2);background:var(--surface2)}
+.wi.owned{border-color:#2d5a1b;background:#0a1a08}
+.wi.owned .wi-check{opacity:1}
+.wi.owned .wi-name{color:#8dc63f}
+.wi-img-wrap{width:100%;height:80px;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.3);position:relative;overflow:hidden}
+.wi-img{width:72px;height:72px;object-fit:contain;filter:drop-shadow(0 2px 6px rgba(0,0,0,.5))}
+.wi-check{position:absolute;top:6px;right:6px;width:20px;height:20px;background:#639922;border-radius:50%;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .15s;font-size:11px;color:#fff;font-weight:700}
+.wi-bottom{width:100%;padding:7px 8px;display:flex;align-items:center;gap:6px}
+.wi-cb{width:13px;height:13px;accent-color:#639922;flex-shrink:0;pointer-events:none}
+.wi-name{font-size:11px;color:var(--text);line-height:1.3;flex:1;font-weight:600}
+.wi-type{font-size:13px;flex-shrink:0}
+.hidden{display:none!important}
+.nores{padding:48px;text-align:center;color:var(--dimmed)}
+
+/* ══ VALUES PAGE — style SupremeValues ══ */
+.val-filters{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:24px;align-items:center}
+.val-filter-btn{background:var(--surface2);border:1px solid var(--border2);border-radius:20px;color:var(--muted);padding:7px 16px;font-size:12px;font-weight:600;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:all .2s}
+.val-filter-btn.active{background:var(--red);border-color:var(--red);color:#fff;box-shadow:var(--glow-red)}
+.val-sort-bar{display:flex;gap:8px;align-items:center;margin-bottom:18px;flex-wrap:wrap}
+.val-sort-btn{background:none;border:1px solid var(--border);border-radius:6px;color:var(--dimmed);padding:5px 12px;font-size:11px;font-family:var(--font-body);font-weight:600;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:all .2s}
+.val-sort-btn.active{border-color:var(--gold);color:var(--gold)}
+/* Supreme-style table */
+.val-table-wrap{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden}
+.val-table-head{display:grid;grid-template-columns:50px 2fr 1fr 1fr 100px 1fr;gap:0;padding:10px 16px;background:var(--surface2);border-bottom:1px solid var(--border);font-size:10px;font-weight:700;color:var(--muted);letter-spacing:2px;text-transform:uppercase}
+.val-row{display:grid;grid-template-columns:50px 2fr 1fr 1fr 100px 1fr;gap:0;padding:10px 16px;border-bottom:1px solid var(--border);align-items:center;transition:background .15s;cursor:default}
+.val-row:last-child{border-bottom:none}
+.val-row:hover{background:var(--surface2)}
+.val-row.owned-row{background:rgba(45,90,27,.1)}
+.val-row.owned-row:hover{background:rgba(45,90,27,.18)}
+.val-rank{font-family:var(--font-head);font-size:11px;color:var(--dimmed);text-align:center}
+.val-item-cell{display:flex;align-items:center;gap:10px}
+.val-item-img{width:38px;height:38px;object-fit:contain;flex-shrink:0;filter:drop-shadow(0 1px 4px rgba(0,0,0,.5))}
+.val-item-name{font-size:13px;font-weight:700;color:var(--text)}
+.val-item-origin{font-size:10px;color:var(--dimmed)}
+.val-owned-badge{font-size:9px;background:#2d5a1b;color:#8dc63f;border-radius:3px;padding:1px 5px;font-weight:700;letter-spacing:1px}
+.val-rarity-badge{padding:3px 8px;border-radius:4px;font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase}
+.val-value-cell{font-family:var(--font-head);font-size:14px;font-weight:700;color:var(--gold2)}
+.val-seers{font-size:10px;color:var(--muted);font-family:var(--font-body);font-weight:400}
+.val-demand-cell{display:flex;gap:2px;align-items:center}
+.val-dot{width:8px;height:8px;border-radius:50%;background:var(--border2);flex-shrink:0}
+.val-dot.on{background:var(--gold)}
+.val-type-cell{font-size:12px;color:var(--muted);display:flex;align-items:center;gap:4px}
+.val-loading{text-align:center;padding:60px;color:var(--muted);font-family:var(--font-head);font-size:14px;letter-spacing:2px}
+.val-loading::after{content:'';display:inline-block;width:20px;height:20px;border:2px solid var(--border2);border-top-color:var(--red);border-radius:50%;animation:spin .8s linear infinite;margin-left:12px;vertical-align:middle}
+@keyframes spin{to{transform:rotate(360deg)}}
+.val-tier-header{padding:10px 16px;background:var(--surface3);font-family:var(--font-head);font-size:11px;font-weight:700;letter-spacing:3px;color:var(--gold);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+.val-tier-header:first-child{border-top:none}
+.val-live-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(6,214,160,.1);border:1px solid rgba(6,214,160,.3);border-radius:20px;padding:4px 12px;font-size:11px;color:var(--cyan);margin-left:auto}
+.val-live-dot{width:7px;height:7px;border-radius:50%;background:var(--cyan);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+
+/* ══ TRADING PAGE ══ */
+.trade-layout{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:24px}
+@media(max-width:768px){.trade-layout{grid-template-columns:1fr}}
+.trade-panel{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:20px}
+.trade-panel-title{font-family:var(--font-head);font-size:13px;font-weight:700;letter-spacing:2px;color:var(--muted);text-transform:uppercase;margin-bottom:16px}
+.trade-slots{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:16px}
+.trade-slot{aspect-ratio:1;background:var(--surface2);border:1px dashed var(--border2);border-radius:8px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;cursor:pointer;transition:all .2s;font-size:11px;color:var(--dimmed);position:relative;overflow:hidden}
+.trade-slot:hover{border-color:var(--muted);color:var(--muted)}
+.trade-slot.filled{border-style:solid;border-color:var(--border2);background:var(--surface3)}
+.trade-slot-img{width:52px;height:52px;object-fit:contain}
+.trade-slot-name{font-size:10px;text-align:center;color:var(--text);padding:0 4px}
+.trade-slot-remove{position:absolute;top:3px;right:3px;background:var(--red);border:none;border-radius:50%;width:16px;height:16px;color:#fff;font-size:9px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.trade-value-bar{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:var(--surface2);border-radius:8px;font-size:13px}
+.trade-val-num{font-family:var(--font-head);font-size:16px;font-weight:700}
+.trade-status{text-align:center;padding:20px;background:var(--surface);border:1px solid var(--border);border-radius:10px;margin-bottom:20px}
+.trade-status-icon{font-size:36px;margin-bottom:8px}
+.trade-status-text{font-family:var(--font-head);font-size:13px;font-weight:700;letter-spacing:2px}
+.trade-status-sub{font-size:13px;color:var(--muted);margin-top:4px}
+
+/* Bot & Roblox Connect */
+.bot-info{background:linear-gradient(135deg,rgba(0,180,216,.1),rgba(123,45,139,.1));border:1px solid rgba(0,180,216,.3);border-radius:10px;padding:20px;margin-bottom:20px;display:flex;gap:16px;align-items:center;flex-wrap:wrap}
+.bot-avatar{width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#0077b6,#7b2d8b);display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0}
+.bot-name{font-family:var(--font-head);font-size:14px;font-weight:700;color:var(--text);margin-bottom:4px}
+.bot-status{font-size:12px;color:var(--cyan);display:flex;align-items:center;gap:6px}
+.bot-status::before{content:'';display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--cyan);animation:pulse 2s infinite}
+.roblox-btn{display:inline-flex;align-items:center;gap:10px;background:linear-gradient(135deg,#00b4d8,#0077b6);border:none;border-radius:8px;color:#fff;padding:12px 20px;font-family:var(--font-head);font-size:13px;font-weight:700;letter-spacing:1px;cursor:pointer;transition:all .2s;text-decoration:none}
+.roblox-btn:hover{transform:translateY(-1px);box-shadow:0 8px 24px rgba(0,180,216,.3)}
+
+/* Inventory */
+.inv-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(90px,1fr));gap:6px}
+.inv-item{background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:8px 4px;text-align:center;cursor:pointer;transition:all .15s;font-size:10px}
+.inv-item:hover{border-color:var(--muted);background:var(--surface3)}
+.inv-item.selected{border-color:var(--gold);background:rgba(244,162,97,.1)}
+.inv-item img{width:50px;height:50px;object-fit:contain;margin-bottom:3px}
+.inv-item-name{color:var(--text);line-height:1.2}
+
+/* Roblox connect panel */
+.roblox-connect-panel{background:linear-gradient(135deg,rgba(0,180,216,.06),rgba(0,119,182,.06));border:1px solid rgba(0,180,216,.2);border-radius:12px;padding:24px;margin-bottom:20px}
+.roblox-username-input{background:var(--surface2);border:1px solid rgba(0,180,216,.3);border-radius:8px;color:var(--text);padding:10px 14px;font-family:var(--font-body);font-size:14px;outline:none;width:100%;margin-bottom:12px}
+.roblox-username-input:focus{border-color:var(--cyan)}
+.roblox-username-input::placeholder{color:var(--dimmed)}
+.roblox-connect-btn{background:linear-gradient(135deg,#00b4d8,#0077b6);border:none;border-radius:8px;color:#fff;padding:11px 20px;font-family:var(--font-head);font-size:12px;font-weight:700;letter-spacing:1px;cursor:pointer;transition:all .2s}
+.roblox-connect-btn:hover{transform:translateY(-1px);box-shadow:0 6px 18px rgba(0,180,216,.3)}
+.inv-loading{text-align:center;padding:40px;color:var(--muted);font-family:var(--font-head);font-size:12px;letter-spacing:2px}
+
+/* Notification */
+.notif{position:fixed;bottom:24px;right:24px;background:var(--surface);border:1px solid var(--border2);border-radius:10px;padding:14px 18px;font-size:13px;z-index:9999;box-shadow:0 10px 40px rgba(0,0,0,.5);transform:translateX(120%);transition:transform .3s ease}
+.notif.show{transform:none}
+.notif.ok{border-color:var(--cyan);color:var(--cyan)}
+.notif.err{border-color:var(--red);color:var(--red2)}
+
+@media(max-width:768px){
+  .topbar{padding:0 16px}.page{padding:16px}
+  .nav-btn{padding:0 12px;font-size:12px}
+  .topbar-logo{margin-right:16px;font-size:13px}
+  .val-table-head,.val-row{grid-template-columns:40px 2fr 1fr 90px}
+  .val-head-rarity,.val-rarity-badge,.val-type-cell{display:none}
+}
+</style>
+</head>
+<body>
+
+<!-- ══ AUTH SCREEN ══ -->
+<div id="authScreen">
+  <div class="auth-box">
+    <div class="auth-logo">MM2 HUB</div>
+    <div class="auth-sub">Collection · Values · Trading</div>
+    <div class="auth-tabs">
+      <button class="auth-tab active" onclick="switchAuthTab('login')">Connexion</button>
+      <button class="auth-tab" onclick="switchAuthTab('register')">Créer un compte</button>
+    </div>
+    <div id="authError" class="auth-error"></div>
+    <div id="loginForm">
+      <input class="auth-input" id="loginUser" placeholder="Nom d'utilisateur ou email" type="text">
+      <input class="auth-input" id="loginPass" placeholder="Mot de passe" type="password">
+      <button class="auth-btn primary" onclick="doLogin()">SE CONNECTER</button>
+    </div>
+    <div id="registerForm" style="display:none">
+      <input class="auth-input" id="regUser" placeholder="Nom d'utilisateur" type="text">
+      <input class="auth-input" id="regEmail" placeholder="Email" type="email">
+      <input class="auth-input" id="regPass" placeholder="Mot de passe (min. 6 caractères)" type="password">
+      <button class="auth-btn primary" onclick="doRegister()">CRÉER LE COMPTE</button>
+    </div>
+    <div class="auth-or">ou continuer avec</div>
+    <button class="auth-btn google" onclick="loginWithGoogle()">
+      <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+      Continuer avec Google
+    </button>
+    <div style="height:8px"></div>
+    <button class="auth-btn" style="background:var(--surface3);border:1px solid #5865F2;color:#fff;display:flex;align-items:center;justify-content:center;gap:10px;width:100%" onclick="loginWithDiscord()">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="#5865F2"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057.102 18.079.114 18.1.132 18.11a19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/></svg>
+      Continuer avec Discord
+    </button>
+    <div style="height:8px"></div>
+    <div style="background:linear-gradient(135deg,rgba(0,180,216,.08),rgba(0,119,182,.08));border:1px solid rgba(0,180,216,.25);border-radius:10px;padding:14px">
+      <div style="font-size:12px;color:var(--cyan);font-weight:600;letter-spacing:1px;text-transform:uppercase;margin-bottom:10px;display:flex;align-items:center;gap:6px">
+        <svg width="14" height="14" viewBox="0 0 100 100" fill="#06d6a0"><rect x="20" y="20" width="60" height="60" rx="8"/></svg>
+        Continuer avec Roblox
+      </div>
+      <div style="display:flex;gap:8px">
+        <input id="robloxLoginInput" class="auth-input" placeholder="Ton pseudo Roblox..." style="margin-bottom:0;flex:1" type="text" onkeydown="if(event.key==='Enter')loginWithRoblox()">
+        <button id="robloxLoginBtn" class="auth-btn roblox" style="width:auto;padding:0 16px;margin-bottom:0;white-space:nowrap" onclick="loginWithRoblox()">🎮 Connecter</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ NOTIFICATION ══ -->
+<div id="notif" class="notif"></div>
+
+<!-- ══ MAIN APP ══ -->
+<div id="app">
+  <nav class="topbar">
+    <div class="topbar-logo">MM2 HUB</div>
+    <div class="nav">
+      <button class="nav-btn active" onclick="goPage('collection')">🗡 Collection</button>
+      <button class="nav-btn" onclick="goPage('values')">📈 Valeurs</button>
+      <button class="nav-btn" onclick="goPage('trading')">🔄 Trading Bot</button>
+    </div>
+    <div class="topbar-user">
+      <div>
+        <div class="user-avatar" id="userAvatar">?</div>
+      </div>
+      <div>
+        <div class="user-name" id="userName">—</div>
+        <div class="user-provider" id="userProvider"></div>
+      </div>
+      <button class="logout-btn" onclick="logout()">Déconnexion</button>
+    </div>
+  </nav>
+
+  <!-- PAGE COLLECTION -->
+  <div class="page active" id="pageCollection">
+    <div class="page-header">
+      <div class="page-title">MA COLLECTION</div>
+      <div class="page-desc">Coche les armes que tu possèdes · 💾 Sauvegarder pour garder ta progression</div>
+    </div>
+    <div class="stats-bar">
+      <div class="stat-card"><div class="stat-num" id="sO">0</div><div class="stat-lbl">Possédées</div></div>
+      <div class="stat-card"><div class="stat-num" id="sM">0</div><div class="stat-lbl">Manquantes</div></div>
+      <div class="stat-card"><div class="stat-num" id="sT">0</div><div class="stat-lbl">Total</div></div>
+      <div class="stat-card"><div class="stat-num" id="sValOwned" style="font-size:16px;color:var(--gold2)">—</div><div class="stat-lbl">Valeur totale</div></div>
+    </div>
+    <div class="prog-wrap">
+      <div class="prog-bar"><div class="prog-fill" id="pf" style="width:0%"></div></div>
+      <div class="prog-pct" id="sP">0%</div>
+    </div>
+    <div class="controls">
+      <input class="ctrl-input" id="q" placeholder="🔍 Rechercher une arme..." oninput="flt()">
+      <select class="ctrl-select" id="fr" onchange="flt()">
+        <option value="">Toutes raretés</option>
+        <option value="Unique">⬛ Unique</option>
+        <option value="Ancient">🟣 Ancient</option>
+        <option value="Chroma">🟠 Chroma</option>
+        <option value="Godly">🔴 Godly</option>
+        <option value="Vintage">🟤 Vintage</option>
+        <option value="Legendary">🟡 Legendary</option>
+        <option value="Rare">🔵 Rare</option>
+        <option value="Uncommon">🔷 Uncommon</option>
+        <option value="Common">⬜ Common</option>
+      </select>
+      <select class="ctrl-select" id="ft" onchange="flt()">
+        <option value="">🔪🔫 Tout</option>
+        <option value="K">🔪 Couteaux</option>
+        <option value="G">🔫 Flingues</option>
+      </select>
+      <select class="ctrl-select" id="fo" onchange="flt()">
+        <option value="">Tout</option>
+        <option value="owned">✅ Possédées</option>
+        <option value="miss">❌ Manquantes</option>
+      </select>
+      <button class="ctrl-btn" onclick="expAll()">Tout ouvrir</button>
+      <button class="ctrl-btn" onclick="colAll()">Tout fermer</button>
+      <button class="ctrl-btn danger" onclick="rst()">🗑 Reset</button>
+      <button class="ctrl-btn save" onclick="saveToFile()">💾 Sauvegarder</button>
+    </div>
+    <div id="collMain"></div>
+    <div id="nr" class="nores hidden">Aucune arme trouvée.</div>
+  </div>
+
+  <!-- PAGE VALUES — style SupremeValues -->
+  <div class="page" id="pageValues">
+    <div class="page-header" style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:12px">
+      <div>
+        <div class="page-title">VALEURS DES ARMES</div>
+        <div class="page-desc">Source: supremevalues.com · ✓ = arme dans ta collection</div>
+      </div>
+      <div class="val-live-badge"><div class="val-live-dot"></div>Données intégrées</div>
+    </div>
+    <div class="val-filters">
+      <button class="val-filter-btn active" onclick="valFilter(this,'all')">Toutes</button>
+      <button class="val-filter-btn" onclick="valFilter(this,'Ancient')">Ancient</button>
+      <button class="val-filter-btn" onclick="valFilter(this,'Chroma')">Chroma</button>
+      <button class="val-filter-btn" onclick="valFilter(this,'Godly')">Godly</button>
+      <button class="val-filter-btn" onclick="valFilter(this,'owned')">✓ Mes armes</button>
+      <input class="ctrl-input" id="valSearch" placeholder="🔍 Rechercher..." oninput="renderValues()" style="max-width:200px;margin-left:auto">
+    </div>
+    <div class="val-sort-bar">
+      <span style="font-size:11px;color:var(--dimmed);text-transform:uppercase;letter-spacing:1px">Trier par :</span>
+      <button class="val-sort-btn active" onclick="setSort('value',this)">Valeur ↓</button>
+      <button class="val-sort-btn" onclick="setSort('name',this)">Nom A-Z</button>
+      <button class="val-sort-btn" onclick="setSort('demand',this)">Demande</button>
+      <span id="valCount" style="margin-left:auto;font-size:12px;color:var(--dimmed)"></span>
+    </div>
+    <div id="valContent"><div class="val-loading">CHARGEMENT DES VALEURS</div></div>
+  </div>
+
+  <!-- PAGE TRADING BOT -->
+  <div class="page" id="pageTrading">
+    <div class="page-header">
+      <div class="page-title">TRADING BOT MM2</div>
+      <div class="page-desc">Connecte ton compte Roblox · Vois ton inventaire · Simule tes trades</div>
+    </div>
+
+    <!-- Roblox Connect Panel -->
+    <div class="roblox-connect-panel" id="robloxConnectPanel">
+      <div style="display:flex;align-items:center;gap:14px;margin-bottom:16px">
+        <div style="width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#00b4d8,#0077b6);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0">🎮</div>
+        <div>
+          <div style="font-family:var(--font-head);font-size:14px;font-weight:700;margin-bottom:3px">Connexion Roblox</div>
+          <div style="font-size:12px;color:var(--muted)">Entre ton pseudo Roblox pour afficher ton inventaire MM2</div>
+        </div>
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <input class="roblox-username-input" id="robloxUsernameInput" placeholder="Ton pseudo Roblox..." style="flex:1;min-width:180px">
+        <button class="roblox-connect-btn" onclick="connectRoblox()">🔗 Connecter</button>
+      </div>
+    </div>
+
+    <!-- Bot Info (shown after connect) -->
+    <div class="bot-info" id="botInfoPanel" style="display:none">
+      <div class="bot-avatar">🤖</div>
+      <div class="bot-text" style="flex:1">
+        <div class="bot-name">MM2Hub_Bot · <span id="robloxConnectedUser" style="color:var(--cyan)"></span></div>
+        <div class="bot-status">En ligne · Prêt à trader</div>
+        <div style="font-size:12px;color:var(--muted);margin-top:4px">Rejoins le serveur Roblox et envoie une demande de trade au bot <strong>MM2Hub_Bot</strong></div>
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-left:auto">
+        <a class="roblox-btn" href="https://www.roblox.com/games/142823291/Murder-Mystery-2" target="_blank">🎮 Ouvrir MM2</a>
+        <button class="roblox-btn" style="background:linear-gradient(135deg,#7b2d8b,#4a1560)" onclick="disconnectRoblox()">✕ Déconnecter</button>
+      </div>
+    </div>
+
+    <!-- Trade Status -->
+    <div class="trade-status" id="tradeStatus">
+      <div class="trade-status-icon">🎮</div>
+      <div class="trade-status-text">CONFIGURE TON TRADE</div>
+      <div class="trade-status-sub">Ajoute des armes des deux côtés pour analyser la valeur</div>
+      <div style="margin-top:16px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+        <button class="ctrl-btn" onclick="simulateTrade()">🔄 Simuler un trade</button>
+        <button class="ctrl-btn" onclick="clearTrade()">🗑 Vider</button>
+      </div>
+    </div>
+
+    <!-- Trade layout -->
+    <div class="trade-layout">
+      <div class="trade-panel">
+        <div class="trade-panel-title">Tu donnes</div>
+        <div class="trade-slots" id="offerSlots"></div>
+        <div class="trade-value-bar">
+          <span style="color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:1px">Valeur totale</span>
+          <span class="trade-val-num" id="offerVal" style="color:var(--red2)">0</span>
+        </div>
+      </div>
+      <div class="trade-panel">
+        <div class="trade-panel-title">Tu reçois</div>
+        <div class="trade-slots" id="receiveSlots"></div>
+        <div class="trade-value-bar">
+          <span style="color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:1px">Valeur totale</span>
+          <span class="trade-val-num" id="receiveVal" style="color:var(--cyan)">0</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- My inventory from collection -->
+    <div class="trade-panel">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;flex-wrap:wrap">
+        <div class="trade-panel-title" style="margin-bottom:0">Mon inventaire (armes cochées)</div>
+        <select class="ctrl-select" id="tradeInvSideSelect" style="margin-left:auto;font-size:12px">
+          <option value="offer">➕ Ajouter à : Tu donnes</option>
+          <option value="receive">➕ Ajouter à : Tu reçois</option>
+        </select>
+      </div>
+      <div class="inv-grid" id="myInvGrid"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════
+// WEAPONS DATA (inchangé de l'original)
+// ═══════════════════════════════════════
+const S=[
+
+// ══════════════════════════════════════════════════════════════════════
+// UNIQUE  (Corrupt + leaderboard rewards - source wiki fandom)
+// ══════════════════════════════════════════════════════════════════════
+{id:"unique",label:"Unique",color:"#1a1a1a",w:[
+  // Tradeable
+  {n:"Corrupt",t:"K"},
+  // Untradeable / leaderboard (listed for completeness)
+  {n:"Nik's Scythe",t:"K"},{n:"SharkSeeker",t:"G"},{n:"Dartbringer",t:"G"},
+  {n:"Slouse's Clown Knife",t:"K"},{n:"Slouse's Clown Gun",t:"G"},
+  // Synthwave variants (Summer 2025)
+  {n:"Gold Synthwave",t:"K"},{n:"Silver Synthwave",t:"K"},
+  {n:"Bronze Synthwave",t:"K"},{n:"Blue Synthwave",t:"K"},
+  // Halloween leaderboard knives
+  {n:"Gold Elderwood Scythe",t:"K"},{n:"Silver Elderwood Scythe",t:"K"},{n:"Bronze Elderwood Scythe",t:"K"},
+  {n:"Gold Hallowscythe",t:"K"},{n:"Silver Hallowscythe",t:"K"},{n:"Bronze Hallowscythe",t:"K"},
+  {n:"Gold Reaver",t:"K"},{n:"Silver Reaver",t:"K"},{n:"Bronze Reaver",t:"K"},
+  {n:"Blue Reaver",t:"K"},
+  {n:"Gold Traveler's Axe",t:"K"},{n:"Silver Traveler's Axe",t:"K"},{n:"Bronze Traveler's Axe",t:"K"},
+  {n:"Blue Traveler's Axe",t:"K"},
+  {n:"Gold Vampire's Axe",t:"K"},{n:"Silver Vampire's Axe",t:"K"},{n:"Bronze Vampire's Axe",t:"K"},
+  {n:"Blue Vampire's Axe",t:"K"},
+  // Christmas leaderboard
+  {n:"Gold Logchopper",t:"K"},{n:"Silver Logchopper",t:"K"},{n:"Bronze Logchopper",t:"K"},
+  {n:"Blue Logchopper",t:"K"},
+  {n:"Gold Icebreaker",t:"K"},{n:"Silver Icebreaker",t:"K"},{n:"Bronze Icebreaker",t:"K"},
+  {n:"Blue Icebreaker",t:"K"},
+  {n:"Gold Swirly Axe",t:"K"},{n:"Silver Swirly Axe",t:"K"},{n:"Bronze Swirly Axe",t:"K"},
+  {n:"Blue Swirly Axe",t:"K"},
+  {n:"Gold Icecrusher",t:"K"},{n:"Silver Icecrusher",t:"K"},{n:"Bronze Icecrusher",t:"K"},
+  {n:"Blue Icecrusher",t:"K"},
+  {n:"Gold Gingerscythe",t:"K"},{n:"Silver Gingerscythe",t:"K"},{n:"Bronze Gingerscythe",t:"K"},
+  {n:"Blue Gingerscythe",t:"K"},
+  // Unique guns leaderboard
+  {n:"Gold Harvester",t:"G"},{n:"Silver Harvester",t:"G"},{n:"Bronze Harvester",t:"G"},
+  {n:"Blue Harvester",t:"G"},
+  {n:"Gold Icepiercer",t:"G"},{n:"Silver Icepiercer",t:"G"},{n:"Bronze Icepiercer",t:"G"},
+  {n:"Blue Icepiercer",t:"G"},
+  {n:"Gold Gingerscope",t:"G"},{n:"Silver Gingerscope",t:"G"},{n:"Bronze Gingerscope",t:"G"},
+  {n:"Blue Gingerscope",t:"G"},
+  // Celestial leaderboard
+  {n:"Gold Celestial",t:"K"},{n:"Silver Celestial",t:"K"},{n:"Bronze Celestial",t:"K"},
+  // Elderwood Blade leaderboard
+  {n:"Gold Elderwood Blade",t:"K"},{n:"Silver Elderwood Blade",t:"K"},{n:"Bronze Elderwood Blade",t:"K"},
+  // Vampire's Edge
+  {n:"Blue Vampire's Edge",t:"K"},
+]},
+
+// ══════════════════════════════════════════════════════════════════════
+// ANCIENT  (source: wiki fandom + mm2checker)
+// ══════════════════════════════════════════════════════════════════════
+{id:"ancient",label:"Ancient",color:"#6c3483",w:[
+  {n:"Elderwood Scythe",t:"K"},{n:"Hallowscythe",t:"K"},{n:"Logchopper",t:"K"},
+  {n:"Icebreaker",t:"K"},{n:"Swirly Axe",t:"K"},{n:"Swirlyblade",t:"K"},
+  {n:"Reaver (EVO)",t:"K"},{n:"Icecrusher (EVO)",t:"K"},{n:"Batwing",t:"K"},
+  {n:"Icewing",t:"K"},{n:"Elderbeam",t:"K"},{n:"Gingerscythe (EVO)",t:"K"},
+  {n:"Synthwave (EVO)",t:"K"},{n:"Traveler's Axe",t:"K"},{n:"Vampire's Axe",t:"K"},
+  {n:"Celestial (Ancient)",t:"K"},
+  {n:"Harvester",t:"G"},{n:"Icepiercer",t:"G"},{n:"Gingerscope",t:"G"},
+]},
+
+// ══════════════════════════════════════════════════════════════════════
+// CHROMA  (source: mm2checker)
+// ══════════════════════════════════════════════════════════════════════
+{id:"chroma",label:"Chroma",color:"#b7380e",w:[
+  {n:"Chroma Seer",t:"K"},{n:"Chroma Boneblade",t:"K"},{n:"Chroma Gingerblade",t:"K"},
+  {n:"Chroma Saw",t:"K"},{n:"Chroma Tides",t:"K"},{n:"Chroma Fang",t:"K"},
+  {n:"Chroma Gemstone",t:"K"},{n:"Chroma Deathshard",t:"K"},{n:"Chroma Slasher",t:"K"},
+  {n:"Chroma Heat",t:"K"},{n:"Chroma Elderwood Blade",t:"K"},{n:"Chroma Candleflame",t:"K"},
+  {n:"Chroma Cookiecane",t:"K"},{n:"Chroma Ornament",t:"K"},{n:"Chroma Snow Dagger",t:"K"},
+  {n:"Chroma Sunset",t:"K"},{n:"Chroma Heart Wand",t:"K"},{n:"Chroma Sweet",t:"K"},
+  {n:"Chroma Snowstorm",t:"K"},{n:"Chroma Alienbeam",t:"K"},{n:"Chroma Evergreen",t:"K"},
+  {n:"Chroma Shark",t:"G"},{n:"Chroma Laser",t:"G"},{n:"Chroma Luger",t:"G"},
+  {n:"Chroma Swirly Gun",t:"G"},{n:"Chroma Lightbringer",t:"G"},{n:"Chroma Darkbringer",t:"G"},
+  {n:"Chroma Watergun",t:"G"},{n:"Chroma Snowcannon",t:"G"},{n:"Chroma Treat",t:"G"},
+  {n:"Chroma Raygun",t:"G"},{n:"Chroma Blizzard",t:"G"},{n:"Chroma Sunrise",t:"G"},
+  {n:"Chroma Constellation",t:"G"},{n:"Chroma Bauble",t:"G"},{n:"Chroma Vampire's Gun",t:"G"},
+  {n:"Chroma Evergun",t:"G"},{n:"Chroma Traveler's Gun",t:"G"},
+]},
+
+// ══════════════════════════════════════════════════════════════════════
+// GODLY  (source: mm2checker + wiki fandom)
+// ══════════════════════════════════════════════════════════════════════
+{id:"godly",label:"Godly",color:"#c0392b",w:[
+  // Seers
+  {n:"Seer",t:"K"},{n:"Blue Seer",t:"K"},{n:"Red Seer",t:"K"},{n:"Orange Seer",t:"K"},
+  {n:"Purple Seer",t:"K"},{n:"Yellow Seer",t:"K"},
+  // Box Godly Knives
+  {n:"Deathshard",t:"K"},{n:"Fang",t:"K"},{n:"Saw",t:"K"},{n:"Slasher",t:"K"},
+  {n:"Tides",t:"K"},{n:"Heat",t:"K"},{n:"Gemstone",t:"K"},
+  // Eternal series
+  {n:"Eternal",t:"K"},{n:"Eternal II",t:"K"},{n:"Eternal III",t:"K"},{n:"Eternal IV",t:"K"},
+  {n:"Eternalcane",t:"K"},
+  // Item packs / gamepasses knives
+  {n:"Clockwork",t:"K"},{n:"Pixel",t:"K"},{n:"Virtual",t:"K"},{n:"Old Glory",t:"K"},
+  {n:"Nightblade",t:"K"},{n:"Cookieblade",t:"K"},{n:"Peppermint",t:"K"},{n:"Bioblade",t:"K"},
+  {n:"Heartblade",t:"K"},{n:"Eggblade",t:"K"},{n:"Prismatic",t:"K"},{n:"Nebula",t:"K"},
+  {n:"Iceflake",t:"K"},{n:"Plasmablade",t:"K"},{n:"Phantom",t:"K"},
+  {n:"Sakura",t:"K"},{n:"Rainbow",t:"K"},{n:"Waves",t:"K"},{n:"Darksword",t:"K"},
+  {n:"Flowerwood",t:"K"},{n:"Pearl",t:"K"},
+  // Event knives
+  {n:"Spider",t:"K"},{n:"Candy",t:"K"},{n:"Chill",t:"K"},{n:"Handsaw",t:"K"},
+  {n:"Xmas",t:"K"},{n:"Hallow's Edge",t:"K"},{n:"Hallow's Blade",t:"K"},
+  {n:"Ice Dragon",t:"K"},{n:"Flames",t:"K"},{n:"BattleAxe",t:"K"},
+  {n:"Snowflake",t:"K"},{n:"Ice Shard",t:"K"},{n:"Boneblade",t:"K"},
+  {n:"Pumpking",t:"K"},{n:"BattleAxe II",t:"K"},{n:"Gingerblade",t:"K"},
+  {n:"Winter's Edge",t:"K"},{n:"Frostsaber",t:"K"},{n:"Ghostblade",t:"K"},
+  {n:"Frostbite",t:"K"},{n:"Vampire's Edge",t:"K"},{n:"Candleflame",t:"K"},
+  {n:"Swirly Blade",t:"K"},{n:"Elderwood Blade",t:"K"},{n:"Bat",t:"K"},
+  {n:"Cookiecane",t:"K"},{n:"Turkey",t:"K"},{n:"Evergreen",t:"K"},
+  // More godly knives
+  {n:"Snow Dagger",t:"K"},{n:"Sweet",t:"K"},{n:"Bloom",t:"K"},{n:"Sunset",t:"K"},
+  {n:"Spirit",t:"K"},{n:"Heart Wand",t:"K"},{n:"Alienbeam",t:"K"},
+  {n:"Xenoknife",t:"K"},{n:"Snowstorm",t:"K"},{n:"Flowerwood (Knife)",t:"K"},
+  {n:"Ornament",t:"K"},{n:"Australis",t:"K"},{n:"Borealis (Knife)",t:"K"},
+  {n:"Watergun (Knife)",t:"K"},
+  // Box Godly Guns
+  {n:"Darkbringer",t:"G"},{n:"Lightbringer",t:"G"},{n:"Luger",t:"G"},{n:"Shark",t:"G"},
+  {n:"Laser",t:"G"},{n:"Lugercane",t:"G"},{n:"Sugar",t:"G"},{n:"Green Luger",t:"G"},
+  {n:"Red Luger",t:"G"},{n:"Elderwood Revolver",t:"G"},{n:"Jinglegun",t:"G"},
+  {n:"Iceblaster",t:"G"},{n:"Hallowgun",t:"G"},{n:"Blaster",t:"G"},
+  {n:"Amerilaser",t:"G"},{n:"Minty",t:"G"},{n:"Ginger Luger",t:"G"},
+  {n:"Swirly Gun",t:"G"},{n:"Icebeam",t:"G"},{n:"Plasmabeam",t:"G"},
+  {n:"Makeshift",t:"G"},{n:"Spectre",t:"G"},{n:"Gingermint",t:"G"},
+  {n:"Blossom",t:"G"},{n:"Rainbow Gun",t:"G"},{n:"Ocean",t:"G"},
+  {n:"Darkshot",t:"G"},{n:"Traveler's Gun",t:"G"},{n:"Evergun",t:"G"},
+  {n:"Flowerwood Gun",t:"G"},{n:"Pearlshine",t:"G"},{n:"Watergun",t:"G"},
+  {n:"Xenoshot",t:"G"},{n:"Blizzard",t:"G"},{n:"Treat",t:"G"},{n:"Flora",t:"G"},
+  {n:"Soul",t:"G"},{n:"Snowcannon",t:"G"},{n:"Sunrise",t:"G"},{n:"Raygun",t:"G"},
+  {n:"Bauble",t:"G"},{n:"Constellation",t:"G"},{n:"Vampire's Gun",t:"G"},
+]},
+
+// ══════════════════════════════════════════════════════════════════════
+// VINTAGE  (source: mm2checker)
+// ══════════════════════════════════════════════════════════════════════
+{id:"vintage",label:"Vintage",color:"#6d4c41",w:[
+  {n:"Laser (Vintage)",t:"K"},{n:"BattleAxe (Vintage)",t:"K"},{n:"Saw (Vintage)",t:"K"},
+  {n:"Seer (Vintage)",t:"K"},{n:"Slasher (Vintage)",t:"K"},{n:"Deathshard (Vintage)",t:"K"},
+  {n:"Fang (Vintage)",t:"K"},{n:"Tides (Vintage)",t:"K"},{n:"Boneblade (Vintage)",t:"K"},
+  {n:"Ghostblade (Vintage)",t:"K"},
+  {n:"Ghost (Vintage)",t:"G"},{n:"Blood (Vintage)",t:"G"},{n:"America (Vintage)",t:"G"},
+  {n:"Prince (Vintage)",t:"G"},{n:"Shadow (Vintage)",t:"G"},{n:"Phaser (Vintage)",t:"G"},
+  {n:"Cowboy (Vintage)",t:"G"},{n:"Golden (Vintage)",t:"G"},{n:"Splitter (Vintage)",t:"G"},
+]},
+
+// ══════════════════════════════════════════════════════════════════════
+// LEGENDARY  (source: mm2checker - liste complète)
+// ══════════════════════════════════════════════════════════════════════
+{id:"legendary",label:"Legendary",color:"#b8860b",w:[
+  {n:"JD",t:"K"},{n:"Cotton Candy",t:"K"},{n:"Latte (Knife)",t:"K"},
+  {n:"Beach (Knife)",t:"K"},{n:"Spectral (Knife)",t:"K"},{n:"Vampire (Leg. Knife)",t:"K"},
+  {n:"Aurora (Leg. Knife)",t:"K"},{n:"Cavern (Knife)",t:"K"},{n:"Broken",t:"K"},
+  {n:"Arctic (Leg. Knife)",t:"K"},{n:"Skulls (Leg.)",t:"K"},{n:"Icedriller",t:"K"},
+  {n:"Nightsky",t:"K"},{n:"Ghost (Leg. Knife)",t:"K"},{n:"Bunnies",t:"K"},
+  {n:"Red Scratch",t:"K"},{n:"Witched",t:"K"},{n:"Blue Elite (Leg.)",t:"K"},
+  {n:"Green Elite",t:"K"},{n:"Santa's Magic",t:"K"},{n:"Santa's Spirit",t:"K"},
+  {n:"Traveler (Knife)",t:"K"},{n:"Blue Scratch",t:"K"},{n:"Chromatic (Knife)",t:"K"},
+  {n:"Frostfade (Knife)",t:"K"},{n:"Icecracker",t:"K"},{n:"Red Fire",t:"K"},
+  {n:"Arctic (Leg. Knife2)",t:"K"},{n:"Emerald (Knife)",t:"K"},{n:"Energized (Knife)",t:"K"},
+  {n:"Overseer (Leg. Knife)",t:"K"},{n:"Predator (Knife)",t:"K"},{n:"Ripper (Knife)",t:"K"},
+  {n:"Rupture",t:"K"},{n:"Tree (Leg. Knife)",t:"K"},{n:"Web",t:"K"},
+  {n:"Green Fire",t:"K"},{n:"Aquarium (Knife)",t:"K"},{n:"Cupid",t:"K"},
+  {n:"Cursed (Knife)",t:"K"},{n:"Frozen (Leg. Knife)",t:"K"},{n:"Midnight (Leg.)",t:"K"},
+  {n:"Nightstar",t:"K"},{n:"Palms (Knife)",t:"K"},{n:"Sparkle (Leg.)",t:"K"},
+  {n:"Ginger (Leg. Knife)",t:"K"},{n:"Rune",t:"K"},{n:"Universe",t:"K"},
+  {n:"Viper",t:"K"},{n:"Fade",t:"K"},{n:"Fusion",t:"K"},{n:"Plasmite",t:"K"},
+  {n:"Shiny",t:"K"},{n:"Splash (Knife)",t:"K"},{n:"Elite (Knife)",t:"K"},
+  // Legendary Guns
+  {n:"Latte (Gun)",t:"G"},{n:"Traveler (Gun)",t:"G"},{n:"Aurora (Leg. Gun)",t:"G"},
+  {n:"Spectral (Gun)",t:"G"},{n:"Vampire (Leg. Gun)",t:"G"},{n:"Arctic (Leg. Gun)",t:"G"},
+  {n:"Cavern (Gun)",t:"G"},{n:"Ginger (Leg. Gun)",t:"G"},{n:"Ghost (Leg. Gun)",t:"G"},
+  {n:"Chromatic (Gun)",t:"G"},{n:"Energized (Gun)",t:"G"},{n:"Frostfade (Gun)",t:"G"},
+  {n:"Overseer (Gun)",t:"G"},{n:"Ripper (Gun)",t:"G"},{n:"Tree (Leg. Gun)",t:"G"},
+  {n:"Aquarium (Gun)",t:"G"},{n:"Cursed (Gun)",t:"G"},{n:"Frozen (Leg. Gun)",t:"G"},
+  {n:"Palms (Gun)",t:"G"},{n:"Predator (Gun)",t:"G"},{n:"Splash (Gun)",t:"G"},
+  {n:"Beach (Gun)",t:"G"},
+]},
+
+// ══════════════════════════════════════════════════════════════════════
+// RARE  (source: mm2checker - liste complète)
+// ══════════════════════════════════════════════════════════════════════
+{id:"rare",label:"Rare",color:"#1a5276",w:[
+  // Rare Knives
+  {n:"Cane 2018 (Knife)",t:"K"},{n:"Dungeon",t:"K"},{n:"Silent Night (Knife)",t:"K"},
+  {n:"Zombified (Knife)",t:"K"},{n:"Makeshift (Rare Knife)",t:"K"},{n:"Darkknife",t:"K"},
+  {n:"Aurora (Rare Knife)",t:"K"},{n:"Swirl",t:"K"},{n:"Floral (Knife)",t:"K"},
+  {n:"Toxic (Knife)",t:"K"},{n:"Vampire (Rare Knife)",t:"K"},{n:"Magma (Rare Knife)",t:"K"},
+  {n:"Candy Swirl (Knife)",t:"K"},{n:"Ghastly (Knife)",t:"K"},{n:"Jack",t:"K"},
+  {n:"Snakebite (Knife)",t:"K"},{n:"Bats (Rare)",t:"K"},{n:"Monster (Rare Knife)",t:"K"},
+  {n:"Sun",t:"K"},{n:"Green Marble",t:"K"},{n:"Orange Marble",t:"K"},
+  {n:"Snowflakes (Rare)",t:"K"},{n:"Gingerbread (Rare Knife)",t:"K"},
+  {n:"Aurora (Rare Knife2)",t:"K"},{n:"Ghostfire",t:"K"},{n:"Starry (Rare Knife)",t:"K"},
+  {n:"Cane (Rare Knife)",t:"K"},{n:"Ginger (Rare Knife)",t:"K"},{n:"Mummy (Rare)",t:"K"},
+  {n:"Wraith (Knife)",t:"K"},{n:"Molten (Rare Knife)",t:"K"},{n:"Snowy (Rare)",t:"K"},
+  {n:"Icicles (Knife)",t:"K"},{n:"Butterflies",t:"K"},{n:"Heart",t:"K"},
+  {n:"Neon (Rare)",t:"K"},{n:"Nuke",t:"K"},{n:"Painted (Knife)",t:"K"},
+  {n:"Damp",t:"K"},{n:"Frostflame (Knife)",t:"K"},{n:"Ice Camo",t:"K"},
+  {n:"Logcutter",t:"K"},{n:"Magma (Knife)",t:"K"},{n:"Nether (Rare)",t:"K"},
+  {n:"Spitfire",t:"K"},{n:"Watcher (Rare Knife)",t:"K"},
+  {n:"Tree (2023 Knife)",t:"K"},{n:"Tree (Rare Knife)",t:"K"},{n:"Bio",t:"K"},
+  {n:"Bones (Rare Knife)",t:"K"},{n:"Curse",t:"K"},{n:"Frostflame (Knife2)",t:"K"},
+  {n:"Ghosts (Rare Knife)",t:"K"},{n:"Gingerbread (Rare Knife2)",t:"K"},
+  {n:"Gingercookie (Knife)",t:"K"},{n:"Hologram (Knife)",t:"K"},{n:"Pop Art (Knife)",t:"K"},
+  {n:"Sharky",t:"K"},{n:"Spearmint (Knife)",t:"K"},{n:"Spring",t:"K"},
+  {n:"Storm (Rare)",t:"K"},{n:"Sunny",t:"K"},{n:"Tropical (Rare)",t:"K"},
+  {n:"Xeno (Knife)",t:"K"},{n:"Portal (Knife)",t:"K"},{n:"Robot (Rare)",t:"K"},
+  {n:"Heartbreak",t:"K"},{n:"Kraken",t:"K"},{n:"Ritual",t:"K"},
+  {n:"Snowflake (Rare2)",t:"K"},{n:"Snowglobe",t:"K"},{n:"Yummy",t:"K"},
+  {n:"Sleigh",t:"K"},{n:"Waves (Rare)",t:"K"},{n:"Black (Rare)",t:"K"},
+  {n:"Abstract (Rare)",t:"K"},{n:"Ace (Rare Knife)",t:"K"},{n:"Bacon (Rare Knife)",t:"K"},
+  {n:"Galactic (Rare Knife)",t:"K"},{n:"Galaxy (Rare Knife)",t:"K"},
+  {n:"Hacker (Rare Knife)",t:"K"},{n:"Imbued (Rare Knife)",t:"K"},
+  {n:"iRevolver (Rare Knife)",t:"K"},{n:"Korblox (Rare)",t:"K"},{n:"Krypto (Rare)",t:"K"},
+  {n:"Musical (Rare)",t:"K"},{n:"Nightfire (Rare)",t:"K"},{n:"Nova (Rare)",t:"K"},
+  {n:"Purple (Rare)",t:"K"},{n:"Rainbow (Rare Knife)",t:"K"},{n:"Space",t:"K"},
+  {n:"Spectrum (Rare)",t:"K"},{n:"Squire (Rare)",t:"K"},{n:"Vortex (Rare Knife)",t:"K"},
+  {n:"Deep Sea",t:"K"},
+  // Rare Guns
+  {n:"Starry (Rare Gun)",t:"G"},{n:"Cane 2018 (Gun)",t:"G"},{n:"Aurora (Rare Gun)",t:"G"},
+  {n:"Silent Night (Gun)",t:"G"},{n:"Icicles (Gun)",t:"G"},{n:"Floral (Gun)",t:"G"},
+  {n:"Toxic (Gun)",t:"G"},{n:"Vampire (Rare Gun)",t:"G"},{n:"Magma (Rare Gun)",t:"G"},
+  {n:"Watcher (Rare Gun)",t:"G"},{n:"Candy Swirl (Gun)",t:"G"},{n:"Ghastly (Gun)",t:"G"},
+  {n:"Snakebite (Gun)",t:"G"},{n:"Darkgun",t:"G"},{n:"Gingerbread (Rare Gun)",t:"G"},
+  {n:"Aurora (Rare Gun2)",t:"G"},{n:"Cane (Rare Gun)",t:"G"},{n:"Ginger (Rare Gun)",t:"G"},
+  {n:"Wraith (Gun)",t:"G"},{n:"Molten (Rare Gun)",t:"G"},{n:"Ghosts (Rare Gun)",t:"G"},
+  {n:"Zombified (Gun)",t:"G"},{n:"Frostflame (Gun)",t:"G"},{n:"Gingercookie (Gun)",t:"G"},
+  {n:"Hologram (Gun)",t:"G"},{n:"Pop Art (Gun)",t:"G"},{n:"Spearmint (Gun)",t:"G"},
+  {n:"Xeno (Gun)",t:"G"},{n:"Portal (Gun)",t:"G"},{n:"Tree (Rare Gun)",t:"G"},
+  {n:"Floral (Gun2)",t:"G"},{n:"Rainbow (Rare Gun)",t:"G"},{n:"Galactic (Rare Gun)",t:"G"},
+  {n:"Galaxy (Rare Gun)",t:"G"},{n:"Hacker (Rare Gun)",t:"G"},{n:"Imbued (Rare Gun)",t:"G"},
+  {n:"Vortex (Rare Gun)",t:"G"},
+]},
+
+// ══════════════════════════════════════════════════════════════════════
+// UNCOMMON  (source: mm2checker - liste complète)
+// ══════════════════════════════════════════════════════════════════════
+{id:"uncommon",label:"Uncommon",color:"#1f618d",w:[
+  // Uncommon Knives (event & classic)
+  {n:"Bones (Unc.)",t:"K"},{n:"Zombified (Unc. Knife)",t:"K"},{n:"Brains",t:"K"},
+  {n:"Gingerbread (Unc. Knife)",t:"K"},{n:"Sweater (Knife)",t:"K"},{n:"Branches",t:"K"},
+  {n:"Skulls (Unc.)",t:"K"},{n:"Snowflake (Unc.)",t:"K"},{n:"Void",t:"K"},
+  {n:"Potion (Knife)",t:"K"},{n:"Webs (Unc.)",t:"K"},{n:"Pumpkin Pie",t:"K"},
+  {n:"Potion (2017)",t:"K"},{n:"Frozen (Unc. Knife)",t:"K"},{n:"Mummy (2017)",t:"K"},
+  {n:"Mummy 2018 (Knife)",t:"K"},{n:"Zombie (Knife)",t:"K"},{n:"Zombie",t:"K"},
+  {n:"Wrap (Knife)",t:"K"},{n:"Lights (Unc. Knife)",t:"K"},{n:"Moons (Unc.)",t:"K"},
+  {n:"Vampire (Unc.)",t:"K"},{n:"Wolf",t:"K"},{n:"Gothic (Knife)",t:"K"},
+  {n:"Nutcracker (Knife)",t:"K"},{n:"Snowman (Unc. Knife)",t:"K"},{n:"Snowy (Unc.)",t:"K"},
+  {n:"Wrapped (Knife)",t:"K"},{n:"Gifted",t:"K"},{n:"Zombie (2023)",t:"K"},
+  {n:"Tree (2021)",t:"K"},{n:"Lantern",t:"K"},{n:"Meltdown",t:"K"},
+  {n:"Stars (Knife)",t:"K"},{n:"Cookie (Knife)",t:"K"},{n:"Moonlight",t:"K"},
+  {n:"Pool Noodle",t:"K"},{n:"Hazard (Knife)",t:"K"},{n:"Mistletoe (Knife)",t:"K"},
+  {n:"Snowflake 2022 (Knife)",t:"K"},{n:"Wraiths (Knife)",t:"K"},{n:"Gingerheart",t:"K"},
+  {n:"Rose",t:"K"},{n:"Frosty",t:"K"},{n:"Holly (Knife)",t:"K"},
+  {n:"Carrot (Unc. Knife)",t:"K"},{n:"Fireplace",t:"K"},{n:"Forest",t:"K"},
+  {n:"Marble",t:"K"},{n:"Melon (Unc.)",t:"K"},{n:"Mummy 2020 (Knife)",t:"K"},
+  {n:"Steel (Knife)",t:"K"},{n:"Canes (Unc. Knife)",t:"K"},{n:"Stockings (Knife)",t:"K"},
+  {n:"Brains 2022",t:"K"},{n:"Carrot (Unc.)",t:"K"},{n:"Decorated",t:"K"},
+  {n:"Eyes",t:"K"},{n:"Fall Camo",t:"K"},{n:"Floatie",t:"K"},
+  {n:"Gingerbread (Unc2)",t:"K"},{n:"Meadow",t:"K"},{n:"Monster (Unc.)",t:"K"},
+  {n:"Moons (2024)",t:"K"},{n:"Painted (Unc. Knife)",t:"K"},{n:"Sweater (Unc. Knife)",t:"K"},
+  {n:"Witchbrew",t:"K"},{n:"Sweater (Unc2)",t:"K"},{n:"Tree (2017)",t:"K"},
+  {n:"Checkers",t:"K"},{n:"Eclipse",t:"K"},{n:"Future",t:"K"},{n:"Glowy",t:"K"},
+  {n:"Lava (Knife)",t:"K"},{n:"Night (Unc.)",t:"K"},{n:"Polar Bear",t:"K"},
+  {n:"Pool",t:"K"},{n:"Popsicle",t:"K"},{n:"Ghostly",t:"K"},
+  {n:"Ghosts (Unc. Knife)",t:"K"},{n:"Pumpkin (Knife)",t:"K"},
+  {n:"Wrapped Knife (2024)",t:"K"},{n:"Donut",t:"K"},{n:"Holly (Knife2)",t:"K"},
+  {n:"Abduction (Unc.)",t:"K"},{n:"Blossom (Unc.)",t:"K"},{n:"Bones (Unc2.)",t:"K"},
+  {n:"Canes (Unc. Knife2)",t:"K"},{n:"Jellyfish",t:"K"},{n:"Leaves (Unc.)",t:"K"},
+  {n:"Ornaments (Unc.)",t:"K"},{n:"Paws",t:"K"},{n:"Pumpkin Patch (Unc.)",t:"K"},
+  {n:"Retro (Unc. Knife)",t:"K"},{n:"Snowman (2023)",t:"K"},{n:"Snowman (2024)",t:"K"},
+  {n:"Soda (Unc. Knife)",t:"K"},{n:"Starry (Unc.)",t:"K"},{n:"Treats (Knife)",t:"K"},
+  {n:"Turtle",t:"K"},{n:"Witch's Brew",t:"K"},{n:"Wreaths",t:"K"},
+  {n:"Doge (Unc.)",t:"K"},{n:"Sketch (Unc.)",t:"K"},{n:"Adurite (Knife)",t:"K"},
+  {n:"Biogun (Knife)",t:"K"},{n:"Blue (Unc. Knife)",t:"K"},{n:"Bluesteel (Knife)",t:"K"},
+  {n:"Brush (Knife)",t:"K"},{n:"Camo (Knife)",t:"K"},{n:"Caution (Unc.)",t:"K"},
+  {n:"Cheddar (Unc.)",t:"K"},{n:"Cheesy (Unc.)",t:"K"},{n:"Circuit (Unc.)",t:"K"},
+  {n:"Hazmat (Unc.)",t:"K"},{n:"Hive (Unc.)",t:"K"},{n:"Jigsaw",t:"K"},
+  {n:"Lucky (Unc.)",t:"K"},{n:"Marina (Unc.)",t:"K"},{n:"Missing (Unc.)",t:"K"},
+  {n:"Paper (Unc.)",t:"K"},{n:"Pink",t:"K"},{n:"Pirate",t:"K"},
+  {n:"Red (Unc.)",t:"K"},{n:"Soda (Unc.)",t:"K"},{n:"Stalker (Unc.)",t:"K"},
+  {n:"Tiger",t:"K"},{n:"Wanwood (Unc.)",t:"K"},{n:"Wooden (Unc.)",t:"K"},
+  {n:"Graffiti",t:"K"},{n:"High Tech (Unc.)",t:"K"},{n:"Popsicle (Unc2)",t:"K"},
+  // Uncommon Guns
+  {n:"Zombified (Unc. Gun)",t:"G"},{n:"Zombie (Gun)",t:"G"},
+  {n:"Frozen (Unc. Gun)",t:"G"},{n:"Lights (Unc. Gun)",t:"G"},
+  {n:"Mummy 2018 (Gun)",t:"G"},{n:"Potion (Gun)",t:"G"},{n:"Gothic (Gun)",t:"G"},
+  {n:"Gingerbread (Unc. Gun)",t:"G"},{n:"Holly (Gun)",t:"G"},{n:"Potion (2017 Gun)",t:"G"},
+  {n:"Wrap (Gun)",t:"G"},{n:"Snowman (Unc. Gun)",t:"G"},{n:"Wrapped (Gun)",t:"G"},
+  {n:"Hazard (Gun)",t:"G"},{n:"Steel (Gun)",t:"G"},{n:"Cookie (Gun)",t:"G"},
+  {n:"Gingerbread (Unc. Gun2)",t:"G"},{n:"Love (Unc. Gun)",t:"G"},
+  {n:"Mistletoe (Gun)",t:"G"},{n:"Snowflake 2022 (Gun)",t:"G"},
+  {n:"Wraiths (Gun)",t:"G"},{n:"Wrapped Gun (2024)",t:"G"},
+  {n:"Clown Gun (2024)",t:"G"},{n:"Canes (Unc. Gun)",t:"G"},
+  {n:"Carrot (Unc. Gun)",t:"G"},{n:"Stockings (Gun)",t:"G"},
+  {n:"Brains 2022 (Gun)",t:"G"},{n:"Mummy 2020 (Gun)",t:"G"},
+  {n:"Snowflake (Unc. Gun)",t:"G"},{n:"Snowflake 2022 (Gun2)",t:"G"},
+  {n:"Sweater (Gun)",t:"G"},{n:"Treats (Gun)",t:"G"},{n:"Witchbrew (Gun)",t:"G"},
+  {n:"Wraiths (Gun2)",t:"G"},{n:"Stars (Gun)",t:"G"},{n:"Pumpkin (2025 Gun)",t:"G"},
+  {n:"Soda (Unc. Gun)",t:"G"},{n:"Lava (Gun)",t:"G"},{n:"Popsicle (Gun)",t:"G"},
+  {n:"Portal (Unc. Gun)",t:"G"},{n:"Ghosts (Unc. Gun)",t:"G"},
+  {n:"Abduction (Unc. Gun)",t:"G"},{n:"Jellyfish (Gun)",t:"G"},
+  {n:"Ornaments (Unc. Gun)",t:"G"},{n:"Snowman (2023 Gun)",t:"G"},
+  {n:"Snowman (2024 Gun)",t:"G"},{n:"Turtle (Gun)",t:"G"},
+  {n:"Adurite (Gun)",t:"G"},{n:"Bluesteel (Gun)",t:"G"},{n:"Camo (Gun)",t:"G"},
+  {n:"Biogun",t:"G"},{n:"Blue (Unc. Gun)",t:"G"},{n:"Pool Noodle (Gun)",t:"G"},
+  {n:"Moonlight (Gun)",t:"G"},{n:"Meltdown (Gun)",t:"G"},
+]},
+
+// ══════════════════════════════════════════════════════════════════════
+// COMMON  (source: mm2checker - liste complète)
+// ══════════════════════════════════════════════════════════════════════
+{id:"common",label:"Common",color:"#2c3e50",w:[
+  // Default
+  {n:"Default Knife",t:"K"},{n:"Default Gun",t:"G"},
+  {n:"Glitch1",t:"K"},{n:"Glitch2",t:"K"},{n:"Xbox",t:"K"},
+  // Gun boxes
+  {n:"Big Kill",t:"G"},{n:"Cold",t:"G"},{n:"Fallout",t:"G"},{n:"Iron",t:"G"},
+  {n:"Engraved",t:"G"},{n:"Infiltrator",t:"G"},{n:"Juice",t:"G"},{n:"Star",t:"G"},
+  {n:"Bit",t:"G"},{n:"HL2",t:"G"},{n:"News",t:"G"},{n:"Pea",t:"G"},
+  {n:"Splat",t:"G"},
+  // Knife boxes
+  {n:"Ice",t:"K"},{n:"Love (Knife)",t:"K"},{n:"Splatter",t:"K"},{n:"Whiteout",t:"K"},
+  {n:"8Bit",t:"K"},{n:"Borders",t:"K"},{n:"Linked",t:"K"},{n:"Slate",t:"K"},
+  {n:"Cardboard",t:"K"},{n:"Cherry",t:"K"},{n:"Clan",t:"K"},{n:"Stainless",t:"K"},
+  {n:"Aqua",t:"K"},{n:"Bleached",t:"K"},{n:"Clown (Knife)",t:"K"},{n:"Oily",t:"K"},
+  {n:"Eco",t:"K"},{n:"Log",t:"K"},{n:"Sandy",t:"K"},{n:"Static",t:"K"},
+  // Mystery boxes
+  {n:"Hardened",t:"K"},{n:"Combat",t:"K"},{n:"Copper",t:"K"},
+  {n:"Leaf",t:"K"},{n:"Lovely",t:"K"},{n:"Shaded",t:"K"},
+  {n:"Clown (Gun)",t:"G"},
+  // Rainbow box
+  {n:"Brown",t:"K"},{n:"Green",t:"K"},{n:"Orange",t:"K"},{n:"Yellow",t:"K"},
+  // Codes
+  {n:"Alex",t:"K"},{n:"Corl",t:"K"},{n:"Denis",t:"K"},{n:"Sub",t:"K"},
+  {n:"Sketchy",t:"K"},{n:"Prism",t:"K"},{n:"Combat II",t:"K"},{n:"RB Knife",t:"K"},
+  // Ollie / Skateboard codes
+  {n:"Ollie",t:"K"},{n:"Indy",t:"K"},{n:"Grind",t:"K"},{n:"Tailslide",t:"K"},
+  {n:"Sidewinder",t:"K"},{n:"Skool",t:"K"},
+  // Other early codes/specials
+  {n:"Phantom (Common)",t:"K"},{n:"Ecto",t:"K"},{n:"Sparkle1",t:"K"},
+  {n:"Sparkle2",t:"K"},{n:"Sparkle3",t:"K"},{n:"Sparkle4",t:"K"},
+  {n:"Sparkle5",t:"K"},{n:"Sparkle6",t:"K"},{n:"Sparkle7",t:"K"},
+  {n:"Sparkle8",t:"K"},{n:"Sparkle9",t:"K"},{n:"Sparkle10",t:"K"},
+  {n:"Ghosty",t:"K"},{n:"Euro",t:"K"},{n:"Asteroid",t:"K"},
+  // 2015
+  {n:"2015",t:"K"},
+  // Early seasonal
+  {n:"Blossom (Common)",t:"K"},{n:"Bunny",t:"K"},{n:"Carrot (Common)",t:"K"},
+  {n:"Choco (Common)",t:"K"},{n:"Egg",t:"K"},{n:"Hearts (Common)",t:"K"},
+  {n:"Patrick",t:"K"},{n:"Reptile",t:"K"},{n:"Roses",t:"K"},
+  {n:"Sweetheart",t:"K"},{n:"Tulip",t:"K"},{n:"Valentine",t:"K"},
+  {n:"Ornament (Common)",t:"K"},{n:"Ornament1",t:"K"},{n:"Ornament2 (Knife)",t:"K"},
+  {n:"Passion",t:"K"},
+  {n:"Santa (Knife)",t:"K"},{n:"Santa (Gun)",t:"G"},
+  {n:"Elf (Gun)",t:"G"},{n:"Ornament2 (Gun)",t:"G"},
+  {n:"Goo",t:"K"},
+  // 2016
+  {n:"Bones (2016)",t:"K"},{n:"Brains (2016)",t:"K"},
+  // 2017
+  {n:"Coal (2017)",t:"K"},{n:"Elf (2017)",t:"K"},{n:"Present (2017)",t:"K"},
+  {n:"Santa (2017)",t:"K"},{n:"CandyCorn (2017)",t:"K"},
+  {n:"Bats (Common Knife)",t:"K"},{n:"Witch",t:"K"},
+  // 2018
+  {n:"Bats (Common Gun)",t:"G"},{n:"Haunted (Knife)",t:"K"},{n:"Haunted (Gun)",t:"G"},
+  {n:"Grave (Knife)",t:"K"},{n:"Grave (Gun)",t:"G"},
+  {n:"Slime (Knife)",t:"K"},{n:"Slime (Gun)",t:"G"},
+  {n:"Santa (2018)",t:"K"},{n:"Snowman (2018)",t:"K"},{n:"Wrapped Knife (2018)",t:"K"},
+  {n:"Coal (2018 Knife)",t:"K"},{n:"Coal (2018 Gun)",t:"G"},
+  {n:"Elf (2018)",t:"K"},{n:"Snowman (2018 Gun)",t:"G"},
+  {n:"Gifts (Knife)",t:"K"},{n:"Pine (Knife)",t:"K"},
+  {n:"Wrapped (Common Gun)",t:"G"},{n:"Snowman Gun",t:"G"},
+  // 2019
+  {n:"Slimy",t:"K"},{n:"CandyCorn (2019)",t:"K"},{n:"Pumpkin (2019)",t:"K"},
+  {n:"Mummified",t:"K"},{n:"Webbed (Knife)",t:"K"},{n:"Ghoulish",t:"K"},
+  {n:"RIP",t:"K"},{n:"Webbed (Gun)",t:"G"},
+  {n:"Snowflakes (Knife)",t:"K"},{n:"Frosted (Knife)",t:"K"},
+  {n:"Gifts (Gun)",t:"G"},{n:"Pine (Gun)",t:"G"},{n:"Frosted (Gun)",t:"G"},
+  {n:"Snowflakes (Gun)",t:"G"},{n:"Zombie",t:"K"},
+  // 2020
+  {n:"Watcher (Knife)",t:"K"},{n:"Candle",t:"K"},{n:"Candy Corn (Knife 2020)",t:"K"},
+  {n:"Carved (Knife)",t:"K"},{n:"Bats (2020)",t:"K"},{n:"Slashed",t:"K"},
+  {n:"Infected (Knife)",t:"K"},{n:"Neon (Common)",t:"K"},{n:"TNL",t:"K"},
+  {n:"Candy Corn (Gun 2020)",t:"G"},{n:"Carved (Gun)",t:"G"},{n:"Watcher (Gun)",t:"G"},
+  {n:"Starry (Common)",t:"G"},{n:"Infected (Gun)",t:"G"},
+  {n:"Ornaments (Knife 2020)",t:"K"},{n:"Gift Bag (Knife)",t:"K"},
+  {n:"Stockings",t:"K"},{n:"Trees",t:"K"},
+  {n:"Gift Bag (Gun)",t:"G"},{n:"Ornaments (Gun 2020)",t:"G"},
+  // 2021
+  {n:"Cracks (Knife)",t:"K"},{n:"Haunted",t:"K"},{n:"Stickers (Knife)",t:"K"},
+  {n:"Moon",t:"K"},{n:"Ribbons",t:"K"},
+  {n:"Cat",t:"G"},{n:"Cracks (Gun)",t:"G"},{n:"Aliens",t:"G"},
+  {n:"Stickers (Gun)",t:"G"},
+  {n:"Giftwrap",t:"K"},{n:"Cane 2021 (Knife)",t:"K"},{n:"Coal 2021 (Knife)",t:"K"},
+  {n:"Stickers Xmas 2021 (Knife)",t:"K"},
+  {n:"Coal 2021 (Gun)",t:"G"},{n:"Cane 2021 (Gun)",t:"G"},
+  {n:"Stickers Xmas 2021 (Gun)",t:"G"},
+  // 2022
+  {n:"Candy Corn (Knife 2022)",t:"K"},{n:"Hallows Stickers 2022",t:"K"},
+  {n:"Darkness (Knife)",t:"K"},{n:"Hunter",t:"K"},{n:"Eyeball",t:"K"},
+  {n:"Apocalypse (Knife)",t:"K"},
+  {n:"Darkness (Gun)",t:"G"},{n:"Candy Corn (Gun 2022)",t:"G"},
+  {n:"Webs (Common)",t:"G"},{n:"Apocalypse (Gun)",t:"G"},
+  {n:"Coal 2022 (Knife)",t:"K"},{n:"Snowman 2022 (Knife)",t:"K"},
+  {n:"Stickers Xmas 2022 (Knife)",t:"K"},{n:"Candied (Knife)",t:"K"},
+  {n:"Candied (Gun)",t:"G"},{n:"Snowman 2022 (Gun)",t:"G"},
+  {n:"Coal 2022 (Gun)",t:"G"},{n:"Stickers Xmas 2022 (Gun)",t:"G"},
+  // 2023
+  {n:"Fragile (Knife)",t:"K"},{n:"Fragile (Gun)",t:"G"},
+  {n:"Love 2023",t:"K"},
+  {n:"Stickers Summer 2023 (Knife)",t:"K"},{n:"Toy (Knife)",t:"K"},
+  {n:"Toy (Gun)",t:"G"},{n:"Stickers Summer 2023 (Gun)",t:"G"},
+  {n:"Leaves",t:"K"},{n:"Spider (2023)",t:"K"},{n:"Wood",t:"K"},
+  {n:"Ghosts (2023)",t:"K"},{n:"Etched",t:"K"},{n:"Vines (Knife)",t:"K"},
+  {n:"Pumpkin (2023)",t:"G"},{n:"Vines (Gun)",t:"G"},
+  {n:"Scarf",t:"K"},
+  {n:"Snowfall",t:"K"},{n:"Frozen (Knife 2023)",t:"K"},{n:"Present (2023)",t:"K"},
+  {n:"Ribbon",t:"K"},{n:"Lights (Knife 2023)",t:"K"},
+  {n:"Bells",t:"G"},{n:"Elf (2023)",t:"G"},{n:"Frozen (Gun 2023)",t:"G"},
+  {n:"Santa (2023)",t:"G"},{n:"Lights (Gun 2023)",t:"G"},
+  // 2024
+  {n:"Wavy (Knife 2024)",t:"K"},{n:"Wavy (Gun 2024)",t:"G"},
+  {n:"Clownfish (Knife)",t:"K"},{n:"Starfish (Knife)",t:"K"},
+  {n:"Balloons",t:"G"},{n:"Clownfish (Gun)",t:"G"},
+  {n:"Sandy (Gun)",t:"G"},{n:"Starfish (Gun)",t:"G"},
+  {n:"Bats Knife (2024)",t:"K"},{n:"Ghosts (2024)",t:"K"},
+  {n:"Candy Corn (Knife 2024)",t:"K"},{n:"Candles",t:"K"},
+  {n:"Cats",t:"G"},{n:"CandyCorn (Gun 2024)",t:"G"},{n:"Stickers Hal. 2024 (Gun)",t:"G"},
+  {n:"UFOs (Knife)",t:"K"},
+  {n:"Reindeer",t:"K"},{n:"Igloo (Knife)",t:"K"},{n:"Gifts (2024)",t:"K"},
+  {n:"Hot Chocolate",t:"K"},{n:"Stickers Xmas 2024 (Knife)",t:"K"},
+  {n:"Stockings (2024)",t:"K"},{n:"Strawberries (Knife)",t:"K"},
+  {n:"Plaid",t:"K"},{n:"Hearts (2026)",t:"K"},
+  {n:"Igloo (Gun)",t:"G"},{n:"Stickers Xmas 2024 (Gun)",t:"G"},
+  {n:"Strawberries (Gun)",t:"G"},
+  // 2025
+  {n:"Carrots",t:"K"},{n:"Chick (Common)",t:"K"},
+  {n:"Haunted (2025)",t:"K"},{n:"UFOs (Gun)",t:"G"},{n:"Fall (Gun)",t:"G"},
+  {n:"Stickers Thanksgiving 2025",t:"K"},
+  {n:"Snowball (Knife)",t:"K"},{n:"Peppermint (Knife)",t:"K"},{n:"Snowball (Gun)",t:"G"},
+  {n:"Peppermint (Gun)",t:"G"},
+  {n:"Skyline",t:"K"},{n:"Striped (Knife 2025)",t:"K"},
+  {n:"Stickers Summer 2025 (Knife)",t:"K"},
+  {n:"Dolphins",t:"G"},{n:"Striped (Gun 2025)",t:"G"},
+  {n:"Stickers Summer 2025 (Gun)",t:"G"},
+]},
+
+];
+
+// ═══════════════════════════════════════
+// AUTH SYSTEM — OAuth réel (Google, Discord, Roblox)
+// ═══════════════════════════════════════
+var currentUser = null;
+var DEFAULT_OWNED = {"common|Default Knife":true,"common|Default Gun":true};
+
+function getUsers(){try{return JSON.parse(localStorage.getItem("mm2hub_users")||"{}");}catch(e){return{};}}
+function saveUsers(u){try{localStorage.setItem("mm2hub_users",JSON.stringify(u));}catch(e){}}
+function getSession(){try{return JSON.parse(sessionStorage.getItem("mm2hub_session")||"null");}catch(e){return null;}}
+function saveSession(u){try{sessionStorage.setItem("mm2hub_session",JSON.stringify(u));}catch(e){}}
+
+// ── Lire oauth_user ou auth_error dans l'URL après redirect OAuth ──
+(function handleOAuthRedirect(){
+  var params=new URLSearchParams(window.location.search);
+  var oauthUser=params.get("oauth_user");
+  var authError=params.get("auth_error");
+  if(oauthUser||authError){
+    window.history.replaceState({},document.title,window.location.pathname);
+  }
+  if(authError) window.__pendingAuthError=decodeURIComponent(authError);
+  if(oauthUser){try{window.__pendingOAuthUser=JSON.parse(decodeURIComponent(oauthUser));}catch(e){}}
+})();
+
+function switchAuthTab(t){
+  document.querySelectorAll(".auth-tab").forEach(function(b,i){b.classList.toggle("active",(i===0&&t==="login")||(i===1&&t==="register"));});
+  document.getElementById("loginForm").style.display=t==="login"?"":"none";
+  document.getElementById("registerForm").style.display=t==="register"?"":"none";
+  document.getElementById("authError").style.display="none";
+}
+function showErr(msg){var e=document.getElementById("authError");e.textContent=msg;e.style.display="block";}
+
+function doLogin(){
+  var u=document.getElementById("loginUser").value.trim();
+  var p=document.getElementById("loginPass").value;
+  if(!u||!p){showErr("Remplis tous les champs.");return;}
+  var users=getUsers();
+  var found=users[u.toLowerCase()]||users[Object.keys(users).find(function(k){return users[k].email===u.toLowerCase();})||""];
+  if(!found||found.pass!==btoa(p)){showErr("Identifiants incorrects.");return;}
+  loginSuccess(found);
+}
+
+function doRegister(){
+  var u=document.getElementById("regUser").value.trim();
+  var em=document.getElementById("regEmail").value.trim().toLowerCase();
+  var p=document.getElementById("regPass").value;
+  if(!u||!em||!p){showErr("Remplis tous les champs.");return;}
+  if(p.length<6){showErr("Mot de passe trop court (min. 6 caractères).");return;}
+  var users=getUsers();
+  if(users[u.toLowerCase()]){showErr("Ce nom d'utilisateur est déjà pris.");return;}
+  var newUser={username:u,email:em,pass:btoa(p),owned:Object.assign({},DEFAULT_OWNED),provider:"local",robloxUser:null};
+  users[u.toLowerCase()]=newUser;
+  saveUsers(users);
+  loginSuccess(newUser);
+}
+
+// ── Connexion Google — redirige vers l'API serverless Vercel ──
+function loginWithGoogle(){
+  window.location.href="/api/auth/google";
+}
+
+// ── Connexion Discord — redirige vers l'API serverless Vercel ──
+function loginWithDiscord(){
+  window.location.href="/api/auth/discord";
+}
+
+// ── Connexion Roblox — valide le pseudo via l'API serverless ──
+async function loginWithRoblox(){
+  var username=document.getElementById("robloxLoginInput").value.trim();
+  if(!username){showErr("Entre ton pseudo Roblox.");return;}
+  var btn=document.getElementById("robloxLoginBtn");
+  btn.disabled=true;btn.textContent="Vérification...";
+  try{
+    var res=await fetch("/api/auth/roblox",{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({username:username})
+    });
+    var data=await res.json();
+    if(!res.ok){showErr(data.error||"Erreur Roblox");return;}
+    handleOAuthUser(data);
+  }catch(e){
+    showErr("Impossible de joindre le serveur.");
+  }finally{
+    btn.disabled=false;btn.textContent="🎮 Connecter";
+  }
+}
+
+// ── Traitement commun pour un profil OAuth ──
+function handleOAuthUser(profile){
+  var users=getUsers();
+  var key=(profile.provider+"_"+profile.id).toLowerCase();
+  if(!users[key]){
+    users[key]={
+      username:profile.username,
+      email:profile.email||(key+"@"+profile.provider.toLowerCase()+".com"),
+      pass:"",
+      owned:Object.assign({},DEFAULT_OWNED),
+      provider:profile.provider,
+      avatar:profile.avatar||null,
+      robloxUser:profile.provider==="Roblox"?profile.username:null
+    };
+  }else{
+    if(profile.avatar)users[key].avatar=profile.avatar;
+  }
+  saveUsers(users);
+  loginSuccess(users[key]);
+}
+
+function loginSuccess(user){
+  currentUser=user;
+  saveSession(user);
+  owned=user.owned||Object.assign({},DEFAULT_OWNED);
+  document.getElementById("authScreen").style.display="none";
+  document.getElementById("app").style.display="block";
+  document.getElementById("userName").textContent=user.username;
+  var avatarEl=document.getElementById("userAvatar");
+  if(user.avatar){
+    avatarEl.innerHTML='<img src="'+user.avatar+'" style="width:34px;height:34px;border-radius:50%;object-fit:cover" onerror="this.parentElement.innerHTML=\''+user.username[0].toUpperCase()+'\'">';
+  }else{
+    avatarEl.textContent=user.username[0].toUpperCase();
+  }
+  var providerEl=document.getElementById("userProvider");
+  var icons={Google:"🔵",Discord:"🟣",Roblox:"🎮"};
+  if(user.provider&&user.provider!=="local") providerEl.textContent=(icons[user.provider]||"")+" "+user.provider;
+  else providerEl.textContent="";
+  if(user.robloxUser){
+    document.getElementById("robloxUsernameInput").value=user.robloxUser;
+    connectRoblox();
+  }
+  build();
+  loadValues();
+  buildTrading();
+}
+
+function logout(){
+  if(!confirm("Se déconnecter ?"))return;
+  currentUser=null;
+  sessionStorage.removeItem("mm2hub_session");
+  owned={};
+  document.getElementById("authScreen").style.display="flex";
+  document.getElementById("app").style.display="none";
+  document.getElementById("collMain").innerHTML="";
+  robloxConnectedUsername=null;
+}
+
+function persistOwned(){
+  if(!currentUser)return;
+  currentUser.owned=owned;
+  var users=getUsers();
+  var key=Object.keys(users).find(function(k){return users[k].username===currentUser.username&&users[k].provider===currentUser.provider;});
+  if(key){users[key].owned=owned;saveUsers(users);}
+  saveSession(currentUser);
+}
+
+// ═══════════════════════════════════════
+// COLLECTION
+// ═══════════════════════════════════════
+var owned = {};
+function wkey(sid,n){return sid+"|"+n;}
+function eid(k){return "i"+k.replace(/[^a-zA-Z0-9]/g,"_");}
+function totW(){return S.reduce(function(a,s){return a+s.w.length;},0);}
+function totO(){return Object.keys(owned).filter(function(k){return owned[k];}).length;}
+function ownIn(sid){
+  var s=S.filter(function(x){return x.id===sid;})[0];
+  if(!s)return 0;
+  return s.w.filter(function(w){return owned[wkey(sid,w.n)];}).length;
+}
+var VALUES_DATA={};
+
+function totalOwnedValue(){
+  var total=0;
+  Object.keys(owned).forEach(function(k){
+    if(!owned[k])return;
+    var name=k.split("|")[1]||"";
+    if(VALUES_DATA[name])total+=VALUES_DATA[name];
+  });
+  return total;
+}
+
+function upStats(){
+  var o=totO(),t=totW(),p=t?Math.round(o/t*100):0;
+  document.getElementById("sO").textContent=o;
+  document.getElementById("sM").textContent=t-o;
+  document.getElementById("sT").textContent=t;
+  document.getElementById("sP").textContent=p+"%";
+  document.getElementById("pf").style.width=p+"%";
+  var tv=totalOwnedValue();
+  document.getElementById("sValOwned").textContent=tv>0?tv.toLocaleString()+" Seers":"—";
+  S.forEach(function(s){
+    var el=document.getElementById("c"+s.id);if(el)el.textContent=ownIn(s.id)+"/"+s.w.length;
+    var ep=document.getElementById("cp"+s.id);
+    if(ep){var pct=s.w.length?Math.round(ownIn(s.id)/s.w.length*100):0;ep.textContent=pct+"%";}
+  });
+}
+
+function tog(sid,name){
+  var k=wkey(sid,name);
+  owned[k]=!owned[k];
+  var el=document.getElementById(eid(k));
+  if(el){
+    el.classList.toggle("owned",owned[k]);
+    el.querySelector("input").checked=owned[k];
+    var ck=el.querySelector(".wi-check");if(ck)ck.style.opacity=owned[k]?"1":"0";
+  }
+  upStats();
+  persistOwned();
+}
+
+var SEC_COLORS={
+  unique:"#1a1a2e",ancient:"#6c3483",chroma:"#b7380e",godly:"#c0392b",
+  vintage:"#6d4c41",legendary:"#b8860b",rare:"#1a5276",uncommon:"#1f618d",common:"#2c3e50"
+};
+var SEC_DOTS={
+  unique:"#888",ancient:"#c77dff",chroma:"#ff9f43",godly:"#e74c3c",
+  vintage:"#a0785a",legendary:"#f4d03f",rare:"#3498db",uncommon:"#5dade2",common:"#7f8c8d"
+};
+
+function imgSlug(name){
+  return name.toLowerCase().replace(/['']/g,"").replace(/chroma /g,"c").replace(/[^a-z0-9]+/g,"");
+}
+
+function makeImg(name,cls){
+  var slug=imgSlug(name);
+  var sources=[
+    "https://mm2checker.com/images/godlies/"+slug+".png",
+    "https://mm2checker.com/images/legendaries/"+slug+".png",
+    "https://mm2checker.com/images/rares/"+slug+".png",
+    "https://mm2checker.com/images/uncommons/"+slug+".png",
+    "https://mm2checker.com/images/commons/"+slug+".png",
+    "https://mm2checker.com/images/ancients/"+slug+".png",
+    "https://mm2checker.com/images/vintages/"+slug+".png",
+  ];
+  var img=document.createElement("img");
+  img.className=cls||"wi-img";
+  img.alt=name;
+  var idx=0;
+  img.onerror=function(){
+    idx++;
+    if(idx<sources.length){img.src=sources[idx];}
+    else{img.style.display="none";}
+  };
+  img.src=sources[0];
+  return img;
+}
+
+function build(){
+  var main=document.getElementById("collMain");
+  main.innerHTML="";
+  S.forEach(function(s){
+    var sec=document.createElement("div");
+    sec.className="section";sec.id="s_"+s.id;
+    var hdr=document.createElement("div");
+    hdr.className="sec-hdr";hdr.style.background=SEC_COLORS[s.id]||"#111";
+    hdr.innerHTML='<div class="sec-dot" style="background:'+SEC_DOTS[s.id]+'"></div>'+
+      '<span class="sec-label">'+s.label+'</span>'+
+      '<span class="sec-cnt" id="c'+s.id+'">'+ownIn(s.id)+'/'+s.w.length+'</span>'+
+      '<span class="sec-pct" id="cp'+s.id+'">'+Math.round(ownIn(s.id)/s.w.length*100)+'%</span>'+
+      '<span class="sec-arr open" id="a'+s.id+'">▶</span>';
+    hdr.onclick=(function(sid){return function(){
+      var g=document.getElementById("g"+sid);
+      var a=document.getElementById("a"+sid);
+      g.classList.toggle("hidden");
+      a.classList.toggle("open",!g.classList.contains("hidden"));
+    };})(s.id);
+    sec.appendChild(hdr);
+    var grid=document.createElement("div");
+    grid.className="wgrid";grid.id="g"+s.id;
+    s.w.forEach(function(w){
+      var k=wkey(s.id,w.n);
+      var isO=!!owned[k];
+      var d=document.createElement("div");
+      d.className="wi"+(isO?" owned":"");
+      d.id=eid(k);
+      d.onclick=(function(sid,name){return function(){tog(sid,name);};})(s.id,w.n);
+      var imgWrap=document.createElement("div");imgWrap.className="wi-img-wrap";
+      imgWrap.appendChild(makeImg(w.n,"wi-img"));
+      var chk=document.createElement("div");chk.className="wi-check";chk.textContent="✓";chk.style.opacity=isO?"1":"0";
+      imgWrap.appendChild(chk);
+      d.appendChild(imgWrap);
+      var bot=document.createElement("div");bot.className="wi-bottom";
+      var cb=document.createElement("input");cb.type="checkbox";cb.checked=isO;cb.className="wi-cb";
+      var nm=document.createElement("span");nm.className="wi-name";nm.textContent=w.n;
+      var tp=document.createElement("span");tp.className="wi-type";tp.textContent=w.t==="K"?"🔪":"🔫";
+      bot.appendChild(cb);bot.appendChild(nm);bot.appendChild(tp);
+      d.appendChild(bot);
+      grid.appendChild(d);
+    });
+    sec.appendChild(grid);
+    main.appendChild(sec);
+  });
+  upStats();
+}
+
+function flt(){
+  var q=document.getElementById("q").value.toLowerCase();
+  var r=document.getElementById("fr").value;
+  var t=document.getElementById("ft").value;
+  var o=document.getElementById("fo").value;
+  var any=false;
+  S.forEach(function(s){
+    var se=document.getElementById("s_"+s.id);
+    if(!se)return;
+    if(r&&r!==s.label){se.classList.add("hidden");return;}
+    var vis=false;
+    s.w.forEach(function(w){
+      var k=wkey(s.id,w.n);
+      var el=document.getElementById(eid(k));
+      if(!el)return;
+      var show=(!q||w.n.toLowerCase().indexOf(q)>=0)&&(!t||w.t===t)&&(!o||(o==="owned"?!!owned[k]:!owned[k]));
+      el.classList.toggle("hidden",!show);
+      if(show){vis=true;any=true;}
+    });
+    se.classList.toggle("hidden",!vis);
+    if(vis&&q){document.getElementById("g"+s.id).classList.remove("hidden");document.getElementById("a"+s.id).classList.add("open");}
+  });
+  document.getElementById("nr").classList.toggle("hidden",any);
+}
+function expAll(){S.forEach(function(s){document.getElementById("g"+s.id).classList.remove("hidden");document.getElementById("a"+s.id).classList.add("open");});}
+function colAll(){S.forEach(function(s){document.getElementById("g"+s.id).classList.add("hidden");document.getElementById("a"+s.id).classList.remove("open");});}
+function rst(){
+  if(!confirm("Effacer toute ta progression ?"))return;
+  Object.keys(owned).forEach(function(k){owned[k]=false;});
+  document.querySelectorAll(".wi").forEach(function(el){el.classList.remove("owned");el.querySelector("input").checked=false;var c=el.querySelector(".wi-check");if(c)c.style.opacity="0";});
+  upStats();persistOwned();
+}
+function saveToFile(){
+  var src=document.documentElement.outerHTML;
+  var blob=new Blob([src],{type:"text/html;charset=utf-8"});
+  var a=document.createElement("a");
+  a.href=URL.createObjectURL(blob);a.download="MM2Hub_v2.html";
+  document.body.appendChild(a);a.click();
+  setTimeout(function(){URL.revokeObjectURL(a.href);a.remove();},1000);
+  notify("💾 Fichier sauvegardé !","ok");
+}
+
+// ═══════════════════════════════════════
+// VALUES PAGE — style SupremeValues
+// ═══════════════════════════════════════
+var ALL_VALUES=[];
+var valCurrentFilter="all";
+var valCurrentSort="value";
+var EMBEDDED_VALUES = [
+  // Chroma tier
+  {name:"C. Traveler's Gun",rarity:"Chroma",value:308025,demand:9,rarity_score:9.5,origin:"Hallows 2023",type:"G"},
+  {name:"Chroma Evergun",rarity:"Chroma",value:105413,demand:9,rarity_score:7.7,origin:"Xmas 2023",type:"G"},
+  {name:"Chroma Evergreen",rarity:"Chroma",value:82140,demand:7.2,rarity_score:7.5,origin:"Xmas 2023",type:"K"},
+  {name:"Chroma Bauble",rarity:"Chroma",value:52022,demand:7,rarity_score:7,origin:"Xmas 2024",type:"G"},
+  {name:"C. Constellation",rarity:"Chroma",value:49284,demand:7,rarity_score:6,origin:"Xmas 2024",type:"G"},
+  {name:"C. Vampire's Gun",rarity:"Chroma",value:47915,demand:7.1,rarity_score:6.1,origin:"Hallows 2024",type:"G"},
+  {name:"Chroma Alienbeam",rarity:"Chroma",value:41070,demand:7,rarity_score:6.3,origin:"Hallows 2025",type:"K"},
+  {name:"Chroma Raygun",rarity:"Chroma",value:20193,demand:6.1,rarity_score:5.3,origin:"Hallows 2025",type:"G"},
+  {name:"Chroma Sunrise",rarity:"Chroma",value:15401,demand:5.9,rarity_score:4.6,origin:"Summer 2025",type:"G"},
+  {name:"C. Snowcannon",rarity:"Chroma",value:11636,demand:6.2,rarity_score:5,origin:"Xmas 2025",type:"G"},
+  {name:"Chroma Blizzard",rarity:"Chroma",value:10952,demand:4.8,rarity_score:5.3,origin:"Xmas 2025",type:"G"},
+  {name:"Chroma Sunset",rarity:"Chroma",value:8898,demand:5.3,rarity_score:4.5,origin:"Summer 2025",type:"K"},
+  {name:"C. Snow Dagger",rarity:"Chroma",value:7872,demand:5,rarity_score:5.5,origin:"Xmas 2025",type:"K"},
+  {name:"Chroma Treat",rarity:"Chroma",value:6640,demand:5,rarity_score:5.2,origin:"Valentine 2026",type:"G"},
+  {name:"C. Heart Wand",rarity:"Chroma",value:6503,demand:5.4,rarity_score:4.8,origin:"Valentine 2026",type:"K"},
+  {name:"Chroma Snowstorm",rarity:"Chroma",value:5818,demand:5,rarity_score:5.3,origin:"Xmas 2025",type:"K"},
+  {name:"Chroma Watergun",rarity:"Chroma",value:4655,demand:5,rarity_score:5.1,origin:"Summer 2024",type:"G"},
+  {name:"Chroma Sweet",rarity:"Chroma",value:3902,demand:6,rarity_score:5,origin:"Valentine 2026",type:"K"},
+  {name:"Chroma Ornament",rarity:"Chroma",value:3628,demand:5.2,rarity_score:4.4,origin:"Xmas 2025",type:"K"},
+  {name:"C. Darkbringer",rarity:"Chroma",value:103,demand:1,rarity_score:2.3,origin:"Mystery Crate #2",type:"G"},
+  {name:"C. Lightbringer",rarity:"Chroma",value:96,demand:1.2,rarity_score:1.9,origin:"Mystery Crate #2",type:"G"},
+  {name:"Chroma Luger",rarity:"Chroma",value:75,demand:1.1,rarity_score:1.5,origin:"Gun Box #1",type:"G"},
+  {name:"C. Candleflame",rarity:"Chroma",value:62,demand:1,rarity_score:2.4,origin:"Hallows 2021",type:"K"},
+  {name:"C. Elderwood Blade",rarity:"Chroma",value:62,demand:1.1,rarity_score:2.2,origin:"Hallows 2022",type:"K"},
+  {name:"C. Swirly Gun",rarity:"Chroma",value:62,demand:1,rarity_score:2,origin:"Xmas 2021",type:"G"},
+  {name:"Chroma Laser",rarity:"Chroma",value:57,demand:1.2,rarity_score:2.2,origin:"Gun Box #3",type:"G"},
+  {name:"C. Cookiecane",rarity:"Chroma",value:52,demand:1,rarity_score:2.5,origin:"Xmas 2022",type:"K"},
+  {name:"C. Deathshard",rarity:"Chroma",value:52,demand:1,rarity_score:1.8,origin:"Knife Box #1",type:"K"},
+  {name:"Chroma Slasher",rarity:"Chroma",value:52,demand:1.1,rarity_score:1.8,origin:"Knife Box #4",type:"K"},
+  {name:"Chroma Fang",rarity:"Chroma",value:48,demand:1.2,rarity_score:2,origin:"Knife Box #2",type:"K"},
+  {name:"Chroma Shark",rarity:"Chroma",value:48,demand:1,rarity_score:2.5,origin:"Gun Box #2",type:"G"},
+  {name:"Chroma Gemstone",rarity:"Chroma",value:44,demand:1.1,rarity_score:1.8,origin:"Mystery Crate #1",type:"K"},
+  {name:"C. Gingerblade",rarity:"Chroma",value:44,demand:1,rarity_score:2.5,origin:"Xmas 2018",type:"K"},
+  {name:"Chroma Heat",rarity:"Chroma",value:44,demand:1,rarity_score:3,origin:"Rainbow Box",type:"K"},
+  {name:"Chroma Seer",rarity:"Chroma",value:44,demand:1,rarity_score:2,origin:"Season 1 Crafting",type:"K"},
+  {name:"Chroma Saw",rarity:"Chroma",value:41,demand:1,rarity_score:2.2,origin:"Knife Box #3",type:"K"},
+  {name:"Chroma Tides",rarity:"Chroma",value:41,demand:1,rarity_score:1.6,origin:"Knife Box #5",type:"K"},
+  {name:"Chroma Boneblade",rarity:"Chroma",value:37,demand:1,rarity_score:1.7,origin:"Hallows 2018",type:"K"},
+  // Godly Tier 3
+  {name:"Traveler's Gun",rarity:"Godly",value:6297,demand:6,rarity_score:5,origin:"Hallows 2023",type:"G"},
+  {name:"Evergun",rarity:"Godly",value:4518,demand:4.7,rarity_score:3.6,origin:"Xmas 2023",type:"G"},
+  {name:"Constellation",rarity:"Godly",value:3559,demand:4.9,rarity_score:3.9,origin:"Xmas 2024",type:"G"},
+  {name:"Evergreen",rarity:"Godly",value:3354,demand:5.2,rarity_score:4.5,origin:"Xmas 2023",type:"K"},
+  {name:"Turkey",rarity:"Godly",value:3354,demand:5.5,rarity_score:3.7,origin:"Thanksgiving 2023",type:"K"},
+  {name:"Alienbeam",rarity:"Godly",value:3046,demand:5.7,rarity_score:4.1,origin:"Hallows 2025",type:"K"},
+  {name:"Vampire's Gun",rarity:"Godly",value:2327,demand:5.4,rarity_score:4,origin:"Hallows 2024",type:"G"},
+  {name:"Darkshot",rarity:"Godly",value:1930,demand:6,rarity_score:3.7,origin:"Hallows 2023",type:"G"},
+  {name:"Darksword",rarity:"Godly",value:1903,demand:5.6,rarity_score:4.1,origin:"Hallows 2023",type:"K"},
+  {name:"Raygun",rarity:"Godly",value:1780,demand:6,rarity_score:2.7,origin:"Hallows 2025",type:"G"},
+  {name:"Blossom",rarity:"Godly",value:1643,demand:6.5,rarity_score:3,origin:"Valentine 2023",type:"G"},
+  {name:"Sakura",rarity:"Godly",value:1629,demand:6,rarity_score:4,origin:"Valentine 2023",type:"K"},
+  {name:"Sunrise",rarity:"Godly",value:1369,demand:6,rarity_score:4.5,origin:"Summer 2025",type:"G"},
+  {name:"Snowcannon",rarity:"Godly",value:1266,demand:4,rarity_score:2.7,origin:"Xmas 2025",type:"G"},
+  {name:"Bauble",rarity:"Godly",value:1232,demand:5,rarity_score:3,origin:"Xmas 2024",type:"G"},
+  {name:"Sunset",rarity:"Godly",value:719,demand:4.1,rarity_score:3,origin:"Summer 2025",type:"K"},
+  {name:"Heart Wand",rarity:"Godly",value:582,demand:4,rarity_score:3,origin:"Valentine 2026",type:"K"},
+  {name:"Soul",rarity:"Godly",value:548,demand:5.3,rarity_score:2.5,origin:"Hallows 2024",type:"G"},
+  {name:"Spirit",rarity:"Godly",value:534,demand:5.2,rarity_score:3.3,origin:"Hallows 2024",type:"K"},
+  {name:"Flora",rarity:"Godly",value:445,demand:4.6,rarity_score:3,origin:"Easter 2025",type:"G"},
+  {name:"Bloom",rarity:"Godly",value:431,demand:5,rarity_score:4,origin:"Easter 2025",type:"K"},
+  {name:"Rainbow Gun",rarity:"Godly",value:411,demand:4.2,rarity_score:3,origin:"Easter 2023",type:"G"},
+  {name:"Rainbow",rarity:"Godly",value:397,demand:4,rarity_score:3,origin:"Easter 2023",type:"K"},
+  {name:"Snow Dagger",rarity:"Godly",value:356,demand:3,rarity_score:3,origin:"Xmas 2025",type:"K"},
+  {name:"Flowerwood Gun",rarity:"Godly",value:281,demand:3,rarity_score:3.5,origin:"Easter 2024",type:"G"},
+  {name:"Flowerwood",rarity:"Godly",value:274,demand:2.5,rarity_score:3.2,origin:"Easter 2024",type:"K"},
+  {name:"Xenoknife",rarity:"Godly",value:274,demand:2.9,rarity_score:4,origin:"Hallows 2025",type:"K"},
+  {name:"Xenoshot",rarity:"Godly",value:274,demand:2.7,rarity_score:2,origin:"Hallows 2025",type:"G"},
+  {name:"Watergun",rarity:"Godly",value:267,demand:4.5,rarity_score:3.1,origin:"Summer 2024",type:"G"},
+  {name:"Ocean",rarity:"Godly",value:253,demand:3,rarity_score:3.4,origin:"Summer 2023",type:"G"},
+  {name:"Waves",rarity:"Godly",value:246,demand:2.6,rarity_score:3.4,origin:"Summer 2023",type:"K"},
+  {name:"Treat",rarity:"Godly",value:233,demand:2.6,rarity_score:3,origin:"Valentine 2026",type:"G"},
+  {name:"Sweet",rarity:"Godly",value:226,demand:3,rarity_score:2.7,origin:"Valentine 2026",type:"K"},
+  {name:"Blizzard",rarity:"Godly",value:219,demand:2.6,rarity_score:3.2,origin:"Xmas 2025",type:"G"},
+  {name:"Snowstorm",rarity:"Godly",value:219,demand:3.2,rarity_score:3,origin:"Xmas 2025",type:"K"},
+  {name:"Bat",rarity:"Godly",value:171,demand:1,rarity_score:2,origin:"Hallows 2022",type:"K"},
+  {name:"Borealis",rarity:"Godly",value:144,demand:2,rarity_score:3.5,origin:"Xmas 2024",type:"G"},
+  {name:"Australis",rarity:"Godly",value:137,demand:1.7,rarity_score:3.4,origin:"Xmas 2024",type:"K"},
+  // Godly Tier 2
+  {name:"Candy",rarity:"Godly",value:116,demand:1,rarity_score:1.8,origin:"Xmas 2015",type:"K"},
+  {name:"Heartblade",rarity:"Godly",value:96,demand:1,rarity_score:2.2,origin:"February Offer",type:"K"},
+  {name:"Pearlshine",rarity:"Godly",value:82,demand:1.7,rarity_score:3,origin:"Summer 2024",type:"G"},
+  {name:"Pearl",rarity:"Godly",value:75,demand:2.2,rarity_score:3.4,origin:"Summer 2024",type:"K"},
+  {name:"Luger",rarity:"Godly",value:62,demand:1,rarity_score:1,origin:"Gun Box #1",type:"G"},
+  {name:"Red Luger",rarity:"Godly",value:57,demand:1,rarity_score:1.8,origin:"Xmas 2015",type:"G"},
+  {name:"Candleflame",rarity:"Godly",value:55,demand:1,rarity_score:1.5,origin:"Hallows 2021",type:"K"},
+  {name:"Darkbringer",rarity:"Godly",value:55,demand:1,rarity_score:2.1,origin:"Mystery Crate #2",type:"G"},
+  {name:"Elderwood Blade",rarity:"Godly",value:55,demand:1,rarity_score:2,origin:"Hallows 2022",type:"K"},
+  {name:"Elderwood Revolver",rarity:"Godly",value:55,demand:1,rarity_score:2.3,origin:"Hallows 2019",type:"G"},
+  {name:"Iceblaster",rarity:"Godly",value:55,demand:1,rarity_score:3,origin:"Xmas 2020",type:"G"},
+  {name:"Makeshift",rarity:"Godly",value:55,demand:1,rarity_score:2,origin:"Hallows 2022",type:"G"},
+  {name:"Phantom",rarity:"Godly",value:55,demand:1,rarity_score:2.1,origin:"Hallows 2022",type:"K"},
+  {name:"Spectre",rarity:"Godly",value:55,demand:1.4,rarity_score:2,origin:"Hallows 2022",type:"G"},
+  {name:"Sugar",rarity:"Godly",value:52,demand:1.5,rarity_score:1.9,origin:"Xmas 2015",type:"G"},
+  {name:"Lightbringer",rarity:"Godly",value:51,demand:1,rarity_score:1.7,origin:"Mystery Crate #2",type:"G"},
+  {name:"Ornament",rarity:"Godly",value:38,demand:1.1,rarity_score:2.3,origin:"Xmas 2025",type:"K"},
+  {name:"Green Luger",rarity:"Godly",value:34,demand:1.1,rarity_score:1.6,origin:"Xmas 2015",type:"G"},
+  {name:"Amerilaser",rarity:"Godly",value:31,demand:1.3,rarity_score:1.9,origin:"American Pack",type:"G"},
+  {name:"Hallowgun",rarity:"Godly",value:31,demand:1,rarity_score:2,origin:"Hallows 2020",type:"G"},
+  {name:"Laser",rarity:"Godly",value:31,demand:1,rarity_score:2.4,origin:"Gun Box #3",type:"G"},
+  {name:"Swirly Gun",rarity:"Godly",value:31,demand:1,rarity_score:2.5,origin:"Xmas 2021",type:"G"},
+  {name:"Icebeam",rarity:"Godly",value:27,demand:1,rarity_score:3,origin:"Xmas 2021",type:"G"},
+  {name:"Nightblade",rarity:"Godly",value:27,demand:1,rarity_score:2.5,origin:"Shadow Pack",type:"K"},
+  {name:"Shark",rarity:"Godly",value:27,demand:1.3,rarity_score:2,origin:"Gun Box #2",type:"G"},
+  // Godly Tier 1
+  {name:"Blaster",rarity:"Godly",value:25,demand:1.1,rarity_score:2,origin:"Futuristic Pack",type:"G"},
+  {name:"Iceflake",rarity:"Godly",value:25,demand:1.4,rarity_score:1.8,origin:"Xmas 2021",type:"K"},
+  {name:"Plasmabeam",rarity:"Godly",value:25,demand:1.1,rarity_score:2.1,origin:"Plasmabeam Pack",type:"G"},
+  {name:"Battleaxe II",rarity:"Godly",value:23,demand:1,rarity_score:1.7,origin:"Hallows 2018",type:"K"},
+  {name:"Ginger Luger",rarity:"Godly",value:23,demand:1.1,rarity_score:2.4,origin:"Xmas 2018",type:"G"},
+  {name:"Old Glory",rarity:"Godly",value:23,demand:1,rarity_score:2.2,origin:"American Pack",type:"K"},
+  {name:"Pixel",rarity:"Godly",value:23,demand:1,rarity_score:2,origin:"8-Bit Pack",type:"K"},
+  {name:"Plasmablade",rarity:"Godly",value:23,demand:1,rarity_score:1,origin:"Plasmablade Pack",type:"K"},
+  {name:"Slasher",rarity:"Godly",value:23,demand:1,rarity_score:2.2,origin:"Knife Box #4",type:"K"},
+  {name:"Cookiecane",rarity:"Godly",value:21,demand:1,rarity_score:1.6,origin:"Xmas 2022",type:"K"},
+  {name:"Eternalcane",rarity:"Godly",value:21,demand:1,rarity_score:1.8,origin:"MM2 Shop",type:"K"},
+  {name:"Gemstone",rarity:"Godly",value:21,demand:1,rarity_score:1.9,origin:"Mystery Box #1",type:"K"},
+  {name:"Gingerblade",rarity:"Godly",value:21,demand:1,rarity_score:2,origin:"Xmas 2018",type:"K"},
+  {name:"Gingermint",rarity:"Godly",value:21,demand:1,rarity_score:2.5,origin:"Xmas 2022",type:"G"},
+  {name:"Jinglegun",rarity:"Godly",value:21,demand:1,rarity_score:1.8,origin:"Xmas 2020",type:"G"},
+  {name:"Lugercane",rarity:"Godly",value:21,demand:1,rarity_score:2,origin:"Xmas 2019",type:"G"},
+  {name:"Minty",rarity:"Godly",value:21,demand:1,rarity_score:1.8,origin:"Xmas 2019",type:"G"},
+  {name:"Nebula",rarity:"Godly",value:21,demand:2,rarity_score:2.5,origin:"Nebula Pack",type:"K"},
+  {name:"Swirly Blade",rarity:"Godly",value:21,demand:1,rarity_score:1.9,origin:"Xmas 2021",type:"K"},
+  {name:"Vampire's Edge",rarity:"Godly",value:21,demand:1.2,rarity_score:1.8,origin:"Hallows 2020",type:"K"},
+  {name:"Virtual",rarity:"Godly",value:21,demand:1.1,rarity_score:2,origin:"Futuristic Pack",type:"K"},
+  {name:"Deathshard",rarity:"Godly",value:18,demand:1,rarity_score:2.4,origin:"Knife Box #1",type:"K"},
+  {name:"Battleaxe",rarity:"Godly",value:16,demand:1,rarity_score:2,origin:"Hallows 2017",type:"K"},
+  {name:"Bioblade",rarity:"Godly",value:14,demand:1.2,rarity_score:2,origin:"Bioblade Pack",type:"K"},
+  {name:"Chill",rarity:"Godly",value:14,demand:1.1,rarity_score:1.7,origin:"Xmas 2015",type:"K"},
+  {name:"Clockwork",rarity:"Godly",value:14,demand:1.4,rarity_score:2,origin:"Steampunk Pack",type:"K"},
+  {name:"Eternal III",rarity:"Godly",value:14,demand:1,rarity_score:2.3,origin:"MM2 Shop",type:"K"},
+  {name:"Eternal IV",rarity:"Godly",value:14,demand:1,rarity_score:1.6,origin:"MM2 Shop",type:"K"},
+  {name:"Fang",rarity:"Godly",value:14,demand:1,rarity_score:2.5,origin:"Knife Box #2",type:"K"},
+  {name:"Frostsaber",rarity:"Godly",value:14,demand:1,rarity_score:3,origin:"Xmas 2017",type:"K"},
+  {name:"Heat",rarity:"Godly",value:14,demand:1,rarity_score:2.1,origin:"Rainbow Box",type:"K"},
+  {name:"Spider",rarity:"Godly",value:14,demand:1,rarity_score:2.4,origin:"Hallows 2015",type:"K"},
+  {name:"Tides",rarity:"Godly",value:14,demand:1,rarity_score:1.8,origin:"Knife Box #5",type:"K"},
+  // Tier 0
+  {name:"Eternal",rarity:"Godly",value:11,demand:1,rarity_score:2,origin:"MM2 Shop",type:"K"},
+  {name:"Eternal II",rarity:"Godly",value:11,demand:1,rarity_score:2,origin:"MM2 Shop",type:"K"},
+  {name:"Hallow's Blade",rarity:"Godly",value:11,demand:1,rarity_score:2.4,origin:"Hallows 2017",type:"K"},
+  {name:"Hallow's Edge",rarity:"Godly",value:11,demand:1,rarity_score:2.3,origin:"Hallows 2016",type:"K"},
+  {name:"Handsaw",rarity:"Godly",value:11,demand:1,rarity_score:2,origin:"Xmas 2015",type:"K"},
+  {name:"Xmas",rarity:"Godly",value:11,demand:1,rarity_score:2,origin:"Xmas 2015",type:"K"},
+  {name:"Boneblade",rarity:"Godly",value:10,demand:1,rarity_score:1.8,origin:"Hallows 2018",type:"K"},
+  {name:"Frostbite",rarity:"Godly",value:10,demand:1,rarity_score:2.2,origin:"Xmas 2019",type:"K"},
+  {name:"Ghostblade",rarity:"Godly",value:10,demand:1,rarity_score:2.4,origin:"Hallows 2019",type:"K"},
+  {name:"Ice Dragon",rarity:"Godly",value:10,demand:1,rarity_score:2.3,origin:"Xmas 2016",type:"K"},
+  {name:"Ice Shard",rarity:"Godly",value:10,demand:1,rarity_score:1.5,origin:"Xmas 2017",type:"K"},
+  {name:"Prismatic",rarity:"Godly",value:10,demand:1,rarity_score:2.1,origin:"Prismatic Pack",type:"K"},
+  {name:"Pumpking",rarity:"Godly",value:10,demand:1.4,rarity_score:1.7,origin:"Hallows 2017",type:"K"},
+  {name:"Saw",rarity:"Godly",value:10,demand:1.1,rarity_score:1.9,origin:"Knife Box #3",type:"K"},
+  {name:"Eggblade",rarity:"Godly",value:7,demand:1,rarity_score:2.1,origin:"April Offer",type:"K"},
+  {name:"Flames",rarity:"Godly",value:7,demand:1.1,rarity_score:3,origin:"MM2 Classic",type:"K"},
+  {name:"Snowflake",rarity:"Godly",value:7,demand:1,rarity_score:2.5,origin:"Xmas 2017",type:"K"},
+  {name:"Winter's Edge",rarity:"Godly",value:7,demand:1,rarity_score:3,origin:"Xmas 2017",type:"K"},
+  {name:"Peppermint",rarity:"Godly",value:5,demand:1,rarity_score:2.3,origin:"Xmas 2020",type:"K"},
+  {name:"Cookieblade",rarity:"Godly",value:4,demand:1.3,rarity_score:1.6,origin:"Xmas 2020",type:"K"},
+  {name:"Blue Seer",rarity:"Godly",value:4,demand:1,rarity_score:1.2,origin:"Season 1",type:"K"},
+  {name:"Purple Seer",rarity:"Godly",value:4,demand:1,rarity_score:1,origin:"Season 1",type:"K"},
+  {name:"Red Seer",rarity:"Godly",value:4,demand:1,rarity_score:1,origin:"Season 1",type:"K"},
+  {name:"Seer",rarity:"Godly",value:4,demand:1,rarity_score:1,origin:"Crafting",type:"K"},
+  {name:"Orange Seer",rarity:"Godly",value:3,demand:1.4,rarity_score:1,origin:"Season 1",type:"K"},
+  {name:"Yellow Seer",rarity:"Godly",value:3,demand:1,rarity_score:1,origin:"Season 1",type:"K"},
+];
+
+var RARITY_COLORS={
+  "Ancient":"#9b59b6","Chroma":"#e67e22","Godly":"#e74c3c",
+  "Vintage":"#a07860","Legendary":"#f1c40f","Rare":"#2980b9",
+  "Uncommon":"#5dade2","Common":"#7f8c8d","Unique":"#888"
+};
+
+function loadValues(){
+  ALL_VALUES=EMBEDDED_VALUES;
+  ALL_VALUES.forEach(function(v){VALUES_DATA[v.name]=v.value;});
+  upStats();
+  renderValues();
+}
+
+function valFilter(btn,filter){
+  document.querySelectorAll(".val-filter-btn").forEach(function(b){b.classList.remove("active");});
+  btn.classList.add("active");
+  valCurrentFilter=filter;
+  renderValues();
+}
+
+function setSort(s,btn){
+  valCurrentSort=s;
+  document.querySelectorAll(".val-sort-btn").forEach(function(b){b.classList.remove("active");});
+  btn.classList.add("active");
+  renderValues();
+}
+
+function isOwned(name){
+  return Object.keys(owned).some(function(k){return k.split("|")[1]===name&&owned[k];});
+}
+
+function renderValues(){
+  var search=(document.getElementById("valSearch")||{}).value||"";
+  search=search.toLowerCase();
+  var data=ALL_VALUES.filter(function(v){
+    var matchFilter=valCurrentFilter==="all"||v.rarity===valCurrentFilter||(valCurrentFilter==="owned"&&isOwned(v.name));
+    var matchSearch=!search||v.name.toLowerCase().indexOf(search)>=0;
+    return matchFilter&&matchSearch;
+  });
+
+  // Sort
+  if(valCurrentSort==="value") data.sort(function(a,b){return b.value-a.value;});
+  else if(valCurrentSort==="name") data.sort(function(a,b){return a.name.localeCompare(b.name);});
+  else if(valCurrentSort==="demand") data.sort(function(a,b){return b.demand-a.demand;});
+
+  document.getElementById("valCount").textContent=data.length+" armes";
+
+  if(!data.length){
+    document.getElementById("valContent").innerHTML='<div class="val-loading" style="animation:none">Aucun résultat.</div>';
+    return;
+  }
+
+  // Group by value tier
+  var tiers=[
+    {label:"TIER 3 — Ultra haute valeur (1 000+ Seers)",items:data.filter(function(v){return v.value>=1000;})},
+    {label:"TIER 2 — Haute valeur (100–999 Seers)",items:data.filter(function(v){return v.value>=100&&v.value<1000;})},
+    {label:"TIER 1 — Valeur moyenne (10–99 Seers)",items:data.filter(function(v){return v.value>=10&&v.value<100;})},
+    {label:"TIER 0 — Faible valeur (< 10 Seers)",items:data.filter(function(v){return v.value<10;})},
+  ];
+
+  var globalRank=0;
+  var html='<div class="val-table-wrap">';
+  html+='<div class="val-table-head"><div>Rang</div><div>Arme</div><div>Rareté</div><div class="val-head-rarity">Type</div><div>Valeur</div><div>Demande</div></div>';
+
+  tiers.forEach(function(tier){
+    if(!tier.items.length)return;
+    html+='<div class="val-tier-header">'+tier.label+' <span style="color:var(--muted);font-family:var(--font-body);font-weight:400;font-size:11px;letter-spacing:0">('+tier.items.length+')</span></div>';
+    tier.items.forEach(function(v){
+      globalRank++;
+      var own=isOwned(v.name);
+      var slug=imgSlug(v.name);
+      var dots="";
+      for(var i=1;i<=10;i++) dots+='<div class="val-dot'+(i<=Math.round(v.demand)?" on":"")+'"></div>';
+      var rColor=RARITY_COLORS[v.rarity]||"#7f8c8d";
+      html+='<div class="val-row'+(own?" owned-row":"")+'">'+
+        '<div class="val-rank">'+(own?'<span style="color:#8dc63f">✓</span>':globalRank)+'</div>'+
+        '<div class="val-item-cell">'+
+          '<img class="val-item-img" src="https://mm2checker.com/images/godlies/'+slug+'.png" onerror="this.src=\'https://mm2checker.com/images/legendaries/'+slug+'.png\'" alt="'+v.name+'">'+
+          '<div>'+
+            '<div class="val-item-name">'+v.name+'</div>'+
+            '<div class="val-item-origin">'+v.origin+'</div>'+
+          '</div>'+
+        '</div>'+
+        '<div><span class="val-rarity-badge" style="background:'+rColor+'22;color:'+rColor+';border:1px solid '+rColor+'44">'+v.rarity+'</span></div>'+
+        '<div class="val-type-cell">'+(v.type==="K"?"🔪 Couteau":"🔫 Flingue")+'</div>'+
+        '<div class="val-value-cell">'+v.value.toLocaleString()+' <span class="val-seers">Seers</span></div>'+
+        '<div class="val-demand-cell">'+dots+'</div>'+
+      '</div>';
+    });
+  });
+  html+='</div>';
+  document.getElementById("valContent").innerHTML=html;
+}
+
+// ═══════════════════════════════════════
+// TRADING PAGE
+// ═══════════════════════════════════════
+var offerItems=[];
+var receiveItems=[];
+var robloxConnectedUsername=null;
+
+function buildTrading(){
+  renderSlots("offer");renderSlots("receive");
+  var grid=document.getElementById("myInvGrid");
+  if(!grid)return;
+  grid.innerHTML="";
+  var myItems=[];
+  S.forEach(function(s){
+    s.w.forEach(function(w){
+      if(owned[wkey(s.id,w.n)]){
+        myItems.push({name:w.n,type:w.t,rarity:s.label,value:VALUES_DATA[w.n]||0});
+      }
+    });
+  });
+  myItems.sort(function(a,b){return b.value-a.value;});
+  if(!myItems.length){
+    grid.innerHTML='<div style="color:var(--dimmed);font-size:12px;padding:16px">Coche des armes dans ta collection pour les voir ici.</div>';
+    return;
+  }
+  myItems.forEach(function(item){
+    var d=document.createElement("div");
+    d.className="inv-item";
+    var slug=imgSlug(item.name);
+    d.innerHTML='<img src="https://mm2checker.com/images/godlies/'+slug+'.png" onerror="this.src=\'https://mm2checker.com/images/legendaries/'+slug+'.png\'" style="width:50px;height:50px;object-fit:contain"><div class="inv-item-name">'+item.name+'</div>'+
+      (item.value?'<div style="font-size:10px;color:var(--gold2)">'+item.value+' S</div>':'');
+    d.onclick=function(){
+      var side=document.getElementById("tradeInvSideSelect").value||"offer";
+      addToSlot(item,side);
+    };
+    grid.appendChild(d);
+  });
+}
+
+function addToSlot(item,side){
+  var arr=side==="offer"?offerItems:receiveItems;
+  if(arr.length>=4){notify("Max 4 armes par côté !","err");return;}
+  arr.push(item);
+  renderSlots(side);
+  updateTradeValues();
+}
+
+function renderSlots(side){
+  var slots=document.getElementById(side+"Slots");
+  if(!slots)return;
+  var items=side==="offer"?offerItems:receiveItems;
+  slots.innerHTML="";
+  for(var i=0;i<4;i++){
+    var d=document.createElement("div");
+    d.className="trade-slot"+(items[i]?" filled":"");
+    if(items[i]){
+      var slug=imgSlug(items[i].name);
+      var idx=i;var sideCopy=side;
+      d.innerHTML='<img class="trade-slot-img" src="https://mm2checker.com/images/godlies/'+slug+'.png" onerror="this.style.display=\'none\'">'+
+        '<div class="trade-slot-name">'+items[i].name+'</div>';
+      var rm=document.createElement("button");
+      rm.className="trade-slot-remove";rm.textContent="✕";
+      rm.onclick=(function(s,i){return function(e){e.stopPropagation();if(s==="offer")offerItems.splice(i,1);else receiveItems.splice(i,1);renderSlots(s);updateTradeValues();};})(sideCopy,idx);
+      d.appendChild(rm);
+    } else {
+      d.innerHTML='<span style="font-size:24px;opacity:.3">+</span><span>Ajouter</span>';
+    }
+    slots.appendChild(d);
+  }
+}
+
+function updateTradeValues(){
+  var ov=offerItems.reduce(function(a,i){return a+(i.value||0);},0);
+  var rv=receiveItems.reduce(function(a,i){return a+(i.value||0);},0);
+  document.getElementById("offerVal").textContent=ov.toLocaleString();
+  document.getElementById("receiveVal").textContent=rv.toLocaleString();
+  var el=document.getElementById("tradeStatus");
+  if(ov===0&&rv===0){
+    el.querySelector(".trade-status-icon").textContent="🎮";
+    el.querySelector(".trade-status-text").textContent="CONFIGURE TON TRADE";
+    el.querySelector(".trade-status-sub").textContent="Ajoute des armes des deux côtés pour analyser la valeur";
+    return;
+  }
+  var diff=rv-ov;var pct=ov?Math.round(diff/ov*100):0;
+  var icon=diff>0?"📈":diff<0?"📉":"⚖️";
+  var txt=diff>0?"PROFIT (+"+diff.toLocaleString()+" Seers)":diff<0?"DÉFICIT ("+diff.toLocaleString()+" Seers)":"TRADE ÉQUILIBRÉ";
+  el.querySelector(".trade-status-icon").textContent=icon;
+  el.querySelector(".trade-status-text").textContent=txt;
+  el.querySelector(".trade-status-sub").textContent=pct!==0?Math.abs(pct)+"% "+(pct>0?"de profit":"de perte")+" par rapport à ce que tu donnes.":"Les deux côtés valent la même chose.";
+}
+
+function simulateTrade(){
+  var top=ALL_VALUES.filter(function(v){return v.value>50;}).slice(0,4);
+  receiveItems=top.map(function(v){return{name:v.name,type:v.type,value:v.value};});
+  renderSlots("receive");updateTradeValues();
+}
+function clearTrade(){
+  offerItems=[];receiveItems=[];
+  renderSlots("offer");renderSlots("receive");updateTradeValues();
+}
+
+// Roblox Connect
+function connectRoblox(){
+  var username=document.getElementById("robloxUsernameInput").value.trim();
+  if(!username){notify("Entre un pseudo Roblox valide.","err");return;}
+  robloxConnectedUsername=username;
+  document.getElementById("robloxConnectPanel").style.display="none";
+  document.getElementById("botInfoPanel").style.display="flex";
+  document.getElementById("robloxConnectedUser").textContent=username;
+  // Save to user profile
+  if(currentUser){
+    currentUser.robloxUser=username;
+    var users=getUsers();
+    var key=Object.keys(users).find(function(k){return users[k].username===currentUser.username;});
+    if(key){users[key].robloxUser=username;saveUsers(users);}
+    saveSession(currentUser);
+  }
+  notify("🎮 Roblox connecté : "+username,"ok");
+}
+
+function disconnectRoblox(){
+  robloxConnectedUsername=null;
+  if(currentUser){
+    currentUser.robloxUser=null;
+    var users=getUsers();
+    var key=Object.keys(users).find(function(k){return users[k].username===currentUser.username;});
+    if(key){users[key].robloxUser=null;saveUsers(users);}
+    saveSession(currentUser);
+  }
+  document.getElementById("botInfoPanel").style.display="none";
+  document.getElementById("robloxConnectPanel").style.display="block";
+  document.getElementById("robloxUsernameInput").value="";
+  notify("Roblox déconnecté.","ok");
+}
+
+// ═══════════════════════════════════════
+// NAVIGATION
+// ═══════════════════════════════════════
+function goPage(id){
+  document.querySelectorAll(".page").forEach(function(p){p.classList.remove("active");});
+  document.querySelectorAll(".nav-btn").forEach(function(b){b.classList.remove("active");});
+  document.getElementById("page"+id.charAt(0).toUpperCase()+id.slice(1)).classList.add("active");
+  var btns=document.querySelectorAll(".nav-btn");
+  var map={collection:0,values:1,trading:2};
+  if(btns[map[id]])btns[map[id]].classList.add("active");
+  if(id==="trading")buildTrading();
+}
+
+// ═══════════════════════════════════════
+// NOTIFICATIONS
+// ═══════════════════════════════════════
+var _notifTimer=null;
+function notify(msg,type){
+  var el=document.getElementById("notif");
+  el.textContent=msg;
+  el.className="notif show "+(type||"ok");
+  clearTimeout(_notifTimer);
+  _notifTimer=setTimeout(function(){el.classList.remove("show");},3000);
+}
+
+// ═══════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════
+(function init(){
+  // Handle OAuth redirect first (Google/Discord callback)
+  if(window.__pendingOAuthUser){
+    handleOAuthUser(window.__pendingOAuthUser);
+    return;
+  }
+  if(window.__pendingAuthError){
+    var errEl=document.getElementById("authError");
+    if(errEl){errEl.textContent=window.__pendingAuthError;errEl.style.display="block";}
+    return;
+  }
+  var sess=getSession();
+  if(sess){loginSuccess(sess);}
+})();
+</script>
+</body>
+</html>

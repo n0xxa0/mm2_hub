@@ -254,10 +254,9 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         <svg width="14" height="14" viewBox="0 0 100 100" fill="#06d6a0"><rect x="20" y="20" width="60" height="60" rx="8"/></svg>
         Continuer avec Roblox
       </div>
-      <div style="display:flex;gap:8px">
-        <input id="robloxLoginInput" class="auth-input" placeholder="Ton pseudo Roblox..." style="margin-bottom:0;flex:1" type="text" onkeydown="if(event.key==='Enter')loginWithRoblox()">
-        <button id="robloxLoginBtn" class="auth-btn roblox" style="width:auto;padding:0 16px;margin-bottom:0;white-space:nowrap" onclick="loginWithRoblox()">🎮 Connecter</button>
-      </div>
+      <button class="auth-btn roblox" onclick="loginWithRoblox()" style="margin-top:4px">
+        🎮 Continuer avec Roblox
+      </button>
     </div>
   </div>
 </div>
@@ -961,26 +960,8 @@ function loginWithDiscord(){
   window.location.href="/api/auth/discord";
 }
 
-// ── Connexion Roblox — valide le pseudo via l'API serverless ──
-async function loginWithRoblox(){
-  var username=document.getElementById("robloxLoginInput").value.trim();
-  if(!username){showErr("Entre ton pseudo Roblox.");return;}
-  var btn=document.getElementById("robloxLoginBtn");
-  btn.disabled=true;btn.textContent="Vérification...";
-  try{
-    var res=await fetch("/api/auth/roblox",{
-      method:"POST",
-      headers:{"Content-Type":"application/json"},
-      body:JSON.stringify({username:username})
-    });
-    var data=await res.json();
-    if(!res.ok){showErr(data.error||"Erreur Roblox");return;}
-    handleOAuthUser(data);
-  }catch(e){
-    showErr("Impossible de joindre le serveur.");
-  }finally{
-    btn.disabled=false;btn.textContent="🎮 Connecter";
-  }
+function loginWithRoblox(){
+  window.location.href="/api/auth/roblox";
 }
 
 // ── Traitement commun pour un profil OAuth ──

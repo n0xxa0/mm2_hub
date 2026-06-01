@@ -52,29 +52,14 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 #app{display:none;position:relative;z-index:1}
 
 /* TOPBAR */
-.topbar{position:sticky;top:0;z-index:100;background:rgba(7,8,15,.92);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:0 20px;display:flex;align-items:center;gap:0;height:60px}
-.topbar-logo{font-family:var(--font-head);font-size:16px;font-weight:900;letter-spacing:3px;background:linear-gradient(135deg,var(--red),var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-right:20px;white-space:nowrap;flex-shrink:0}
-
-/* ── NAV DROPDOWN ── */
-.nav-dropdown{position:relative;flex-shrink:0}
-.nav-dropdown-trigger{display:flex;align-items:center;gap:8px;background:var(--surface2);border:1px solid var(--border2);border-radius:8px;padding:8px 14px;cursor:pointer;transition:all .2s;user-select:none;min-width:180px}
-.nav-dropdown-trigger:hover{border-color:var(--muted)}
-.nav-active-label{font-family:var(--font-body);font-size:13px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--text);flex:1}
-.nav-active-icon{font-size:15px;margin-right:4px}
-.nav-chevron{width:16px;height:16px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;flex-shrink:0;transition:transform .25s}
-.nav-chevron svg{transition:transform .25s}
-.nav-dropdown.open .nav-chevron svg{transform:rotate(180deg)}
-.nav-dropdown.open .nav-dropdown-trigger{border-color:var(--red);box-shadow:0 0 0 1px var(--red)33}
-.nav-menu{position:absolute;top:calc(100% + 8px);left:0;background:var(--surface);border:1px solid var(--border2);border-radius:10px;padding:6px;min-width:200px;box-shadow:0 16px 40px rgba(0,0,0,.6);opacity:0;pointer-events:none;transform:translateY(-6px);transition:opacity .2s,transform .2s;z-index:200}
-.nav-dropdown.open .nav-menu{opacity:1;pointer-events:auto;transform:translateY(0)}
-.nav-item{display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:7px;cursor:pointer;transition:background .15s;color:var(--muted);font-family:var(--font-body);font-size:13px;font-weight:600;letter-spacing:1px;text-transform:uppercase}
-.nav-item:hover{background:var(--surface2);color:var(--text)}
-.nav-item.active{background:rgba(230,57,70,.12);color:var(--red2)}
-.nav-item-icon{font-size:16px;width:20px;text-align:center;flex-shrink:0}
-.nav-item-dot{width:6px;height:6px;border-radius:50%;background:var(--red);margin-left:auto;opacity:0;transition:opacity .15s}
-.nav-item.active .nav-item-dot{opacity:1}
-
-.topbar-user{margin-left:auto;display:flex;align-items:center;gap:12px;flex-shrink:0}
+.topbar{position:sticky;top:0;z-index:100;background:rgba(7,8,15,.85);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:0 32px;display:flex;align-items:center;gap:0;height:60px}
+.topbar-logo{font-family:var(--font-head);font-size:16px;font-weight:900;letter-spacing:3px;background:linear-gradient(135deg,var(--red),var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-right:40px;white-space:nowrap}
+.nav{display:flex;gap:0;flex:1}
+.nav-btn{background:none;border:none;color:var(--muted);font-family:var(--font-body);font-size:14px;font-weight:600;letter-spacing:1px;text-transform:uppercase;padding:0 20px;height:60px;cursor:pointer;position:relative;transition:color .2s}
+.nav-btn::after{content:'';position:absolute;bottom:0;left:20px;right:20px;height:2px;background:var(--red);transform:scaleX(0);transition:transform .2s}
+.nav-btn.active,.nav-btn:hover{color:var(--text)}
+.nav-btn.active::after{transform:scaleX(1)}
+.topbar-user{margin-left:auto;display:flex;align-items:center;gap:12px}
 .user-avatar{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--red),var(--purple));display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;font-family:var(--font-head)}
 .user-name{font-size:13px;font-weight:600;color:var(--text)}
 .user-provider{font-size:10px;color:var(--cyan);letter-spacing:1px}
@@ -120,43 +105,39 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 .hidden{display:none!important}
 .nores{padding:48px;text-align:center;color:var(--dimmed)}
 
-/* ══ VALUES PAGE — style SupremeValues cards ══ */
-.val-filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px;align-items:center}
+/* ══ VALUES PAGE — style SupremeValues ══ */
+.val-filters{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:24px;align-items:center}
 .val-filter-btn{background:var(--surface2);border:1px solid var(--border2);border-radius:20px;color:var(--muted);padding:7px 16px;font-size:12px;font-weight:600;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:all .2s}
 .val-filter-btn.active{background:var(--red);border-color:var(--red);color:#fff;box-shadow:var(--glow-red)}
-.val-sort-bar{display:flex;gap:8px;align-items:center;margin-bottom:16px;flex-wrap:wrap}
+.val-sort-bar{display:flex;gap:8px;align-items:center;margin-bottom:18px;flex-wrap:wrap}
 .val-sort-btn{background:none;border:1px solid var(--border);border-radius:6px;color:var(--dimmed);padding:5px 12px;font-size:11px;font-family:var(--font-body);font-weight:600;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:all .2s}
 .val-sort-btn.active{border-color:var(--gold);color:var(--gold)}
-/* Tier block header */
-.val-tier-block{margin-bottom:12px}
-.val-tier-block-hdr{display:flex;align-items:center;gap:10px;padding:8px 14px;background:var(--surface2);border:1px solid var(--border);border-radius:8px 8px 0 0;cursor:pointer;user-select:none;transition:background .15s}
-.val-tier-block-hdr:hover{background:var(--surface3)}
-.val-tier-block-hdr.collapsed{border-radius:8px}
-.val-tier-lbl{font-family:var(--font-head);font-size:11px;font-weight:700;letter-spacing:2px;color:var(--gold);flex:1}
-.val-tier-cnt{font-size:11px;color:var(--dimmed)}
-.val-tier-arr{font-size:10px;color:var(--dimmed);transition:transform .2s}
-.val-tier-arr.open{transform:rotate(90deg)}
-/* Supreme-style card grid */
-.val-card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:0;background:var(--surface);border:1px solid var(--border);border-top:none;border-radius:0 0 8px 8px;overflow:hidden}
-.val-card{display:flex;flex-direction:row;align-items:center;gap:0;border-bottom:1px solid var(--border);border-right:1px solid var(--border);padding:8px 10px;transition:background .15s;cursor:default;position:relative;overflow:hidden;min-height:80px}
-.val-card:hover{background:var(--surface2)}
-.val-card.owned-card{background:rgba(40,80,20,.12)}
-.val-card.owned-card:hover{background:rgba(40,80,20,.2)}
-.val-card-img-wrap{width:68px;min-width:68px;height:68px;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.3);border-radius:6px;position:relative;flex-shrink:0;margin-right:8px}
-.val-card-img{width:56px;height:56px;object-fit:contain;filter:drop-shadow(0 2px 6px rgba(0,0,0,.5))}
-.val-owned-mark{position:absolute;top:3px;right:3px;width:14px;height:14px;background:#2d5a1b;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:8px;color:#8dc63f;font-weight:700}
-.val-card-info{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
-.val-card-name{font-size:11px;font-weight:700;color:var(--text);line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.val-card-origin{font-size:9px;color:var(--dimmed);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.val-card-rarity{display:inline-block;padding:2px 6px;border-radius:3px;font-size:9px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;margin-bottom:2px}
-.val-card-bottom{display:flex;align-items:center;justify-content:space-between;gap:4px;margin-top:2px}
-.val-card-value{font-family:var(--font-head);font-size:13px;font-weight:700;color:var(--gold2);white-space:nowrap}
-.val-card-seers{font-size:9px;color:var(--muted);font-family:var(--font-body)}
-.val-card-demand{display:flex;gap:1px;align-items:center}
-.val-dot{width:6px;height:6px;border-radius:50%;background:var(--border2);flex-shrink:0}
+/* Supreme-style table */
+.val-table-wrap{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden}
+.val-table-head{display:grid;grid-template-columns:50px 2fr 1fr 1fr 100px 1fr;gap:0;padding:10px 16px;background:var(--surface2);border-bottom:1px solid var(--border);font-size:10px;font-weight:700;color:var(--muted);letter-spacing:2px;text-transform:uppercase}
+.val-row{display:grid;grid-template-columns:50px 2fr 1fr 1fr 100px 1fr;gap:0;padding:10px 16px;border-bottom:1px solid var(--border);align-items:center;transition:background .15s;cursor:default}
+.val-row:last-child{border-bottom:none}
+.val-row:hover{background:var(--surface2)}
+.val-row.owned-row{background:rgba(45,90,27,.1)}
+.val-row.owned-row:hover{background:rgba(45,90,27,.18)}
+.val-rank{font-family:var(--font-head);font-size:11px;color:var(--dimmed);text-align:center}
+.val-item-cell{display:flex;align-items:center;gap:10px}
+.val-item-img{width:38px;height:38px;object-fit:contain;flex-shrink:0;filter:drop-shadow(0 1px 4px rgba(0,0,0,.5))}
+.val-item-name{font-size:13px;font-weight:700;color:var(--text)}
+.val-item-origin{font-size:10px;color:var(--dimmed)}
+.val-owned-badge{font-size:9px;background:#2d5a1b;color:#8dc63f;border-radius:3px;padding:1px 5px;font-weight:700;letter-spacing:1px}
+.val-rarity-badge{padding:3px 8px;border-radius:4px;font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase}
+.val-value-cell{font-family:var(--font-head);font-size:14px;font-weight:700;color:var(--gold2)}
+.val-seers{font-size:10px;color:var(--muted);font-family:var(--font-body);font-weight:400}
+.val-demand-cell{display:flex;gap:2px;align-items:center}
+.val-dot{width:8px;height:8px;border-radius:50%;background:var(--border2);flex-shrink:0}
 .val-dot.on{background:var(--gold)}
-.val-card-type{font-size:10px;color:var(--muted)}
+.val-type-cell{font-size:12px;color:var(--muted);display:flex;align-items:center;gap:4px}
 .val-loading{text-align:center;padding:60px;color:var(--muted);font-family:var(--font-head);font-size:14px;letter-spacing:2px}
+.val-loading::after{content:'';display:inline-block;width:20px;height:20px;border:2px solid var(--border2);border-top-color:var(--red);border-radius:50%;animation:spin .8s linear infinite;margin-left:12px;vertical-align:middle}
+@keyframes spin{to{transform:rotate(360deg)}}
+.val-tier-header{padding:10px 16px;background:var(--surface3);font-family:var(--font-head);font-size:11px;font-weight:700;letter-spacing:3px;color:var(--gold);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+.val-tier-header:first-child{border-top:none}
 .val-live-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(6,214,160,.1);border:1px solid rgba(6,214,160,.3);border-radius:20px;padding:4px 12px;font-size:11px;color:var(--cyan);margin-left:auto}
 .val-live-dot{width:7px;height:7px;border-radius:50%;background:var(--cyan);animation:pulse 2s infinite}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
@@ -212,40 +193,157 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 .notif.ok{border-color:var(--cyan);color:var(--cyan)}
 .notif.err{border-color:var(--red);color:var(--red2)}
 
+/* ══ NAV DROPDOWN ══ */
+.nav-dropdown{position:relative;flex-shrink:0}
+.nav-trigger{display:flex;align-items:center;gap:8px;background:var(--surface2);border:1px solid var(--border2);border-radius:8px;padding:8px 14px;cursor:pointer;transition:border-color .2s;user-select:none;min-width:170px}
+.nav-trigger:hover,.nav-dropdown.open .nav-trigger{border-color:var(--red)}
+.nav-icon{font-size:15px}
+.nav-label{font-family:var(--font-body);font-size:13px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--text);flex:1}
+.nav-arrow{transition:transform .22s;color:var(--muted);font-size:10px}
+.nav-dropdown.open .nav-arrow{transform:rotate(180deg)}
+.nav-menu{position:absolute;top:calc(100% + 6px);left:0;min-width:190px;background:var(--surface);border:1px solid var(--border2);border-radius:10px;padding:5px;box-shadow:0 20px 50px rgba(0,0,0,.7);opacity:0;pointer-events:none;transform:translateY(-8px);transition:opacity .2s,transform .2s;z-index:500}
+.nav-dropdown.open .nav-menu{opacity:1;pointer-events:auto;transform:translateY(0)}
+.nav-opt{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:7px;cursor:pointer;color:var(--muted);font-size:13px;font-weight:600;letter-spacing:.5px;text-transform:uppercase;transition:background .12s,color .12s}
+.nav-opt:hover{background:var(--surface2);color:var(--text)}
+.nav-opt.active{background:rgba(230,57,70,.12);color:var(--red2)}
+.nav-opt-dot{width:6px;height:6px;border-radius:50%;background:var(--red);margin-left:auto;opacity:0}
+.nav-opt.active .nav-opt-dot{opacity:1}
+
+/* ══ INVENTORY PAGE ══ */
+.inv-page-stats{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:18px}
+.inv-stat{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:12px 16px;text-align:center;min-width:100px;flex:1}
+.inv-stat-num{font-family:var(--font-head);font-size:22px;font-weight:700;color:var(--red2)}
+.inv-stat-lbl{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-top:3px}
+.inv-prog{display:flex;align-items:center;gap:10px;margin-bottom:18px}
+.inv-prog-bar{flex:1;height:5px;background:var(--surface3);border-radius:3px;overflow:hidden}
+.inv-prog-fill{height:100%;background:linear-gradient(90deg,var(--red),var(--gold));border-radius:3px;transition:width .4s}
+.inv-prog-pct{font-family:var(--font-head);font-size:13px;color:var(--gold);min-width:40px;text-align:right}
+.inv-controls{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;align-items:center}
+.inv-search{background:var(--surface2);border:1px solid var(--border2);border-radius:8px;color:var(--text);padding:9px 14px;font-family:var(--font-body);font-size:14px;outline:none;flex:1;min-width:160px}
+.inv-search:focus{border-color:var(--red)}
+.inv-search::placeholder{color:var(--dimmed)}
+.inv-sel{background:var(--surface2);border:1px solid var(--border2);border-radius:8px;color:var(--text);padding:9px 12px;font-family:var(--font-body);font-size:13px;outline:none;cursor:pointer}
+.inv-btn{background:var(--surface2);border:1px solid var(--border2);border-radius:8px;color:var(--muted);padding:9px 14px;font-size:13px;font-weight:600;cursor:pointer;transition:all .18s;white-space:nowrap}
+.inv-btn:hover{border-color:var(--text);color:var(--text)}
+.inv-btn.save{border-color:var(--cyan);color:var(--cyan)}
+.inv-btn.save:hover{background:rgba(6,214,160,.08)}
+.inv-btn.danger:hover{border-color:var(--red);color:var(--red)}
+/* Rarity section */
+.inv-sec{margin-bottom:12px;background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden}
+.inv-sec-hdr{display:flex;align-items:center;gap:10px;padding:11px 16px;cursor:pointer;user-select:none;transition:background .12s}
+.inv-sec-hdr:hover{background:var(--surface2)}
+.inv-sec-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+.inv-sec-name{font-family:var(--font-head);font-size:11px;font-weight:700;letter-spacing:2px;flex:1}
+.inv-sec-info{font-size:11px;color:var(--muted)}
+.inv-sec-arr{font-size:9px;color:var(--dimmed);transition:transform .2s}
+.inv-sec-arr.open{transform:rotate(90deg)}
+/* Weapon cards inside sections */
+.inv-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(88px,1fr));gap:5px;padding:8px}
+.inv-card{background:var(--surface2);border:1px solid var(--border);border-radius:7px;padding:6px 4px 5px;text-align:center;cursor:pointer;transition:border-color .12s,background .12s;position:relative;user-select:none}
+.inv-card:hover{border-color:var(--muted)}
+.inv-card.owned{border-color:#5a9e2a;background:rgba(45,90,27,.18)}
+.inv-card img{width:52px;height:52px;object-fit:contain;display:block;margin:0 auto 3px;filter:drop-shadow(0 1px 4px rgba(0,0,0,.5))}
+.inv-card-name{font-size:9px;color:var(--text);line-height:1.3;word-break:break-word}
+.inv-card-val{font-size:9px;color:var(--gold2);font-weight:700;margin-top:1px}
+.inv-card-check{position:absolute;top:4px;right:4px;width:14px;height:14px;background:#3a7a1a;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:8px;color:#90d050;font-weight:700;opacity:0;transition:opacity .12s}
+.inv-card.owned .inv-card-check{opacity:1}
+.inv-none{padding:32px;text-align:center;color:var(--dimmed);font-size:13px}
+
+/* ══ VALUES PAGE ══ */
+.val-controls{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;align-items:center}
+.val-search{background:var(--surface2);border:1px solid var(--border2);border-radius:8px;color:var(--text);padding:9px 14px;font-family:var(--font-body);font-size:14px;outline:none;flex:1;min-width:180px}
+.val-search:focus{border-color:var(--red)}
+.val-search::placeholder{color:var(--dimmed)}
+.val-sel{background:var(--surface2);border:1px solid var(--border2);border-radius:8px;color:var(--text);padding:9px 12px;font-family:var(--font-body);font-size:13px;outline:none;cursor:pointer}
+.val-count{font-size:12px;color:var(--dimmed);margin-left:auto;white-space:nowrap}
+/* Tier blocks */
+.val-tier{margin-bottom:12px}
+.val-tier-hdr{display:flex;align-items:center;gap:10px;padding:9px 14px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;cursor:pointer;user-select:none;transition:background .12s}
+.val-tier-hdr:hover{background:var(--surface3)}
+.val-tier-hdr.collapsed{border-radius:8px}
+.val-tier-name{font-family:var(--font-head);font-size:11px;font-weight:700;letter-spacing:2px;color:var(--gold)}
+.val-tier-sub{font-size:11px;color:var(--muted);font-family:var(--font-body)}
+.val-tier-cnt{font-size:11px;color:var(--dimmed);margin-left:auto}
+.val-tier-arr{font-size:9px;color:var(--dimmed);transition:transform .2s;margin-left:6px}
+.val-tier-arr.open{transform:rotate(90deg)}
+/* Card grid */
+.val-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:0;background:var(--surface);border:1px solid var(--border);border-top:none;border-radius:0 0 8px 8px;overflow:hidden}
+.val-card{display:flex;align-items:center;gap:8px;padding:9px 10px;border-bottom:1px solid var(--border);border-right:1px solid var(--border);transition:background .12s;min-height:76px;position:relative}
+.val-card:hover{background:var(--surface2)}
+.val-card.is-owned{background:rgba(35,70,15,.14)}
+.val-card.is-owned:hover{background:rgba(35,70,15,.22)}
+.val-img-box{width:60px;min-width:60px;height:60px;background:rgba(0,0,0,.3);border-radius:6px;display:flex;align-items:center;justify-content:center;position:relative;flex-shrink:0}
+.val-img-box img{width:50px;height:50px;object-fit:contain;filter:drop-shadow(0 1px 5px rgba(0,0,0,.5))}
+.val-owned-dot{position:absolute;top:3px;right:3px;width:13px;height:13px;background:#2a5a10;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:7px;color:#7de020;font-weight:700}
+.val-info{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.val-rarity-pill{display:inline-block;padding:2px 6px;border-radius:3px;font-size:8px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;margin-bottom:1px;width:fit-content}
+.val-name{font-size:11px;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.val-origin{font-size:9px;color:var(--dimmed);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:2px}
+.val-bottom{display:flex;align-items:center;justify-content:space-between;gap:4px}
+.val-value{font-family:var(--font-head);font-size:13px;font-weight:700;color:var(--gold2)}
+.val-seers{font-size:8px;color:var(--muted)}
+.val-dots{display:flex;gap:1px}
+.val-dot{width:6px;height:6px;border-radius:50%;background:var(--border2)}
+.val-dot.on{background:var(--gold)}
+.val-no-val{font-size:10px;color:var(--dimmed);font-style:italic}
+.val-loading{text-align:center;padding:50px;color:var(--muted);font-family:var(--font-head);font-size:13px;letter-spacing:2px}
+
+/* ══ TRADING PAGE ══ */
+.trade-layout{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
+.trade-panel{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:18px}
+.trade-panel-title{font-family:var(--font-head);font-size:12px;font-weight:700;letter-spacing:2px;color:var(--muted);text-transform:uppercase;margin-bottom:14px}
+.trade-slots{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-bottom:14px}
+.trade-slot{aspect-ratio:1;background:var(--surface2);border:1px dashed var(--border2);border-radius:8px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:pointer;transition:all .15s;font-size:10px;color:var(--dimmed);position:relative;overflow:hidden}
+.trade-slot:hover{border-color:var(--muted);color:var(--muted)}
+.trade-slot.filled{border-style:solid;border-color:var(--border2);background:var(--surface3)}
+.trade-slot img{width:48px;height:48px;object-fit:contain}
+.trade-slot-name{font-size:9px;text-align:center;color:var(--text);padding:0 3px;line-height:1.2}
+.trade-slot-rm{position:absolute;top:3px;right:3px;background:var(--red);border:none;border-radius:50%;width:15px;height:15px;color:#fff;font-size:8px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.trade-val-bar{display:flex;align-items:center;justify-content:space-between;padding:9px 12px;background:var(--surface2);border-radius:7px;font-size:13px}
+.trade-val-num{font-family:var(--font-head);font-size:15px;font-weight:700}
+.trade-status{text-align:center;padding:18px;background:var(--surface);border:1px solid var(--border);border-radius:10px;margin-bottom:16px}
+.trade-status-icon{font-size:32px;margin-bottom:6px}
+.trade-status-text{font-family:var(--font-head);font-size:12px;font-weight:700;letter-spacing:2px}
+.trade-status-sub{font-size:12px;color:var(--muted);margin-top:4px}
+.bot-info{background:linear-gradient(135deg,rgba(0,180,216,.08),rgba(123,45,139,.08));border:1px solid rgba(0,180,216,.25);border-radius:10px;padding:18px;margin-bottom:16px;display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+.bot-avatar{width:50px;height:50px;border-radius:50%;background:linear-gradient(135deg,#0077b6,#7b2d8b);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+.bot-name{font-family:var(--font-head);font-size:13px;font-weight:700;margin-bottom:3px}
+.bot-status{font-size:12px;color:var(--cyan);display:flex;align-items:center;gap:5px}
+.bot-status::before{content:'';display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--cyan);animation:pulse 2s infinite}
+.roblox-btn{display:inline-flex;align-items:center;gap:8px;background:linear-gradient(135deg,#00b4d8,#0077b6);border:none;border-radius:8px;color:#fff;padding:10px 18px;font-family:var(--font-head);font-size:12px;font-weight:700;letter-spacing:1px;cursor:pointer;transition:all .18s;text-decoration:none}
+.roblox-btn:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(0,180,216,.3)}
+.roblox-connect-panel{background:linear-gradient(135deg,rgba(0,180,216,.06),rgba(0,119,182,.06));border:1px solid rgba(0,180,216,.2);border-radius:10px;padding:20px;margin-bottom:16px}
+.roblox-username-input{background:var(--surface2);border:1px solid rgba(0,180,216,.3);border-radius:8px;color:var(--text);padding:10px 14px;font-family:var(--font-body);font-size:14px;outline:none;width:100%;margin-bottom:10px}
+.roblox-username-input:focus{border-color:var(--cyan)}
+.roblox-username-input::placeholder{color:var(--dimmed)}
+.roblox-connect-btn{background:linear-gradient(135deg,#00b4d8,#0077b6);border:none;border-radius:8px;color:#fff;padding:10px 18px;font-family:var(--font-head);font-size:11px;font-weight:700;letter-spacing:1px;cursor:pointer;transition:all .18s}
+/* Trade inventory */
+.trade-inv-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(80px,1fr));gap:5px}
+.trade-inv-item{background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:6px 3px;text-align:center;cursor:pointer;transition:all .12s;font-size:9px}
+.trade-inv-item:hover{border-color:var(--muted);background:var(--surface3)}
+.trade-inv-item.sel{border-color:var(--gold);background:rgba(244,162,97,.08)}
+.trade-inv-item img{width:46px;height:46px;object-fit:contain;display:block;margin:0 auto 2px}
+.trade-inv-item-name{color:var(--text);line-height:1.2;font-size:9px}
+.trade-inv-item-val{color:var(--gold2);font-weight:700;font-size:9px}
+/* Notif */
+.notif{position:fixed;bottom:20px;right:20px;background:var(--surface);border:1px solid var(--border2);border-radius:10px;padding:12px 16px;font-size:13px;z-index:9999;box-shadow:0 8px 30px rgba(0,0,0,.5);transform:translateX(120%);transition:transform .3s ease}
+.notif.show{transform:none}
+.notif.ok{border-color:var(--cyan);color:var(--cyan)}
+.notif.err{border-color:var(--red);color:var(--red2)}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+
 @media(max-width:768px){
-  .topbar{padding:0 12px}.page{padding:12px}
-  .nav-dropdown-trigger{min-width:140px}
-  .topbar-logo{font-size:13px;margin-right:10px}
+  .topbar{padding:0 12px}.page{padding:12px 14px}
+  .nav-trigger{min-width:140px;padding:7px 11px}
   .user-name,.user-provider{display:none}
-  .val-card-grid{grid-template-columns:repeat(auto-fill,minmax(170px,1fr))}
+  .trade-layout{grid-template-columns:1fr}
+  .val-grid{grid-template-columns:repeat(auto-fill,minmax(160px,1fr))}
 }
 @media(max-width:480px){
-  .topbar-logo{display:none}
-  .val-card-grid{grid-template-columns:1fr 1fr}
-  .val-card{flex-direction:column;align-items:flex-start;padding:8px;min-height:auto}
-  .val-card-img-wrap{width:100%;height:60px;border-radius:6px 6px 0 0;margin-right:0;margin-bottom:6px}
+  .inv-grid{grid-template-columns:repeat(auto-fill,minmax(76px,1fr))}
+  .val-grid{grid-template-columns:1fr 1fr}
+  .topbar-logo{font-size:13px}
 }
-
-/* ══ COLLECTION CARDS — style Supreme Value ══ */
-.wgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:8px;padding:8px;background:var(--bg)}
-.wi{display:flex;flex-direction:row;align-items:flex-start;gap:0;border-radius:8px;border:1px solid var(--border);background:var(--surface);cursor:pointer;transition:all .15s;overflow:hidden;position:relative;min-height:110px}
-.wi-img-wrap{width:100px;min-width:100px;height:110px;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.35);position:relative;flex-shrink:0}
-.wi-img{width:82px;height:82px;object-fit:contain;filter:drop-shadow(0 2px 8px rgba(0,0,0,.6))}
-.wi-check{position:absolute;top:5px;right:5px;width:18px;height:18px;background:#639922;border-radius:50%;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .15s;font-size:10px;color:#fff;font-weight:700}
-.wi-info{flex:1;padding:8px 10px;display:flex;flex-direction:column;gap:2px;overflow:hidden}
-.wi-header{display:flex;align-items:center;gap:6px;margin-bottom:2px}
-.wi-name{font-size:12px;font-weight:700;color:var(--text);line-height:1.2;text-decoration:underline;text-underline-offset:2px;flex:1}
-.wi-type-icon{font-size:12px;flex-shrink:0}
-.wi-stat{font-size:10px;color:var(--muted);line-height:1.5;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.wi-stat span.lbl{color:var(--dimmed)}
-.wi-stat span.val-num{color:#e8d87a;font-weight:700}
-.wi-stat span.stab-stable{color:#aaa}
-.wi-stat span.stab-up{color:#4caf50}
-.wi-stat span.stab-down{color:#e57373}
-.wi-stat span.chg-pos{color:#4caf50}
-.wi-stat span.chg-neg{color:#e57373}
-.wi-stat span.demand-num{color:var(--text)}
-.wi-bottom{display:none}
 
 </style>
 </head>
@@ -306,24 +404,16 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 <div id="app">
   <nav class="topbar">
     <div class="topbar-logo">MM2 HUB</div>
-    <div class="nav-dropdown" id="navDropdown">
-      <div class="nav-dropdown-trigger" onclick="toggleNavDropdown()">
-        <span class="nav-active-icon" id="navActiveIcon">🗡</span>
-        <span class="nav-active-label" id="navActiveLabel">Collection</span>
-        <svg class="nav-chevron" width="14" height="14" viewBox="0 0 14 14" fill="none">
-          <path d="M3 5L7 9L11 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
+    <div class="nav-dropdown" id="navDd">
+      <div class="nav-trigger" onclick="toggleNav()">
+        <span class="nav-icon" id="navIcon">🎒</span>
+        <span class="nav-label" id="navLabel">Inventaire</span>
+        <span class="nav-arrow">▼</span>
       </div>
       <div class="nav-menu">
-        <div class="nav-item active" id="navItem-collection" onclick="navGo('collection','🗡','Collection')">
-          <span class="nav-item-icon">🗡</span>Collection<span class="nav-item-dot"></span>
-        </div>
-        <div class="nav-item" id="navItem-values" onclick="navGo('values','📈','Valeurs')">
-          <span class="nav-item-icon">📈</span>Valeurs<span class="nav-item-dot"></span>
-        </div>
-        <div class="nav-item" id="navItem-trading" onclick="navGo('trading','🔄','Trading Bot')">
-          <span class="nav-item-icon">🔄</span>Trading Bot<span class="nav-item-dot"></span>
-        </div>
+        <div class="nav-opt active" id="nopt-inv" onclick="navGo('inv','🎒','Inventaire')">🎒&nbsp; Inventaire <span class="nav-opt-dot"></span></div>
+        <div class="nav-opt" id="nopt-val" onclick="navGo('val','📈','Valeurs')">📈&nbsp; Valeurs <span class="nav-opt-dot"></span></div>
+        <div class="nav-opt" id="nopt-trade" onclick="navGo('trade','🔄','Trading')">🔄&nbsp; Trading <span class="nav-opt-dot"></span></div>
       </div>
     </div>
     <div class="topbar-user">
@@ -338,159 +428,152 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
     </div>
   </nav>
 
-  <!-- PAGE COLLECTION -->
-  <div class="page active" id="pageCollection">
+  <!-- ══ PAGE INVENTAIRE ══ -->
+  <div class="page active" id="pageInv">
     <div class="page-header">
-      <div class="page-title">MA COLLECTION</div>
-      <div class="page-desc">Coche les armes que tu possèdes · 💾 Sauvegarder pour garder ta progression</div>
+      <div class="page-title">MON INVENTAIRE</div>
+      <div class="page-desc">Clique sur les armes que tu possèdes · Elles apparaîtront dans le Trading</div>
     </div>
-    <div class="stats-bar">
-      <div class="stat-card"><div class="stat-num" id="sO">0</div><div class="stat-lbl">Possédées</div></div>
-      <div class="stat-card"><div class="stat-num" id="sM">0</div><div class="stat-lbl">Manquantes</div></div>
-      <div class="stat-card"><div class="stat-num" id="sT">0</div><div class="stat-lbl">Total</div></div>
-      <div class="stat-card"><div class="stat-num" id="sValOwned" style="font-size:16px;color:var(--gold2)">—</div><div class="stat-lbl">Valeur totale</div></div>
+    <div class="inv-page-stats">
+      <div class="inv-stat"><div class="inv-stat-num" id="sO">0</div><div class="inv-stat-lbl">Possédées</div></div>
+      <div class="inv-stat"><div class="inv-stat-num" id="sM">0</div><div class="inv-stat-lbl">Manquantes</div></div>
+      <div class="inv-stat"><div class="inv-stat-num" id="sT">0</div><div class="inv-stat-lbl">Total</div></div>
+      <div class="inv-stat"><div class="inv-stat-num" id="sV" style="font-size:16px;color:var(--gold2)">—</div><div class="inv-stat-lbl">Valeur totale</div></div>
     </div>
-    <div class="prog-wrap">
-      <div class="prog-bar"><div class="prog-fill" id="pf" style="width:0%"></div></div>
-      <div class="prog-pct" id="sP">0%</div>
+    <div class="inv-prog">
+      <div class="inv-prog-bar"><div class="inv-prog-fill" id="pf" style="width:0%"></div></div>
+      <div class="inv-prog-pct" id="sP">0%</div>
     </div>
-    <div class="controls">
-      <input class="ctrl-input" id="q" placeholder="🔍 Rechercher une arme..." oninput="flt()">
-      <select class="ctrl-select" id="fr" onchange="flt()">
+    <div class="inv-controls">
+      <input class="inv-search" id="invQ" placeholder="🔍 Rechercher..." oninput="invFilter()">
+      <select class="inv-sel" id="invR" onchange="invFilter()">
         <option value="">Toutes raretés</option>
-        <option value="Unique">⬛ Unique</option>
-        <option value="Ancient">🟣 Ancient</option>
-        <option value="Chroma">🟠 Chroma</option>
-        <option value="Godly">🔴 Godly</option>
-        <option value="Vintage">🟤 Vintage</option>
-        <option value="Legendary">🟡 Legendary</option>
-        <option value="Rare">🔵 Rare</option>
-        <option value="Uncommon">🔷 Uncommon</option>
-        <option value="Common">⬜ Common</option>
+        <option value="Unique">Unique</option>
+        <option value="Ancient">Ancient</option>
+        <option value="Chroma">Chroma</option>
+        <option value="Godly">Godly</option>
+        <option value="Vintage">Vintage</option>
+        <option value="Legendary">Legendary</option>
+        <option value="Rare">Rare</option>
+        <option value="Uncommon">Uncommon</option>
+        <option value="Common">Common</option>
       </select>
-      <select class="ctrl-select" id="ft" onchange="flt()">
+      <select class="inv-sel" id="invT" onchange="invFilter()">
         <option value="">🔪🔫 Tout</option>
         <option value="K">🔪 Couteaux</option>
         <option value="G">🔫 Flingues</option>
       </select>
-      <select class="ctrl-select" id="fo" onchange="flt()">
+      <select class="inv-sel" id="invO" onchange="invFilter()">
         <option value="">Tout</option>
         <option value="owned">✅ Possédées</option>
         <option value="miss">❌ Manquantes</option>
       </select>
-      <button class="ctrl-btn" onclick="expAll()">Tout ouvrir</button>
-      <button class="ctrl-btn" onclick="colAll()">Tout fermer</button>
-      <button class="ctrl-btn danger" onclick="rst()">🗑 Reset</button>
-      <button class="ctrl-btn save" onclick="saveToFile()">💾 Sauvegarder</button>
+      <button class="inv-btn" onclick="invExpAll()">Tout ouvrir</button>
+      <button class="inv-btn" onclick="invColAll()">Tout fermer</button>
+      <button class="inv-btn danger" onclick="invReset()">🗑 Reset</button>
+      <button class="inv-btn save" onclick="saveFile()">💾 Sauver</button>
     </div>
-    <div id="collMain"></div>
-    <div id="nr" class="nores hidden">Aucune arme trouvée.</div>
+    <div id="invMain"></div>
+    <div id="invNone" class="inv-none" style="display:none">Aucune arme trouvée.</div>
   </div>
 
-  <!-- PAGE VALUES — style SupremeValues -->
-  <div class="page" id="pageValues">
-    <div class="page-header" style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:12px">
+  <!-- ══ PAGE VALEURS ══ -->
+  <div class="page" id="pageVal">
+    <div class="page-header" style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:10px">
       <div>
         <div class="page-title">VALEURS DES ARMES</div>
-        <div class="page-desc">Source: supremevalues.com · ✓ = arme dans ta collection</div>
+        <div class="page-desc">Toutes raretés · ✓ = dans ton inventaire · Source: supremevalues.com</div>
       </div>
-      <div class="val-live-badge"><div class="val-live-dot"></div>Données intégrées</div>
     </div>
-    <div class="val-filters">
-      <button class="val-filter-btn active" onclick="valFilter(this,'all')">Toutes</button>
-      <button class="val-filter-btn" onclick="valFilter(this,'Ancient')">Ancient</button>
-      <button class="val-filter-btn" onclick="valFilter(this,'Chroma')">Chroma</button>
-      <button class="val-filter-btn" onclick="valFilter(this,'Godly')">Godly</button>
-      <button class="val-filter-btn" onclick="valFilter(this,'owned')">✓ Mes armes</button>
-      <input class="ctrl-input" id="valSearch" placeholder="🔍 Rechercher..." oninput="renderValues()" style="max-width:200px;margin-left:auto">
+    <div class="val-controls">
+      <input class="val-search" id="valQ" placeholder="🔍 Rechercher une arme..." oninput="renderValues()">
+      <select class="val-sel" id="valR" onchange="renderValues()">
+        <option value="">Toutes raretés</option>
+        <option value="Chroma">Chroma</option>
+        <option value="Godly">Godly</option>
+        <option value="Ancient">Ancient</option>
+        <option value="Vintage">Vintage</option>
+        <option value="Legendary">Legendary</option>
+        <option value="Rare">Rare</option>
+        <option value="Uncommon">Uncommon</option>
+        <option value="Common">Common</option>
+        <option value="owned">✓ Mes armes</option>
+      </select>
+      <select class="val-sel" id="valS" onchange="renderValues()">
+        <option value="value">Valeur ↓</option>
+        <option value="name">Nom A-Z</option>
+        <option value="demand">Demande ↓</option>
+      </select>
+      <span class="val-count" id="valCount"></span>
     </div>
-    <div class="val-sort-bar">
-      <span style="font-size:11px;color:var(--dimmed);text-transform:uppercase;letter-spacing:1px">Trier par :</span>
-      <button class="val-sort-btn active" onclick="setSort('value',this)">Valeur ↓</button>
-      <button class="val-sort-btn" onclick="setSort('name',this)">Nom A-Z</button>
-      <button class="val-sort-btn" onclick="setSort('demand',this)">Demande</button>
-      <span id="valCount" style="margin-left:auto;font-size:12px;color:var(--dimmed)"></span>
-    </div>
-    <div id="valContent"><div class="val-loading">CHARGEMENT DES VALEURS</div></div>
+    <div id="valContent"><div class="val-loading">CHARGEMENT…</div></div>
   </div>
 
-  <!-- PAGE TRADING BOT -->
-  <div class="page" id="pageTrading">
+  <!-- ══ PAGE TRADING ══ -->
+  <div class="page" id="pageTrade">
     <div class="page-header">
       <div class="page-title">TRADING BOT MM2</div>
-      <div class="page-desc">Connecte ton compte Roblox · Vois ton inventaire · Simule tes trades</div>
+      <div class="page-desc">Simule tes trades · Connecte ton compte Roblox</div>
     </div>
-
-    <!-- Roblox Connect Panel -->
     <div class="roblox-connect-panel" id="robloxConnectPanel">
-      <div style="display:flex;align-items:center;gap:14px;margin-bottom:16px">
-        <div style="width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#00b4d8,#0077b6);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0">🎮</div>
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px">
+        <div style="width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#00b4d8,#0077b6);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0">🎮</div>
         <div>
-          <div style="font-family:var(--font-head);font-size:14px;font-weight:700;margin-bottom:3px">Connexion Roblox</div>
-          <div style="font-size:12px;color:var(--muted)">Entre ton pseudo Roblox pour afficher ton inventaire MM2</div>
+          <div style="font-family:var(--font-head);font-size:13px;font-weight:700;margin-bottom:2px">Connexion Roblox</div>
+          <div style="font-size:12px;color:var(--muted)">Entre ton pseudo Roblox pour afficher ton inventaire</div>
         </div>
       </div>
       <div style="display:flex;gap:8px;flex-wrap:wrap">
-        <input class="roblox-username-input" id="robloxUsernameInput" placeholder="Ton pseudo Roblox..." style="flex:1;min-width:180px">
+        <input class="roblox-username-input" id="robloxUsernameInput" placeholder="Ton pseudo Roblox..." style="flex:1;min-width:160px">
         <button class="roblox-connect-btn" onclick="connectRoblox()">🔗 Connecter</button>
       </div>
     </div>
-
-    <!-- Bot Info (shown after connect) -->
     <div class="bot-info" id="botInfoPanel" style="display:none">
       <div class="bot-avatar">🤖</div>
-      <div class="bot-text" style="flex:1">
+      <div style="flex:1">
         <div class="bot-name">MM2Hub_Bot · <span id="robloxConnectedUser" style="color:var(--cyan)"></span></div>
         <div class="bot-status">En ligne · Prêt à trader</div>
-        <div style="font-size:12px;color:var(--muted);margin-top:4px">Rejoins le serveur Roblox et envoie une demande de trade au bot <strong>MM2Hub_Bot</strong></div>
       </div>
       <div style="display:flex;gap:8px;flex-wrap:wrap;margin-left:auto">
         <a class="roblox-btn" href="https://www.roblox.com/games/142823291/Murder-Mystery-2" target="_blank">🎮 Ouvrir MM2</a>
-        <button class="roblox-btn" style="background:linear-gradient(135deg,#7b2d8b,#4a1560)" onclick="disconnectRoblox()">✕ Déconnecter</button>
+        <button class="roblox-btn" style="background:linear-gradient(135deg,#7b2d8b,#4a1560)" onclick="disconnectRoblox()">✕ Déco</button>
       </div>
     </div>
-
-    <!-- Trade Status -->
     <div class="trade-status" id="tradeStatus">
       <div class="trade-status-icon">🎮</div>
       <div class="trade-status-text">CONFIGURE TON TRADE</div>
-      <div class="trade-status-sub">Ajoute des armes des deux côtés pour analyser la valeur</div>
-      <div style="margin-top:16px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
-        <button class="ctrl-btn" onclick="simulateTrade()">🔄 Simuler un trade</button>
-        <button class="ctrl-btn" onclick="clearTrade()">🗑 Vider</button>
+      <div class="trade-status-sub">Ajoute des armes des deux côtés pour analyser</div>
+      <div style="margin-top:14px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+        <button class="inv-btn" onclick="clearTrade()">🗑 Vider</button>
       </div>
     </div>
-
-    <!-- Trade layout -->
     <div class="trade-layout">
       <div class="trade-panel">
         <div class="trade-panel-title">Tu donnes</div>
         <div class="trade-slots" id="offerSlots"></div>
-        <div class="trade-value-bar">
-          <span style="color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:1px">Valeur totale</span>
+        <div class="trade-val-bar">
+          <span style="color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:1px">Valeur</span>
           <span class="trade-val-num" id="offerVal" style="color:var(--red2)">0</span>
         </div>
       </div>
       <div class="trade-panel">
         <div class="trade-panel-title">Tu reçois</div>
         <div class="trade-slots" id="receiveSlots"></div>
-        <div class="trade-value-bar">
-          <span style="color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:1px">Valeur totale</span>
+        <div class="trade-val-bar">
+          <span style="color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:1px">Valeur</span>
           <span class="trade-val-num" id="receiveVal" style="color:var(--cyan)">0</span>
         </div>
       </div>
     </div>
-
-    <!-- My inventory from collection -->
     <div class="trade-panel">
-      <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;flex-wrap:wrap">
-        <div class="trade-panel-title" style="margin-bottom:0">Mon inventaire (armes cochées)</div>
-        <select class="ctrl-select" id="tradeInvSideSelect" style="margin-left:auto;font-size:12px">
-          <option value="offer">➕ Ajouter à : Tu donnes</option>
-          <option value="receive">➕ Ajouter à : Tu reçois</option>
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;flex-wrap:wrap">
+        <div class="trade-panel-title" style="margin-bottom:0">Mon inventaire</div>
+        <select class="inv-sel" id="tradeInvSideSelect" style="margin-left:auto;font-size:12px">
+          <option value="offer">➕ Tu donnes</option>
+          <option value="receive">➕ Tu reçois</option>
         </select>
       </div>
-      <div class="inv-grid" id="myInvGrid"></div>
+      <div class="trade-inv-grid" id="myInvGrid"></div>
     </div>
   </div>
 </div>
@@ -1089,7 +1172,7 @@ function logout(){
   owned={};
   document.getElementById("authScreen").style.display="flex";
   document.getElementById("app").style.display="none";
-  document.getElementById("collMain").innerHTML="";
+  document.getElementById("invMain").innerHTML="";
   robloxConnectedUsername=null;
 }
 
@@ -1104,9 +1187,646 @@ function persistOwned(){
 }
 
 // ═══════════════════════════════════════
-// COLLECTION
+// INVENTORY
 // ═══════════════════════════════════════
 var owned = {};
+var VALUES_DATA = {};
+
+function wkey(sid,n){return sid+"|"+n;}
+function totW(){return S.reduce(function(a,s){return a+s.w.length;},0);}
+function totO(){return Object.keys(owned).filter(function(k){return owned[k];}).length;}
+function ownInSec(sid){
+  var s=S.filter(function(x){return x.id===sid;})[0];
+  if(!s)return 0;
+  return s.w.filter(function(w){return owned[wkey(sid,w.n)];}).length;
+}
+function totalOwnedValue(){
+  var t=0;
+  Object.keys(owned).forEach(function(k){
+    if(!owned[k])return;
+    var name=k.split("|")[1]||"";
+    if(VALUES_DATA[name])t+=VALUES_DATA[name];
+  });
+  return t;
+}
+
+function imgSlug(name){
+  return name.toLowerCase()
+    .replace(/[''']/g,"")
+    .replace(/[^a-z0-9\s\-]/g,"")
+    .replace(/\s+/g,"-")
+    .replace(/-+/g,"-")
+    .replace(/^-|-$/g,"");
+}
+
+var SEC_DOTS={
+  unique:"#aaa",ancient:"#c77dff",chroma:"#ff9f43",godly:"#e74c3c",
+  vintage:"#a0785a",legendary:"#f4d03f",rare:"#3498db",uncommon:"#5dade2",common:"#7f8c8d"
+};
+
+function upStats(){
+  var o=totO(),t=totW(),p=t?Math.round(o/t*100):0;
+  document.getElementById("sO").textContent=o;
+  document.getElementById("sM").textContent=t-o;
+  document.getElementById("sT").textContent=t;
+  document.getElementById("sP").textContent=p+"%";
+  document.getElementById("pf").style.width=p+"%";
+  var tv=totalOwnedValue();
+  document.getElementById("sV").textContent=tv>0?tv.toLocaleString()+" S":"—";
+  // update per-section counts
+  S.forEach(function(s){
+    var el=document.getElementById("icnt-"+s.id);
+    if(el)el.textContent=ownInSec(s.id)+"/"+s.w.length;
+  });
+}
+
+function togWeapon(sid,name){
+  var k=wkey(sid,name);
+  owned[k]=!owned[k];
+  var card=document.getElementById("ic-"+k.replace(/[^a-zA-Z0-9]/g,"_"));
+  if(card){
+    card.classList.toggle("owned",!!owned[k]);
+  }
+  upStats();
+  persistOwned();
+}
+
+function build(){
+  var main=document.getElementById("invMain");
+  main.innerHTML="";
+  S.forEach(function(s){
+    var dotColor=SEC_DOTS[s.id]||"#888";
+    var sec=document.createElement("div");
+    sec.className="inv-sec";
+    sec.id="isec-"+s.id;
+    sec.innerHTML=
+      '<div class="inv-sec-hdr" onclick="toggleSec(\''+s.id+'\')">'
+        +'<div class="inv-sec-dot" style="background:'+dotColor+'"></div>'
+        +'<span class="inv-sec-name" style="color:'+dotColor+'">'+s.label.toUpperCase()+'</span>'
+        +'<span class="inv-sec-info" id="icnt-'+s.id+'">0/'+s.w.length+'</span>'
+        +'<span class="inv-sec-arr" id="iarr-'+s.id+'">▶</span>'
+      +'</div>'
+      +'<div class="inv-grid" id="igrid-'+s.id+'" style="display:none"></div>';
+    main.appendChild(sec);
+    var grid=document.getElementById("igrid-"+s.id);
+    s.w.forEach(function(w){
+      var k=wkey(s.id,w.n);
+      var kid="ic-"+k.replace(/[^a-zA-Z0-9]/g,"_");
+      var slug=imgSlug(w.n);
+      var val=VALUES_DATA[w.n]||0;
+      var card=document.createElement("div");
+      card.className="inv-card"+(owned[k]?" owned":"");
+      card.id=kid;
+      card.innerHTML=
+        '<img src="https://mm2checker.com/images/godlies/'+slug+'.png"'
+        +' onerror="this.src=\'https://mm2checker.com/images/legendaries/'+slug+'.png\'"'
+        +' alt="'+w.n+'" loading="lazy">'
+        +'<div class="inv-card-name">'+w.n+'</div>'
+        +(val?'<div class="inv-card-val">'+val+'S</div>':'')
+        +'<div class="inv-card-check">✓</div>';
+      card.onclick=function(){togWeapon(s.id,w.n);};
+      grid.appendChild(card);
+    });
+  });
+  upStats();
+}
+
+function toggleSec(sid){
+  var grid=document.getElementById("igrid-"+sid);
+  var arr=document.getElementById("iarr-"+sid);
+  var open=grid.style.display!=="none";
+  grid.style.display=open?"none":"";
+  if(arr)arr.classList.toggle("open",!open);
+}
+function invExpAll(){S.forEach(function(s){var g=document.getElementById("igrid-"+s.id);var a=document.getElementById("iarr-"+s.id);if(g)g.style.display="";if(a)a.classList.add("open");});}
+function invColAll(){S.forEach(function(s){var g=document.getElementById("igrid-"+s.id);var a=document.getElementById("iarr-"+s.id);if(g)g.style.display="none";if(a)a.classList.remove("open");});}
+
+function invFilter(){
+  var q=(document.getElementById("invQ").value||"").toLowerCase();
+  var r=document.getElementById("invR").value;
+  var t=document.getElementById("invT").value;
+  var o=document.getElementById("invO").value;
+  var any=false;
+  S.forEach(function(s){
+    var sec=document.getElementById("isec-"+s.id);
+    if(!sec)return;
+    if(r&&r!==s.label){sec.style.display="none";return;}else{sec.style.display="";}
+    var grid=document.getElementById("igrid-"+s.id);
+    var vis=false;
+    s.w.forEach(function(w){
+      var k=wkey(s.id,w.n);
+      var kid="ic-"+k.replace(/[^a-zA-Z0-9]/g,"_");
+      var card=document.getElementById(kid);
+      if(!card)return;
+      var show=(!q||w.n.toLowerCase().indexOf(q)>=0)&&(!t||w.t===t)&&(!o||(o==="owned"?!!owned[k]:!owned[k]));
+      card.style.display=show?"":"none";
+      if(show){vis=true;any=true;}
+    });
+    sec.style.display=vis?"":"none";
+    if(vis&&q&&grid){grid.style.display="";var arr=document.getElementById("iarr-"+s.id);if(arr)arr.classList.add("open");}
+  });
+  document.getElementById("invNone").style.display=any?"none":"block";
+}
+
+function invReset(){
+  if(!confirm("Effacer toute ta progression ?"))return;
+  Object.keys(owned).forEach(function(k){owned[k]=false;});
+  document.querySelectorAll(".inv-card").forEach(function(c){c.classList.remove("owned");});
+  upStats();persistOwned();
+}
+function saveFile(){
+  var src=document.documentElement.outerHTML;
+  var blob=new Blob([src],{type:"text/html;charset=utf-8"});
+  var a=document.createElement("a");
+  a.href=URL.createObjectURL(blob);a.download="MM2Hub_v4.html";
+  document.body.appendChild(a);a.click();
+  setTimeout(function(){URL.revokeObjectURL(a.href);a.remove();},1000);
+  notify("💾 Fichier sauvegardé !","ok");
+}
+
+// ═══════════════════════════════════════
+// VALUES PAGE
+// ═══════════════════════════════════════
+var ALL_VALUES=[];
+
+var RARITY_COLORS={
+  "Ancient":"#9b59b6","Chroma":"#e67e22","Godly":"#e74c3c",
+  "Vintage":"#a07860","Legendary":"#f1c40f","Rare":"#2980b9",
+  "Uncommon":"#5dade2","Common":"#7f8c8d","Unique":"#888"
+};
+
+var EMBEDDED_VALUES = [
+  // ── Chroma ──
+  {name:"Chroma Traveler's Gun",rarity:"Chroma",value:308025,demand:9,origin:"Hallows 2023",type:"G"},
+  {name:"Chroma Evergun",rarity:"Chroma",value:105413,demand:9,origin:"Xmas 2023",type:"G"},
+  {name:"Chroma Evergreen",rarity:"Chroma",value:82140,demand:7.2,origin:"Xmas 2023",type:"K"},
+  {name:"Chroma Bauble",rarity:"Chroma",value:52022,demand:7,origin:"Xmas 2024",type:"G"},
+  {name:"Chroma Constellation",rarity:"Chroma",value:49284,demand:7,origin:"Xmas 2024",type:"G"},
+  {name:"Chroma Vampire's Gun",rarity:"Chroma",value:47915,demand:7.1,origin:"Hallows 2024",type:"G"},
+  {name:"Chroma Alienbeam",rarity:"Chroma",value:41070,demand:7,origin:"Hallows 2025",type:"K"},
+  {name:"Chroma Raygun",rarity:"Chroma",value:20193,demand:6.1,origin:"Hallows 2025",type:"G"},
+  {name:"Chroma Sunrise",rarity:"Chroma",value:15401,demand:5.9,origin:"Summer 2025",type:"G"},
+  {name:"Chroma Snowcannon",rarity:"Chroma",value:11636,demand:6.2,origin:"Xmas 2025",type:"G"},
+  {name:"Chroma Blizzard",rarity:"Chroma",value:10952,demand:4.8,origin:"Xmas 2025",type:"G"},
+  {name:"Chroma Sunset",rarity:"Chroma",value:8898,demand:5.3,origin:"Summer 2025",type:"K"},
+  {name:"Chroma Snow Dagger",rarity:"Chroma",value:7872,demand:5,origin:"Xmas 2025",type:"K"},
+  {name:"Chroma Treat",rarity:"Chroma",value:6640,demand:5,origin:"Valentine 2026",type:"G"},
+  {name:"Chroma Heart Wand",rarity:"Chroma",value:6503,demand:5.4,origin:"Valentine 2026",type:"K"},
+  {name:"Chroma Snowstorm",rarity:"Chroma",value:5818,demand:5,origin:"Xmas 2025",type:"K"},
+  {name:"Chroma Watergun",rarity:"Chroma",value:4655,demand:5,origin:"Summer 2024",type:"G"},
+  {name:"Chroma Sweet",rarity:"Chroma",value:3902,demand:6,origin:"Valentine 2026",type:"K"},
+  {name:"Chroma Ornament",rarity:"Chroma",value:3628,demand:5.2,origin:"Xmas 2025",type:"K"},
+  {name:"Chroma Darkbringer",rarity:"Chroma",value:103,demand:1,origin:"Mystery Crate #2",type:"G"},
+  {name:"Chroma Lightbringer",rarity:"Chroma",value:96,demand:1.2,origin:"Mystery Crate #2",type:"G"},
+  {name:"Chroma Luger",rarity:"Chroma",value:75,demand:1.1,origin:"Gun Box #1",type:"G"},
+  {name:"Chroma Candleflame",rarity:"Chroma",value:62,demand:1,origin:"Hallows 2021",type:"K"},
+  {name:"Chroma Elderwood Blade",rarity:"Chroma",value:62,demand:1.1,origin:"Hallows 2022",type:"K"},
+  {name:"Chroma Swirly Gun",rarity:"Chroma",value:62,demand:1,origin:"Xmas 2021",type:"G"},
+  {name:"Chroma Laser",rarity:"Chroma",value:57,demand:1.2,origin:"Gun Box #3",type:"G"},
+  {name:"Chroma Cookiecane",rarity:"Chroma",value:52,demand:1,origin:"Xmas 2022",type:"K"},
+  {name:"Chroma Deathshard",rarity:"Chroma",value:52,demand:1,origin:"Knife Box #1",type:"K"},
+  {name:"Chroma Slasher",rarity:"Chroma",value:52,demand:1.1,origin:"Knife Box #4",type:"K"},
+  {name:"Chroma Fang",rarity:"Chroma",value:48,demand:1.2,origin:"Knife Box #2",type:"K"},
+  {name:"Chroma Shark",rarity:"Chroma",value:48,demand:1,origin:"Gun Box #2",type:"G"},
+  {name:"Chroma Gemstone",rarity:"Chroma",value:44,demand:1.1,origin:"Mystery Crate #1",type:"K"},
+  {name:"Chroma Gingerblade",rarity:"Chroma",value:44,demand:1,origin:"Xmas 2018",type:"K"},
+  {name:"Chroma Heat",rarity:"Chroma",value:44,demand:1,origin:"Rainbow Box",type:"K"},
+  {name:"Chroma Seer",rarity:"Chroma",value:44,demand:1,origin:"Season 1 Crafting",type:"K"},
+  {name:"Chroma Saw",rarity:"Chroma",value:41,demand:1,origin:"Knife Box #3",type:"K"},
+  {name:"Chroma Tides",rarity:"Chroma",value:41,demand:1,origin:"Knife Box #5",type:"K"},
+  {name:"Chroma Boneblade",rarity:"Chroma",value:37,demand:1,origin:"Hallows 2018",type:"K"},
+  // ── Godly Tier 3 ──
+  {name:"Traveler's Gun",rarity:"Godly",value:6297,demand:6,origin:"Hallows 2023",type:"G"},
+  {name:"Evergun",rarity:"Godly",value:4518,demand:4.7,origin:"Xmas 2023",type:"G"},
+  {name:"Constellation",rarity:"Godly",value:3559,demand:4.9,origin:"Xmas 2024",type:"G"},
+  {name:"Evergreen",rarity:"Godly",value:3354,demand:5.2,origin:"Xmas 2023",type:"K"},
+  {name:"Turkey",rarity:"Godly",value:3354,demand:5.5,origin:"Thanksgiving 2023",type:"K"},
+  {name:"Alienbeam",rarity:"Godly",value:3046,demand:5.7,origin:"Hallows 2025",type:"K"},
+  {name:"Vampire's Gun",rarity:"Godly",value:2327,demand:5.4,origin:"Hallows 2024",type:"G"},
+  {name:"Darkshot",rarity:"Godly",value:1930,demand:6,origin:"Hallows 2023",type:"G"},
+  {name:"Darksword",rarity:"Godly",value:1903,demand:5.6,origin:"Hallows 2023",type:"K"},
+  {name:"Raygun",rarity:"Godly",value:1780,demand:6,origin:"Hallows 2025",type:"G"},
+  {name:"Blossom",rarity:"Godly",value:1643,demand:6.5,origin:"Valentine 2023",type:"G"},
+  {name:"Sakura",rarity:"Godly",value:1629,demand:6,origin:"Valentine 2023",type:"K"},
+  {name:"Sunrise",rarity:"Godly",value:1369,demand:6,origin:"Summer 2025",type:"G"},
+  {name:"Snowcannon",rarity:"Godly",value:1266,demand:4,origin:"Xmas 2025",type:"G"},
+  {name:"Bauble",rarity:"Godly",value:1232,demand:5,origin:"Xmas 2024",type:"G"},
+  {name:"Sunset",rarity:"Godly",value:719,demand:4.1,origin:"Summer 2025",type:"K"},
+  {name:"Heart Wand",rarity:"Godly",value:582,demand:4,origin:"Valentine 2026",type:"K"},
+  {name:"Soul",rarity:"Godly",value:548,demand:5.3,origin:"Hallows 2024",type:"G"},
+  {name:"Spirit",rarity:"Godly",value:534,demand:5.2,origin:"Hallows 2024",type:"K"},
+  {name:"Flora",rarity:"Godly",value:445,demand:4.6,origin:"Easter 2025",type:"G"},
+  {name:"Bloom",rarity:"Godly",value:431,demand:5,origin:"Easter 2025",type:"K"},
+  {name:"Rainbow Gun",rarity:"Godly",value:411,demand:4.2,origin:"Easter 2023",type:"G"},
+  {name:"Rainbow",rarity:"Godly",value:397,demand:4,origin:"Easter 2023",type:"K"},
+  {name:"Snow Dagger",rarity:"Godly",value:356,demand:3,origin:"Xmas 2025",type:"K"},
+  {name:"Flowerwood Gun",rarity:"Godly",value:281,demand:3,origin:"Easter 2024",type:"G"},
+  {name:"Flowerwood",rarity:"Godly",value:274,demand:2.5,origin:"Easter 2024",type:"K"},
+  {name:"Xenoknife",rarity:"Godly",value:274,demand:2.9,origin:"Hallows 2025",type:"K"},
+  {name:"Xenoshot",rarity:"Godly",value:270,demand:2.8,origin:"Hallows 2025",type:"G"},
+  {name:"Pearlshine",rarity:"Godly",value:260,demand:3,origin:"Easter 2024",type:"G"},
+  {name:"Pearl",rarity:"Godly",value:252,demand:3,origin:"Easter 2024",type:"K"},
+  {name:"Australis",rarity:"Godly",value:240,demand:2.8,origin:"Summer 2023",type:"K"},
+  {name:"Borealis",rarity:"Godly",value:235,demand:2.8,origin:"Summer 2023",type:"K"},
+  {name:"Watergun",rarity:"Godly",value:210,demand:3,origin:"Summer 2024",type:"G"},
+  {name:"Snowstorm",rarity:"Godly",value:205,demand:3,origin:"Xmas 2025",type:"K"},
+  {name:"Sweet",rarity:"Godly",value:198,demand:3.5,origin:"Valentine 2026",type:"K"},
+  {name:"Treat",rarity:"Godly",value:190,demand:3.5,origin:"Valentine 2026",type:"G"},
+  {name:"Ocean",rarity:"Godly",value:185,demand:3,origin:"Summer 2024",type:"G"},
+  {name:"Blizzard",rarity:"Godly",value:175,demand:3,origin:"Xmas 2025",type:"G"},
+  {name:"Bat",rarity:"Godly",value:170,demand:3,origin:"Hallows 2022",type:"K"},
+  {name:"Ornament",rarity:"Godly",value:38,demand:1.1,origin:"Xmas 2025",type:"K"},
+  // ── Godly Tier 2 ──
+  {name:"Heartblade",rarity:"Godly",value:95,demand:2,origin:"Valentine 2022",type:"K"},
+  {name:"Candleflame",rarity:"Godly",value:90,demand:2,origin:"Hallows 2021",type:"K"},
+  {name:"Elderwood Blade",rarity:"Godly",value:87,demand:2,origin:"Hallows 2022",type:"K"},
+  {name:"Sugar",rarity:"Godly",value:82,demand:2,origin:"Valentine Box",type:"G"},
+  {name:"Red Luger",rarity:"Godly",value:80,demand:1.8,origin:"Gun Box",type:"G"},
+  {name:"Spectre",rarity:"Godly",value:78,demand:2,origin:"Mystery Box",type:"G"},
+  {name:"Makeshift",rarity:"Godly",value:75,demand:2,origin:"Mystery Box",type:"G"},
+  {name:"Waves",rarity:"Godly",value:72,demand:2,origin:"Summer 2022",type:"K"},
+  {name:"Elderwood Revolver",rarity:"Godly",value:70,demand:1.8,origin:"Hallows Box",type:"G"},
+  {name:"Iceblaster",rarity:"Godly",value:65,demand:1.5,origin:"Xmas Box",type:"G"},
+  {name:"Phantom",rarity:"Godly",value:63,demand:2,origin:"Pack",type:"K"},
+  // ── Godly Tier 1 ──
+  {name:"Darkbringer",rarity:"Godly",value:57,demand:1.3,origin:"Mystery Crate #2",type:"G"},
+  {name:"Lightbringer",rarity:"Godly",value:51,demand:1,origin:"Mystery Crate #2",type:"G"},
+  {name:"Seer",rarity:"Godly",value:4,demand:1,origin:"Crafting",type:"K"},
+  {name:"Blue Seer",rarity:"Godly",value:4,demand:1,origin:"Season 1",type:"K"},
+  {name:"Red Seer",rarity:"Godly",value:4,demand:1,origin:"Season 1",type:"K"},
+  {name:"Orange Seer",rarity:"Godly",value:3,demand:1.4,origin:"Season 1",type:"K"},
+  {name:"Purple Seer",rarity:"Godly",value:4,demand:1,origin:"Season 1",type:"K"},
+  {name:"Yellow Seer",rarity:"Godly",value:3,demand:1,origin:"Season 1",type:"K"},
+  {name:"Deathshard",rarity:"Godly",value:18,demand:1,origin:"Knife Box #1",type:"K"},
+  {name:"Fang",rarity:"Godly",value:14,demand:1,origin:"Knife Box #2",type:"K"},
+  {name:"Saw",rarity:"Godly",value:10,demand:1.1,origin:"Knife Box #3",type:"K"},
+  {name:"Slasher",rarity:"Godly",value:23,demand:1,origin:"Knife Box #4",type:"K"},
+  {name:"Tides",rarity:"Godly",value:14,demand:1,origin:"Knife Box #5",type:"K"},
+  {name:"Heat",rarity:"Godly",value:14,demand:1,origin:"Rainbow Box",type:"K"},
+  {name:"Gemstone",rarity:"Godly",value:21,demand:1,origin:"Mystery Box #1",type:"K"},
+  {name:"Luger",rarity:"Godly",value:31,demand:1,origin:"Gun Box #1",type:"G"},
+  {name:"Shark",rarity:"Godly",value:27,demand:1.3,origin:"Gun Box #2",type:"G"},
+  {name:"Laser",rarity:"Godly",value:31,demand:1,origin:"Gun Box #3",type:"G"},
+  {name:"Green Luger",rarity:"Godly",value:34,demand:1.1,origin:"Xmas 2015",type:"G"},
+  {name:"Amerilaser",rarity:"Godly",value:31,demand:1.3,origin:"American Pack",type:"G"},
+  {name:"Icebeam",rarity:"Godly",value:27,demand:1,origin:"Xmas 2021",type:"G"},
+  {name:"Swirly Gun",rarity:"Godly",value:31,demand:1,origin:"Xmas 2021",type:"G"},
+  {name:"Swirly Blade",rarity:"Godly",value:21,demand:1,origin:"Xmas 2021",type:"K"},
+  {name:"Nightblade",rarity:"Godly",value:27,demand:1,origin:"Shadow Pack",type:"K"},
+  {name:"Cookieblade",rarity:"Godly",value:4,demand:1.3,origin:"Xmas 2020",type:"K"},
+  {name:"Peppermint",rarity:"Godly",value:5,demand:1,origin:"Xmas 2020",type:"K"},
+  {name:"Vampire's Edge",rarity:"Godly",value:21,demand:1.2,origin:"Hallows 2020",type:"K"},
+  {name:"Hallowgun",rarity:"Godly",value:31,demand:1,origin:"Hallows 2020",type:"G"},
+  {name:"Clockwork",rarity:"Godly",value:14,demand:1.4,origin:"Steampunk Pack",type:"K"},
+  {name:"Pixel",rarity:"Godly",value:23,demand:1,origin:"8-Bit Pack",type:"K"},
+  {name:"Virtual",rarity:"Godly",value:21,demand:1.1,origin:"Futuristic Pack",type:"K"},
+  {name:"Blaster",rarity:"Godly",value:25,demand:1.1,origin:"Futuristic Pack",type:"G"},
+  {name:"Plasmabeam",rarity:"Godly",value:25,demand:1.1,origin:"Plasmabeam Pack",type:"G"},
+  {name:"Plasmablade",rarity:"Godly",value:23,demand:1,origin:"Plasmablade Pack",type:"K"},
+  {name:"Bioblade",rarity:"Godly",value:14,demand:1.2,origin:"Bioblade Pack",type:"K"},
+  {name:"Nebula",rarity:"Godly",value:21,demand:2,origin:"Nebula Pack",type:"K"},
+  {name:"Old Glory",rarity:"Godly",value:23,demand:1,origin:"American Pack",type:"K"},
+  {name:"Gingerblade",rarity:"Godly",value:21,demand:1,origin:"Xmas 2018",type:"K"},
+  {name:"Ginger Luger",rarity:"Godly",value:23,demand:1.1,origin:"Xmas 2018",type:"G"},
+  {name:"Gingermint",rarity:"Godly",value:21,demand:1,origin:"Xmas 2022",type:"G"},
+  {name:"Cookiecane",rarity:"Godly",value:21,demand:1,origin:"Xmas 2022",type:"K"},
+  {name:"Lugercane",rarity:"Godly",value:21,demand:1,origin:"Xmas 2019",type:"G"},
+  {name:"Eternalcane",rarity:"Godly",value:21,demand:1,origin:"MM2 Shop",type:"K"},
+  {name:"Eternal",rarity:"Godly",value:11,demand:1,origin:"MM2 Shop",type:"K"},
+  {name:"Eternal II",rarity:"Godly",value:11,demand:1,origin:"MM2 Shop",type:"K"},
+  {name:"Eternal III",rarity:"Godly",value:14,demand:1,origin:"MM2 Shop",type:"K"},
+  {name:"Eternal IV",rarity:"Godly",value:14,demand:1,origin:"MM2 Shop",type:"K"},
+  {name:"Iceflake",rarity:"Godly",value:25,demand:1.4,origin:"Xmas 2021",type:"K"},
+  {name:"Minty",rarity:"Godly",value:21,demand:1,origin:"Xmas 2019",type:"G"},
+  {name:"Jinglegun",rarity:"Godly",value:21,demand:1,origin:"Xmas 2020",type:"G"},
+  {name:"Spider",rarity:"Godly",value:14,demand:1,origin:"Hallows 2015",type:"K"},
+  {name:"Chill",rarity:"Godly",value:14,demand:1.1,origin:"Xmas 2015",type:"K"},
+  {name:"Handsaw",rarity:"Godly",value:11,demand:1,origin:"Xmas 2015",type:"K"},
+  {name:"Xmas",rarity:"Godly",value:11,demand:1,origin:"Xmas 2015",type:"K"},
+  {name:"Hallow's Edge",rarity:"Godly",value:11,demand:1,origin:"Hallows 2016",type:"K"},
+  {name:"Hallow's Blade",rarity:"Godly",value:11,demand:1,origin:"Hallows 2017",type:"K"},
+  {name:"Ice Dragon",rarity:"Godly",value:10,demand:1,origin:"Xmas 2016",type:"K"},
+  {name:"Flames",rarity:"Godly",value:7,demand:1.1,origin:"MM2 Classic",type:"K"},
+  {name:"BattleAxe",rarity:"Godly",value:16,demand:1,origin:"Hallows 2017",type:"K"},
+  {name:"Snowflake",rarity:"Godly",value:7,demand:1,origin:"Xmas 2017",type:"K"},
+  {name:"Ice Shard",rarity:"Godly",value:10,demand:1,origin:"Xmas 2017",type:"K"},
+  {name:"Boneblade",rarity:"Godly",value:10,demand:1,origin:"Hallows 2018",type:"K"},
+  {name:"Pumpking",rarity:"Godly",value:10,demand:1.4,origin:"Hallows 2017",type:"K"},
+  {name:"BattleAxe II",rarity:"Godly",value:14,demand:1,origin:"Hallows 2018",type:"K"},
+  {name:"Winter's Edge",rarity:"Godly",value:7,demand:1,origin:"Xmas 2017",type:"K"},
+  {name:"Frostsaber",rarity:"Godly",value:14,demand:1,origin:"Xmas 2017",type:"K"},
+  {name:"Ghostblade",rarity:"Godly",value:10,demand:1,origin:"Hallows 2019",type:"K"},
+  {name:"Frostbite",rarity:"Godly",value:10,demand:1,origin:"Xmas 2019",type:"K"},
+  {name:"Prismatic",rarity:"Godly",value:10,demand:1,origin:"Prismatic Pack",type:"K"},
+  {name:"Ice Dragon (Godly)",rarity:"Godly",value:10,demand:1,origin:"Xmas 2016",type:"K"},
+  {name:"Eggblade",rarity:"Godly",value:7,demand:1,origin:"April Offer",type:"K"},
+  {name:"Snowflake (2)",rarity:"Godly",value:7,demand:1,origin:"Xmas 2017",type:"K"},
+  {name:"Peppermint (2)",rarity:"Godly",value:5,demand:1,origin:"Xmas 2020",type:"K"},
+  {name:"Blue Seer (2)",rarity:"Godly",value:4,demand:1,origin:"Season 1",type:"K"},
+  {name:"Eggblade (2)",rarity:"Godly",value:7,demand:1,origin:"April",type:"K"},
+  // ── Ancient ──
+  {name:"Elderwood Scythe",rarity:"Ancient",value:95000,demand:8,origin:"Leaderboard",type:"K"},
+  {name:"Hallowscythe",rarity:"Ancient",value:72000,demand:7.5,origin:"Leaderboard",type:"K"},
+  {name:"Logchopper",rarity:"Ancient",value:58000,demand:7,origin:"Leaderboard",type:"K"},
+  {name:"Icebreaker",rarity:"Ancient",value:48000,demand:7,origin:"Leaderboard",type:"K"},
+  {name:"Swirly Axe",rarity:"Ancient",value:42000,demand:6.5,origin:"Leaderboard",type:"K"},
+  {name:"Reaver (EVO)",rarity:"Ancient",value:35000,demand:6,origin:"EVO",type:"K"},
+  {name:"Icecrusher (EVO)",rarity:"Ancient",value:28000,demand:6,origin:"EVO",type:"K"},
+  {name:"Batwing",rarity:"Ancient",value:22000,demand:5.5,origin:"Hallows",type:"K"},
+  {name:"Icewing",rarity:"Ancient",value:18000,demand:5,origin:"Xmas",type:"K"},
+  {name:"Elderbeam",rarity:"Ancient",value:15000,demand:5,origin:"Hallows",type:"K"},
+  {name:"Traveler's Axe",rarity:"Ancient",value:12000,demand:4.5,origin:"Hallows 2023",type:"K"},
+  {name:"Vampire's Axe",rarity:"Ancient",value:10000,demand:4.5,origin:"Hallows 2024",type:"K"},
+  {name:"Gingerscythe (EVO)",rarity:"Ancient",value:9000,demand:4,origin:"EVO",type:"K"},
+  {name:"Synthwave (EVO)",rarity:"Ancient",value:8500,demand:4,origin:"EVO",type:"K"},
+  {name:"Celestial (Ancient)",rarity:"Ancient",value:7000,demand:3.5,origin:"Leaderboard",type:"K"},
+  {name:"Swirlyblade",rarity:"Ancient",value:6500,demand:3.5,origin:"Xmas",type:"K"},
+  {name:"Harvester",rarity:"Ancient",value:5500,demand:3,origin:"Leaderboard",type:"G"},
+  {name:"Icepiercer",rarity:"Ancient",value:5000,demand:3,origin:"Leaderboard",type:"G"},
+  {name:"Gingerscope",rarity:"Ancient",value:4500,demand:3,origin:"Leaderboard",type:"G"},
+  // ── Vintage ──
+  {name:"Seer (Vintage)",rarity:"Vintage",value:3200,demand:5,origin:"Early game",type:"K"},
+  {name:"Laser (Vintage)",rarity:"Vintage",value:2800,demand:4.5,origin:"Early game",type:"K"},
+  {name:"BattleAxe (Vintage)",rarity:"Vintage",value:2600,demand:4,origin:"Hallows 2017",type:"K"},
+  {name:"Saw (Vintage)",rarity:"Vintage",value:2400,demand:4,origin:"Knife Box",type:"K"},
+  {name:"Slasher (Vintage)",rarity:"Vintage",value:2200,demand:4,origin:"Knife Box",type:"K"},
+  {name:"Deathshard (Vintage)",rarity:"Vintage",value:2000,demand:3.5,origin:"Knife Box",type:"K"},
+  {name:"Fang (Vintage)",rarity:"Vintage",value:1800,demand:3.5,origin:"Knife Box",type:"K"},
+  {name:"Tides (Vintage)",rarity:"Vintage",value:1600,demand:3,origin:"Knife Box",type:"K"},
+  {name:"Boneblade (Vintage)",rarity:"Vintage",value:1400,demand:3,origin:"Hallows 2018",type:"K"},
+  {name:"Ghostblade (Vintage)",rarity:"Vintage",value:1200,demand:3,origin:"Hallows 2019",type:"K"},
+  {name:"Ghost (Vintage)",rarity:"Vintage",value:1100,demand:2.5,origin:"Early game",type:"G"},
+  {name:"Blood (Vintage)",rarity:"Vintage",value:1000,demand:2.5,origin:"Early game",type:"G"},
+  {name:"America (Vintage)",rarity:"Vintage",value:900,demand:2,origin:"Early game",type:"G"},
+  {name:"Prince (Vintage)",rarity:"Vintage",value:850,demand:2,origin:"Early game",type:"G"},
+  {name:"Shadow (Vintage)",rarity:"Vintage",value:800,demand:2,origin:"Early game",type:"G"},
+  {name:"Phaser (Vintage)",rarity:"Vintage",value:750,demand:2,origin:"Early game",type:"G"},
+  {name:"Cowboy (Vintage)",rarity:"Vintage",value:700,demand:2,origin:"Early game",type:"G"},
+  {name:"Golden (Vintage)",rarity:"Vintage",value:680,demand:2,origin:"Early game",type:"G"},
+  {name:"Splitter (Vintage)",rarity:"Vintage",value:650,demand:2,origin:"Early game",type:"G"},
+];
+
+function isOwned(name){
+  return Object.keys(owned).some(function(k){return k.split("|")[1]===name&&owned[k];});
+}
+
+function loadValues(){
+  ALL_VALUES=EMBEDDED_VALUES;
+  ALL_VALUES.forEach(function(v){VALUES_DATA[v.name]=v.value;});
+  upStats();
+  renderValues();
+}
+
+function renderValues(){
+  var q=(document.getElementById("valQ").value||"").toLowerCase();
+  var r=document.getElementById("valR").value;
+  var s=document.getElementById("valS").value;
+
+  var data=ALL_VALUES.filter(function(v){
+    var mr=!r||v.rarity===r||(r==="owned"&&isOwned(v.name));
+    var mq=!q||v.name.toLowerCase().indexOf(q)>=0;
+    return mr&&mq;
+  });
+
+  if(s==="value") data.sort(function(a,b){return b.value-a.value;});
+  else if(s==="name") data.sort(function(a,b){return a.name.localeCompare(b.name);});
+  else if(s==="demand") data.sort(function(a,b){return b.demand-a.demand;});
+
+  document.getElementById("valCount").textContent=data.length+" armes";
+
+  if(!data.length){
+    document.getElementById("valContent").innerHTML='<div class="val-loading">Aucun résultat.</div>';
+    return;
+  }
+
+  var tiers=[
+    {id:"t3",label:"TIER 3",sub:"1 000+ Seers",items:data.filter(function(v){return v.value>=1000;})},
+    {id:"t2",label:"TIER 2",sub:"100–999 Seers",items:data.filter(function(v){return v.value>=100&&v.value<1000;})},
+    {id:"t1",label:"TIER 1",sub:"10–99 Seers",items:data.filter(function(v){return v.value>=10&&v.value<100;})},
+    {id:"t0",label:"TIER 0",sub:"< 10 Seers",items:data.filter(function(v){return v.value<10;})},
+  ];
+
+  var html="";
+  tiers.forEach(function(tier){
+    if(!tier.items.length)return;
+    html+='<div class="val-tier">'
+      +'<div class="val-tier-hdr" onclick="toggleValTier(this)">'
+        +'<span class="val-tier-name">'+tier.label+'</span>'
+        +'<span class="val-tier-sub">'+tier.sub+'</span>'
+        +'<span class="val-tier-cnt">('+tier.items.length+')</span>'
+        +'<span class="val-tier-arr open">▶</span>'
+      +'</div>'
+      +'<div class="val-grid">';
+    tier.items.forEach(function(v){
+      var own=isOwned(v.name);
+      var slug=imgSlug(v.name);
+      var rc=RARITY_COLORS[v.rarity]||"#888";
+      var dots="";
+      for(var i=1;i<=10;i++) dots+='<div class="val-dot'+(i<=Math.round(v.demand)?" on":"")+'"></div>';
+      html+='<div class="val-card'+(own?" is-owned":"")+'">'+
+        '<div class="val-img-box">'+
+          '<img src="https://mm2checker.com/images/godlies/'+slug+'.png"'
+          +' onerror="this.src=\'https://mm2checker.com/images/legendaries/'+slug+'.png\'"'
+          +' alt="'+v.name+'" loading="lazy">'+
+          (own?'<div class="val-owned-dot">✓</div>':'')+
+        '</div>'+
+        '<div class="val-info">'+
+          '<span class="val-rarity-pill" style="background:'+rc+'22;color:'+rc+';border:1px solid '+rc+'33">'+v.rarity+'</span>'+
+          '<div class="val-name">'+v.name+'</div>'+
+          '<div class="val-origin">'+v.origin+'</div>'+
+          '<div class="val-bottom">'+
+            '<span class="val-value">'+v.value.toLocaleString()+' <span class="val-seers">S</span></span>'+
+            '<span style="font-size:10px;color:var(--muted)">'+(v.type==="K"?"🔪":"🔫")+'</span>'+
+          '</div>'+
+          '<div class="val-dots">'+dots+'</div>'+
+        '</div>'+
+      '</div>';
+    });
+    html+='</div></div>';
+  });
+  document.getElementById("valContent").innerHTML=html;
+}
+
+function toggleValTier(hdr){
+  var grid=hdr.parentElement.querySelector(".val-grid");
+  var arr=hdr.querySelector(".val-tier-arr");
+  var collapsed=grid.style.display==="none";
+  grid.style.display=collapsed?"":"none";
+  hdr.classList.toggle("collapsed",!collapsed);
+  arr.classList.toggle("open",collapsed);
+}
+
+// ═══════════════════════════════════════
+// TRADING PAGE
+// ═══════════════════════════════════════
+var offerItems=[];
+var receiveItems=[];
+var robloxConnectedUsername=null;
+
+function buildTrading(){
+  renderSlots("offer");renderSlots("receive");
+  var grid=document.getElementById("myInvGrid");
+  if(!grid)return;
+  grid.innerHTML="";
+  var myItems=[];
+  S.forEach(function(s){
+    s.w.forEach(function(w){
+      if(owned[wkey(s.id,w.n)]){
+        myItems.push({name:w.n,type:w.t,rarity:s.label,value:VALUES_DATA[w.n]||0});
+      }
+    });
+  });
+  myItems.sort(function(a,b){return b.value-a.value;});
+  if(!myItems.length){
+    grid.innerHTML='<div style="color:var(--dimmed);font-size:12px;padding:16px">Coche des armes dans ton inventaire pour les voir ici.</div>';
+    return;
+  }
+  myItems.forEach(function(item){
+    var d=document.createElement("div");
+    d.className="trade-inv-item";
+    var slug=imgSlug(item.name);
+    d.innerHTML='<img src="https://mm2checker.com/images/godlies/'+slug+'.png" onerror="this.src=\'https://mm2checker.com/images/legendaries/'+slug+'.png\'" loading="lazy">'
+      +'<div class="trade-inv-item-name">'+item.name+'</div>'
+      +(item.value?'<div class="trade-inv-item-val">'+item.value+' S</div>':'');
+    d.onclick=function(){addToSlot(item,document.getElementById("tradeInvSideSelect").value||"offer");};
+    grid.appendChild(d);
+  });
+}
+
+function addToSlot(item,side){
+  var arr=side==="offer"?offerItems:receiveItems;
+  if(arr.length>=4){notify("Max 4 armes !","err");return;}
+  arr.push(item);renderSlots(side);updateTradeValues();
+}
+
+function renderSlots(side){
+  var slots=document.getElementById(side+"Slots");
+  if(!slots)return;
+  var items=side==="offer"?offerItems:receiveItems;
+  slots.innerHTML="";
+  for(var i=0;i<4;i++){
+    var d=document.createElement("div");
+    d.className="trade-slot"+(items[i]?" filled":"");
+    if(items[i]){
+      var slug=imgSlug(items[i].name);
+      var idx=i;var sc=side;
+      d.innerHTML='<img src="https://mm2checker.com/images/godlies/'+slug+'.png" onerror="this.style.display=\'none\'">'
+        +'<div class="trade-slot-name">'+items[i].name+'</div>';
+      var rm=document.createElement("button");
+      rm.className="trade-slot-rm";rm.textContent="✕";
+      rm.onclick=(function(s,i){return function(e){e.stopPropagation();if(s==="offer")offerItems.splice(i,1);else receiveItems.splice(i,1);renderSlots(s);updateTradeValues();};})(sc,idx);
+      d.appendChild(rm);
+    }else{
+      d.innerHTML='<span style="font-size:22px;opacity:.3">+</span><span>Ajouter</span>';
+    }
+    slots.appendChild(d);
+  }
+}
+
+function updateTradeValues(){
+  var ov=offerItems.reduce(function(a,i){return a+(i.value||0);},0);
+  var rv=receiveItems.reduce(function(a,i){return a+(i.value||0);},0);
+  document.getElementById("offerVal").textContent=ov.toLocaleString();
+  document.getElementById("receiveVal").textContent=rv.toLocaleString();
+  var el=document.getElementById("tradeStatus");
+  if(ov===0&&rv===0){
+    el.querySelector(".trade-status-icon").textContent="🎮";
+    el.querySelector(".trade-status-text").textContent="CONFIGURE TON TRADE";
+    el.querySelector(".trade-status-sub").textContent="Ajoute des armes des deux côtés pour analyser";
+    return;
+  }
+  var diff=rv-ov;var pct=ov?Math.round(diff/ov*100):0;
+  el.querySelector(".trade-status-icon").textContent=diff>0?"📈":diff<0?"📉":"⚖️";
+  el.querySelector(".trade-status-text").textContent=diff>0?"PROFIT (+"+diff.toLocaleString()+" S)":diff<0?"DÉFICIT ("+diff.toLocaleString()+" S)":"TRADE ÉQUILIBRÉ";
+  el.querySelector(".trade-status-sub").textContent=pct!==0?Math.abs(pct)+"% "+(pct>0?"de profit":"de perte")+" par rapport à ce que tu donnes.":"Les deux côtés ont la même valeur.";
+}
+
+function clearTrade(){offerItems=[];receiveItems=[];renderSlots("offer");renderSlots("receive");updateTradeValues();}
+
+function connectRoblox(){
+  var username=document.getElementById("robloxUsernameInput").value.trim();
+  if(!username){notify("Entre un pseudo Roblox valide.","err");return;}
+  robloxConnectedUsername=username;
+  document.getElementById("robloxConnectPanel").style.display="none";
+  document.getElementById("botInfoPanel").style.display="flex";
+  document.getElementById("robloxConnectedUser").textContent=username;
+  if(currentUser){
+    currentUser.robloxUser=username;
+    var users=getUsers();
+    var key=Object.keys(users).find(function(k){return users[k].username===currentUser.username;});
+    if(key){users[key].robloxUser=username;saveUsers(users);}
+    saveSession(currentUser);
+  }
+  notify("🎮 Roblox connecté : "+username,"ok");
+}
+
+function disconnectRoblox(){
+  robloxConnectedUsername=null;
+  if(currentUser){
+    currentUser.robloxUser=null;
+    var users=getUsers();
+    var key=Object.keys(users).find(function(k){return users[k].username===currentUser.username;});
+    if(key){users[key].robloxUser=null;saveUsers(users);}
+    saveSession(currentUser);
+  }
+  document.getElementById("botInfoPanel").style.display="none";
+  document.getElementById("robloxConnectPanel").style.display="block";
+  document.getElementById("robloxUsernameInput").value="";
+  notify("Roblox déconnecté.","ok");
+}
+
+// ═══════════════════════════════════════
+// NAVIGATION
+// ═══════════════════════════════════════
+function toggleNav(){
+  document.getElementById("navDd").classList.toggle("open");
+}
+document.addEventListener("click",function(e){
+  var dd=document.getElementById("navDd");
+  if(dd&&!dd.contains(e.target))dd.classList.remove("open");
+});
+function navGo(id,icon,label){
+  document.getElementById("navDd").classList.remove("open");
+  document.getElementById("navIcon").textContent=icon;
+  document.getElementById("navLabel").textContent=label;
+  document.querySelectorAll(".nav-opt").forEach(function(b){b.classList.remove("active");});
+  var opt=document.getElementById("nopt-"+id);
+  if(opt)opt.classList.add("active");
+  document.querySelectorAll(".page").forEach(function(p){p.classList.remove("active");});
+  var pageMap={inv:"pageInv",val:"pageVal",trade:"pageTrade"};
+  var pg=document.getElementById(pageMap[id]);
+  if(pg)pg.classList.add("active");
+  if(id==="trade")buildTrading();
+}
+
+// ═══════════════════════════════════════
+// NOTIFICATIONS
+// ═══════════════════════════════════════
+var _nt=null;
+function notify(msg,type){
+  var el=document.getElementById("notif");
+  el.textContent=msg;
+  el.className="notif show "+(type||"ok");
+  clearTimeout(_nt);
+  _nt=setTimeout(function(){el.classList.remove("show");},3000);
+}
+
+// ═══════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════
+(function init(){
+  if(window.__pendingOAuthUser){handleOAuthUser(window.__pendingOAuthUser);return;}
+  if(window.__pendingAuthError){
+    var e=document.getElementById("authError");
+    if(e){e.textContent=window.__pendingAuthError;e.style.display="block";}
+    return;
+  }
+  var sess=getSession();
+  if(sess){loginSuccess(sess);}
+})();
+</script>
+</body>
+</html>
 function wkey(sid,n){return sid+"|"+n;}
 function eid(k){return "i"+k.replace(/[^a-zA-Z0-9]/g,"_");}
 function totW(){return S.reduce(function(a,s){return a+s.w.length;},0);}
@@ -1572,64 +2292,50 @@ function renderValues(){
   document.getElementById("valCount").textContent=data.length+" armes";
 
   if(!data.length){
-    document.getElementById("valContent").innerHTML='<div class="val-loading">Aucun résultat.</div>';
+    document.getElementById("valContent").innerHTML='<div class="val-loading" style="animation:none">Aucun résultat.</div>';
     return;
   }
 
   // Group by value tier
   var tiers=[
-    {id:"t3",label:"TIER 3",sub:"Ultra haute valeur · 1 000+ Seers",items:data.filter(function(v){return v.value>=1000;})},
-    {id:"t2",label:"TIER 2",sub:"Haute valeur · 100–999 Seers",items:data.filter(function(v){return v.value>=100&&v.value<1000;})},
-    {id:"t1",label:"TIER 1",sub:"Valeur moyenne · 10–99 Seers",items:data.filter(function(v){return v.value>=10&&v.value<100;})},
-    {id:"t0",label:"TIER 0",sub:"Faible valeur · < 10 Seers",items:data.filter(function(v){return v.value<10;})},
+    {label:"TIER 3 — Ultra haute valeur (1 000+ Seers)",items:data.filter(function(v){return v.value>=1000;})},
+    {label:"TIER 2 — Haute valeur (100–999 Seers)",items:data.filter(function(v){return v.value>=100&&v.value<1000;})},
+    {label:"TIER 1 — Valeur moyenne (10–99 Seers)",items:data.filter(function(v){return v.value>=10&&v.value<100;})},
+    {label:"TIER 0 — Faible valeur (< 10 Seers)",items:data.filter(function(v){return v.value<10;})},
   ];
 
-  var html='';
+  var globalRank=0;
+  var html='<div class="val-table-wrap">';
+  html+='<div class="val-table-head"><div>Rang</div><div>Arme</div><div>Rareté</div><div class="val-head-rarity">Type</div><div>Valeur</div><div>Demande</div></div>';
+
   tiers.forEach(function(tier){
     if(!tier.items.length)return;
-    html+='<div class="val-tier-block">';
-    html+='<div class="val-tier-block-hdr" onclick="toggleTierBlock(this)">';
-    html+='<span class="val-tier-lbl">'+tier.label+'</span>';
-    html+='<span style="font-size:11px;color:var(--muted);font-family:var(--font-body);font-weight:400">'+tier.sub+'</span>';
-    html+='<span class="val-tier-cnt">('+tier.items.length+')</span>';
-    html+='<span class="val-tier-arr open">▶</span>';
-    html+='</div>';
-    html+='<div class="val-card-grid">';
+    html+='<div class="val-tier-header">'+tier.label+' <span style="color:var(--muted);font-family:var(--font-body);font-weight:400;font-size:11px;letter-spacing:0">('+tier.items.length+')</span></div>';
     tier.items.forEach(function(v){
+      globalRank++;
       var own=isOwned(v.name);
       var slug=imgSlug(v.name);
-      var rColor=RARITY_COLORS[v.rarity]||"#7f8c8d";
       var dots="";
       for(var i=1;i<=10;i++) dots+='<div class="val-dot'+(i<=Math.round(v.demand)?" on":"")+'"></div>';
-      html+='<div class="val-card'+(own?" owned-card":"")+'">'+
-        '<div class="val-card-img-wrap">'+
-          '<img class="val-card-img" src="https://mm2checker.com/images/godlies/'+slug+'.png" onerror="this.src=\'https://mm2checker.com/images/legendaries/'+slug+'.png\'" alt="'+v.name+'">'+
-          (own?'<div class="val-owned-mark">✓</div>':'')+
-        '</div>'+
-        '<div class="val-card-info">'+
-          '<span class="val-card-rarity" style="background:'+rColor+'22;color:'+rColor+';border:1px solid '+rColor+'33">'+v.rarity+'</span>'+
-          '<div class="val-card-name">'+v.name+'</div>'+
-          '<div class="val-card-origin">'+v.origin+'</div>'+
-          '<div class="val-card-bottom">'+
-            '<span class="val-card-value">'+v.value.toLocaleString()+' <span class="val-card-seers">S</span></span>'+
-            '<span class="val-card-type">'+(v.type==="K"?"🔪":"🔫")+'</span>'+
+      var rColor=RARITY_COLORS[v.rarity]||"#7f8c8d";
+      html+='<div class="val-row'+(own?" owned-row":"")+'">'+
+        '<div class="val-rank">'+(own?'<span style="color:#8dc63f">✓</span>':globalRank)+'</div>'+
+        '<div class="val-item-cell">'+
+          '<img class="val-item-img" src="https://mm2checker.com/images/godlies/'+slug+'.png" onerror="this.src=\'https://mm2checker.com/images/legendaries/'+slug+'.png\'" alt="'+v.name+'">'+
+          '<div>'+
+            '<div class="val-item-name">'+v.name+'</div>'+
+            '<div class="val-item-origin">'+v.origin+'</div>'+
           '</div>'+
-          '<div class="val-card-demand">'+dots+'</div>'+
         '</div>'+
+        '<div><span class="val-rarity-badge" style="background:'+rColor+'22;color:'+rColor+';border:1px solid '+rColor+'44">'+v.rarity+'</span></div>'+
+        '<div class="val-type-cell">'+(v.type==="K"?"🔪 Couteau":"🔫 Flingue")+'</div>'+
+        '<div class="val-value-cell">'+v.value.toLocaleString()+' <span class="val-seers">Seers</span></div>'+
+        '<div class="val-demand-cell">'+dots+'</div>'+
       '</div>';
     });
-    html+='</div></div>';
   });
+  html+='</div>';
   document.getElementById("valContent").innerHTML=html;
-}
-
-function toggleTierBlock(hdr){
-  var grid=hdr.parentElement.querySelector(".val-card-grid");
-  var arr=hdr.querySelector(".val-tier-arr");
-  var collapsed=grid.style.display==="none";
-  grid.style.display=collapsed?"":"none";
-  hdr.classList.toggle("collapsed",!collapsed);
-  arr.classList.toggle("open",collapsed);
 }
 
 // ═══════════════════════════════════════
@@ -1770,25 +2476,13 @@ function disconnectRoblox(){
 // ═══════════════════════════════════════
 // NAVIGATION
 // ═══════════════════════════════════════
-function toggleNavDropdown(){
-  document.getElementById("navDropdown").classList.toggle("open");
-}
-document.addEventListener("click",function(e){
-  var dd=document.getElementById("navDropdown");
-  if(dd&&!dd.contains(e.target))dd.classList.remove("open");
-});
-function navGo(id,icon,label){
-  document.getElementById("navDropdown").classList.remove("open");
-  document.getElementById("navActiveIcon").textContent=icon;
-  document.getElementById("navActiveLabel").textContent=label;
-  document.querySelectorAll(".nav-item").forEach(function(b){b.classList.remove("active");});
-  var item=document.getElementById("navItem-"+id);
-  if(item)item.classList.add("active");
-  goPage(id);
-}
 function goPage(id){
   document.querySelectorAll(".page").forEach(function(p){p.classList.remove("active");});
+  document.querySelectorAll(".nav-btn").forEach(function(b){b.classList.remove("active");});
   document.getElementById("page"+id.charAt(0).toUpperCase()+id.slice(1)).classList.add("active");
+  var btns=document.querySelectorAll(".nav-btn");
+  var map={collection:0,values:1,trading:2};
+  if(btns[map[id]])btns[map[id]].classList.add("active");
   if(id==="trading")buildTrading();
 }
 

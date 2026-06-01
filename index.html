@@ -935,21 +935,6 @@ function saveSession(u,persist){
   }
   if(authError) window.__pendingAuthError=decodeURIComponent(authError);
   if(oauthUser){try{window.__pendingOAuthUser=JSON.parse(decodeURIComponent(oauthUser));}catch(e){}}
-if(!WEAPON_IMGS["caustalis"])WEAPON_IMGS["caustalis"]=WEAPON_IMGS["australis"];
-if(!WEAPON_IMGS["cborealis"])WEAPON_IMGS["cborealis"]=WEAPON_IMGS["borealis"];
-if(!WEAPON_IMGS["csnowstorm"])WEAPON_IMGS["csnowstorm"]=WEAPON_IMGS["snowstorm"];
-if(!WEAPON_IMGS["cblizzard"])WEAPON_IMGS["cblizzard"]=WEAPON_IMGS["blizzard"];
-if(!WEAPON_IMGS["cwaves"])WEAPON_IMGS["cwaves"]=WEAPON_IMGS["waves"];
-if(!WEAPON_IMGS["cocean"])WEAPON_IMGS["cocean"]=WEAPON_IMGS["ocean"];
-if(!WEAPON_IMGS["cflowerwood"])WEAPON_IMGS["cflowerwood"]=WEAPON_IMGS["flowerwood"];
-if(!WEAPON_IMGS["cflowerwoodgun"])WEAPON_IMGS["cflowerwoodgun"]=WEAPON_IMGS["flowerwoodgun"];
-if(!WEAPON_IMGS["cxenoshot"])WEAPON_IMGS["cxenoshot"]=WEAPON_IMGS["xenoshot"];
-if(!WEAPON_IMGS["cxenoknife"])WEAPON_IMGS["cxenoknife"]=WEAPON_IMGS["xenoknife"];
-if(!WEAPON_IMGS["csnowdagger"])WEAPON_IMGS["csnowdagger"]=WEAPON_IMGS["snowdagger"];
-if(!WEAPON_IMGS["crainbowknife"])WEAPON_IMGS["crainbowknife"]=WEAPON_IMGS["rainbowknife"];
-if(!WEAPON_IMGS["crainbowgun"])WEAPON_IMGS["crainbowgun"]=WEAPON_IMGS["rainbowgun"];
-if(!WEAPON_IMGS["cspirit"])WEAPON_IMGS["cspirit"]=WEAPON_IMGS["spirit"];
-if(!WEAPON_IMGS["csoul"])WEAPON_IMGS["csoul"]=WEAPON_IMGS["soul"];
 })();
 
 function switchAuthTab(t){

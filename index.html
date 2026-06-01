@@ -52,19 +52,49 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 #app{display:none;position:relative;z-index:1}
 
 /* TOPBAR */
-.topbar{position:sticky;top:0;z-index:100;background:rgba(7,8,15,.85);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:0 32px;display:flex;align-items:center;gap:0;height:60px}
-.topbar-logo{font-family:var(--font-head);font-size:16px;font-weight:900;letter-spacing:3px;background:linear-gradient(135deg,var(--red),var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-right:40px;white-space:nowrap}
+.topbar{position:sticky;top:0;z-index:100;background:rgba(7,8,15,.92);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:0 24px;display:flex;align-items:center;gap:0;height:58px}
+.topbar-logo{font-family:var(--font-head);font-size:15px;font-weight:900;letter-spacing:3px;background:linear-gradient(135deg,var(--red),var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-right:20px;white-space:nowrap;flex-shrink:0}
+
+/* ─── DROPDOWN NAV ─── */
 .nav{display:flex;gap:0;flex:1}
-.nav-btn{background:none;border:none;color:var(--muted);font-family:var(--font-body);font-size:14px;font-weight:600;letter-spacing:1px;text-transform:uppercase;padding:0 20px;height:60px;cursor:pointer;position:relative;transition:color .2s}
-.nav-btn::after{content:'';position:absolute;bottom:0;left:20px;right:20px;height:2px;background:var(--red);transform:scaleX(0);transition:transform .2s}
+.nav-item{position:relative}
+.nav-btn{background:none;border:none;color:var(--muted);font-family:var(--font-body);font-size:13px;font-weight:600;letter-spacing:1px;text-transform:uppercase;padding:0 16px;height:58px;cursor:pointer;position:relative;transition:color .2s;display:flex;align-items:center;gap:6px;white-space:nowrap}
+.nav-btn::after{content:'';position:absolute;bottom:0;left:16px;right:16px;height:2px;background:var(--red);transform:scaleX(0);transition:transform .2s}
 .nav-btn.active,.nav-btn:hover{color:var(--text)}
 .nav-btn.active::after{transform:scaleX(1)}
-.topbar-user{margin-left:auto;display:flex;align-items:center;gap:12px}
-.user-avatar{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--red),var(--purple));display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;font-family:var(--font-head)}
+.nav-btn .nav-arrow{font-size:10px;opacity:.5;transition:transform .2s;margin-left:2px}
+.nav-item.open .nav-arrow{transform:rotate(180deg);opacity:1}
+.nav-dropdown{position:absolute;top:calc(100% + 4px);left:0;min-width:200px;background:var(--surface);border:1px solid var(--border2);border-radius:10px;box-shadow:0 16px 40px rgba(0,0,0,.6);overflow:hidden;opacity:0;pointer-events:none;transform:translateY(-8px);transition:opacity .18s,transform .18s;z-index:200}
+.nav-item.open .nav-dropdown{opacity:1;pointer-events:auto;transform:translateY(0)}
+.nav-dd-item{display:flex;align-items:center;gap:10px;padding:11px 16px;cursor:pointer;font-size:13px;font-weight:600;color:var(--muted);letter-spacing:.5px;transition:all .15s;border-bottom:1px solid var(--border)}
+.nav-dd-item:last-child{border-bottom:none}
+.nav-dd-item:hover{background:var(--surface2);color:var(--text)}
+.nav-dd-item.active{color:var(--red);background:rgba(230,57,70,.06)}
+.nav-dd-icon{font-size:16px;width:20px;text-align:center;flex-shrink:0}
+.nav-dd-sep{height:1px;background:var(--border);margin:4px 0}
+
+/* Direct nav buttons (no dropdown) */
+.nav-direct{background:none;border:none;color:var(--muted);font-family:var(--font-body);font-size:13px;font-weight:600;letter-spacing:1px;text-transform:uppercase;padding:0 16px;height:58px;cursor:pointer;position:relative;transition:color .2s;display:flex;align-items:center;gap:6px;white-space:nowrap}
+.nav-direct::after{content:'';position:absolute;bottom:0;left:16px;right:16px;height:2px;background:var(--red);transform:scaleX(0);transition:transform .2s}
+.nav-direct.active,.nav-direct:hover{color:var(--text)}
+.nav-direct.active::after{transform:scaleX(1)}
+
+.topbar-user{margin-left:auto;display:flex;align-items:center;gap:10px;flex-shrink:0}
+.user-avatar{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--red),var(--purple));display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;font-family:var(--font-head)}
 .user-name{font-size:13px;font-weight:600;color:var(--text)}
 .user-provider{font-size:10px;color:var(--cyan);letter-spacing:1px}
-.logout-btn{background:none;border:1px solid var(--border2);border-radius:6px;color:var(--muted);padding:6px 12px;font-size:12px;cursor:pointer;transition:all .2s}
+.logout-btn{background:none;border:1px solid var(--border2);border-radius:6px;color:var(--muted);padding:5px 10px;font-size:12px;cursor:pointer;transition:all .2s}
 .logout-btn:hover{border-color:var(--red);color:var(--red)}
+
+/* Mobile hamburger */
+.hamburger{display:none;background:none;border:1px solid var(--border2);border-radius:6px;color:var(--muted);padding:6px 10px;cursor:pointer;font-size:18px;line-height:1;margin-right:8px}
+.mobile-menu{display:none;position:fixed;inset:58px 0 0 0;background:rgba(7,8,15,.97);backdrop-filter:blur(20px);z-index:99;flex-direction:column;padding:16px;gap:4px;overflow-y:auto}
+.mobile-menu.open{display:flex}
+.mobile-menu-item{display:flex;align-items:center;gap:12px;padding:14px 16px;border-radius:8px;cursor:pointer;font-size:14px;font-weight:600;color:var(--muted);letter-spacing:.5px;transition:all .15s}
+.mobile-menu-item:hover,.mobile-menu-item.active{background:var(--surface2);color:var(--text)}
+.mobile-menu-item.active{color:var(--red)}
+.mobile-menu-sep{height:1px;background:var(--border);margin:6px 0}
+.mobile-section-label{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--dimmed);padding:8px 16px 4px}
 
 /* PAGES */
 .page{display:none;min-height:calc(100vh - 60px);padding:28px 32px}
@@ -105,42 +135,50 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 .hidden{display:none!important}
 .nores{padding:48px;text-align:center;color:var(--dimmed)}
 
-/* ══ VALUES PAGE — style SupremeValues ══ */
-.val-filters{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:24px;align-items:center}
-.val-filter-btn{background:var(--surface2);border:1px solid var(--border2);border-radius:20px;color:var(--muted);padding:7px 16px;font-size:12px;font-weight:600;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:all .2s}
+/* ══ VALUES PAGE — style SupremeValues card ══ */
+.val-filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px;align-items:center}
+.val-filter-btn{background:var(--surface2);border:1px solid var(--border2);border-radius:20px;color:var(--muted);padding:6px 14px;font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:all .2s}
 .val-filter-btn.active{background:var(--red);border-color:var(--red);color:#fff;box-shadow:var(--glow-red)}
-.val-sort-bar{display:flex;gap:8px;align-items:center;margin-bottom:18px;flex-wrap:wrap}
-.val-sort-btn{background:none;border:1px solid var(--border);border-radius:6px;color:var(--dimmed);padding:5px 12px;font-size:11px;font-family:var(--font-body);font-weight:600;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:all .2s}
+.val-sort-bar{display:flex;gap:8px;align-items:center;margin-bottom:16px;flex-wrap:wrap}
+.val-sort-btn{background:none;border:1px solid var(--border);border-radius:6px;color:var(--dimmed);padding:4px 10px;font-size:11px;font-family:var(--font-body);font-weight:600;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:all .2s}
 .val-sort-btn.active{border-color:var(--gold);color:var(--gold)}
-/* Supreme-style table */
-.val-table-wrap{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden}
-.val-table-head{display:grid;grid-template-columns:50px 2fr 1fr 1fr 100px 1fr;gap:0;padding:10px 16px;background:var(--surface2);border-bottom:1px solid var(--border);font-size:10px;font-weight:700;color:var(--muted);letter-spacing:2px;text-transform:uppercase}
-.val-row{display:grid;grid-template-columns:50px 2fr 1fr 1fr 100px 1fr;gap:0;padding:10px 16px;border-bottom:1px solid var(--border);align-items:center;transition:background .15s;cursor:default}
-.val-row:last-child{border-bottom:none}
-.val-row:hover{background:var(--surface2)}
-.val-row.owned-row{background:rgba(45,90,27,.1)}
-.val-row.owned-row:hover{background:rgba(45,90,27,.18)}
-.val-rank{font-family:var(--font-head);font-size:11px;color:var(--dimmed);text-align:center}
-.val-item-cell{display:flex;align-items:center;gap:10px}
-.val-item-img{width:38px;height:38px;object-fit:contain;flex-shrink:0;filter:drop-shadow(0 1px 4px rgba(0,0,0,.5))}
-.val-item-name{font-size:13px;font-weight:700;color:var(--text)}
-.val-item-origin{font-size:10px;color:var(--dimmed)}
-.val-owned-badge{font-size:9px;background:#2d5a1b;color:#8dc63f;border-radius:3px;padding:1px 5px;font-weight:700;letter-spacing:1px}
-.val-rarity-badge{padding:3px 8px;border-radius:4px;font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase}
-.val-value-cell{font-family:var(--font-head);font-size:14px;font-weight:700;color:var(--gold2)}
-.val-seers{font-size:10px;color:var(--muted);font-family:var(--font-body);font-weight:400}
-.val-demand-cell{display:flex;gap:2px;align-items:center}
-.val-dot{width:8px;height:8px;border-radius:50%;background:var(--border2);flex-shrink:0}
-.val-dot.on{background:var(--gold)}
-.val-type-cell{font-size:12px;color:var(--muted);display:flex;align-items:center;gap:4px}
+
+/* Supreme-style card grid */
+.val-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:6px;padding:2px 0}
+.val-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;overflow:hidden;display:flex;flex-direction:row;align-items:stretch;transition:border-color .15s,box-shadow .15s;cursor:default;position:relative}
+.val-card:hover{border-color:var(--border2);box-shadow:0 2px 16px rgba(0,0,0,.3)}
+.val-card.owned-row{border-left:3px solid #639922}
+.val-card-img{width:96px;min-width:96px;background:rgba(0,0,0,.3);display:flex;align-items:center;justify-content:center;position:relative;flex-shrink:0}
+.val-card-img img{width:70px;height:70px;object-fit:contain;filter:drop-shadow(0 2px 6px rgba(0,0,0,.5))}
+.val-card-rank{position:absolute;top:4px;left:5px;font-family:var(--font-head);font-size:10px;color:var(--dimmed)}
+.val-card-body{flex:1;padding:8px 10px;display:flex;flex-direction:column;gap:2px;overflow:hidden;min-width:0}
+.val-card-head{display:flex;align-items:center;gap:6px;margin-bottom:3px}
+.val-card-name{font-size:12px;font-weight:700;color:var(--text);text-decoration:underline;text-underline-offset:2px;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.val-card-type{font-size:12px;flex-shrink:0}
+.val-card-owned{font-size:9px;background:#2d5a1b;color:#8dc63f;border-radius:3px;padding:1px 5px;font-weight:700;letter-spacing:1px;flex-shrink:0}
+.val-stat{font-size:10px;color:var(--muted);line-height:1.55;display:flex;gap:4px;align-items:baseline;white-space:nowrap;overflow:hidden}
+.val-stat .lbl{color:var(--dimmed);flex-shrink:0}
+.val-stat .vv{color:#e8d87a;font-weight:700}
+.val-stat .stab-stable{color:#aaa}
+.val-stat .stab-up{color:#4caf50}
+.val-stat .stab-down{color:#e57373}
+.val-stat .chg-pos{color:#4caf50}
+.val-stat .chg-neg{color:#e57373}
+.val-stat .dem{color:var(--text)}
+.val-rarity-tag{font-size:9px;font-weight:700;letter-spacing:.5px;padding:2px 6px;border-radius:3px;text-transform:uppercase;flex-shrink:0}
+
+/* Tier headers in grid */
+.val-tier-sep{grid-column:1/-1;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:8px 14px;font-family:var(--font-head);font-size:11px;font-weight:700;letter-spacing:3px;color:var(--gold);display:flex;align-items:center;gap:10px;margin-top:8px}
+.val-tier-sep:first-child{margin-top:0}
+.val-tier-cnt{font-family:var(--font-body);font-size:11px;font-weight:400;color:var(--muted);letter-spacing:0;margin-left:auto}
+
 .val-loading{text-align:center;padding:60px;color:var(--muted);font-family:var(--font-head);font-size:14px;letter-spacing:2px}
 .val-loading::after{content:'';display:inline-block;width:20px;height:20px;border:2px solid var(--border2);border-top-color:var(--red);border-radius:50%;animation:spin .8s linear infinite;margin-left:12px;vertical-align:middle}
 @keyframes spin{to{transform:rotate(360deg)}}
-.val-tier-header{padding:10px 16px;background:var(--surface3);font-family:var(--font-head);font-size:11px;font-weight:700;letter-spacing:3px;color:var(--gold);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
-.val-tier-header:first-child{border-top:none}
 .val-live-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(6,214,160,.1);border:1px solid rgba(6,214,160,.3);border-radius:20px;padding:4px 12px;font-size:11px;color:var(--cyan);margin-left:auto}
 .val-live-dot{width:7px;height:7px;border-radius:50%;background:var(--cyan);animation:pulse 2s infinite}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+/* (old table cell styles removed - now using cards) */
 
 /* ══ TRADING PAGE ══ */
 .trade-layout{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:24px}
@@ -194,11 +232,16 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 .notif.err{border-color:var(--red);color:var(--red2)}
 
 @media(max-width:768px){
-  .topbar{padding:0 16px}.page{padding:16px}
-  .nav-btn{padding:0 12px;font-size:12px}
-  .topbar-logo{margin-right:16px;font-size:13px}
-  .val-table-head,.val-row{grid-template-columns:40px 2fr 1fr 90px}
-  .val-head-rarity,.val-rarity-badge,.val-type-cell{display:none}
+  .topbar{padding:0 12px}
+  .page{padding:12px}
+  .topbar-logo{margin-right:8px;font-size:13px}
+  .nav{display:none}
+  .hamburger{display:flex;align-items:center;justify-content:center}
+  .user-name,.user-provider,.logout-btn{display:none}
+}
+@media(min-width:769px){
+  .hamburger{display:none}
+  .mobile-menu{display:none!important}
 }
 
 /* ══ COLLECTION CARDS — style Supreme Value ══ */
@@ -281,11 +324,34 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 <div id="app">
   <nav class="topbar">
     <div class="topbar-logo">MM2 HUB</div>
+
+    <!-- Desktop nav with dropdowns -->
     <div class="nav">
-      <button class="nav-btn active" onclick="goPage('collection')">🗡 Collection</button>
-      <button class="nav-btn" onclick="goPage('values')">📈 Valeurs</button>
-      <button class="nav-btn" onclick="goPage('trading')">🔄 Trading Bot</button>
+      <!-- Collection direct -->
+      <button class="nav-direct active" id="navCollection" onclick="goPage('collection')">🗡 Collection</button>
+
+      <!-- Values dropdown -->
+      <div class="nav-item" id="navItemValues">
+        <button class="nav-btn" onclick="toggleDropdown('navItemValues',event)">
+          📈 Valeurs <span class="nav-arrow">▼</span>
+        </button>
+        <div class="nav-dropdown">
+          <div class="nav-dd-item active" id="ddAll" onclick="goPage('values');valFilterDirect('all');closeDropdowns()"><span class="nav-dd-icon">📊</span> Toutes les valeurs</div>
+          <div class="nav-dd-item" onclick="goPage('values');valFilterDirect('Ancient');closeDropdowns()"><span class="nav-dd-icon" style="color:#9b59b6">✦</span> Ancient</div>
+          <div class="nav-dd-item" onclick="goPage('values');valFilterDirect('Chroma');closeDropdowns()"><span class="nav-dd-icon" style="color:#e67e22">◈</span> Chroma</div>
+          <div class="nav-dd-item" onclick="goPage('values');valFilterDirect('Godly');closeDropdowns()"><span class="nav-dd-icon" style="color:#e74c3c">♛</span> Godly</div>
+          <div class="nav-dd-item" onclick="goPage('values');valFilterDirect('Unique');closeDropdowns()"><span class="nav-dd-icon" style="color:#888">◇</span> Unique</div>
+          <div class="nav-dd-item" onclick="goPage('values');valFilterDirect('owned');closeDropdowns()"><span class="nav-dd-icon" style="color:#8dc63f">✓</span> Mes armes</div>
+        </div>
+      </div>
+
+      <!-- Trading direct -->
+      <button class="nav-direct" id="navTrading" onclick="goPage('trading')">🔄 Trading Bot</button>
     </div>
+
+    <!-- Hamburger (mobile) -->
+    <button class="hamburger" id="hamburgerBtn" onclick="toggleMobile()">☰</button>
+
     <div class="topbar-user">
       <div>
         <div class="user-avatar" id="userAvatar">?</div>
@@ -294,9 +360,27 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         <div class="user-name" id="userName">—</div>
         <div class="user-provider" id="userProvider"></div>
       </div>
-      <button class="logout-btn" onclick="logout()">Déconnexion</button>
+      <button class="logout-btn" onclick="logout()">Déco</button>
     </div>
   </nav>
+
+  <!-- Mobile menu -->
+  <div class="mobile-menu" id="mobileMenu">
+    <div class="mobile-section-label">Navigation</div>
+    <div class="mobile-menu-item active" id="mobCollection" onclick="goPage('collection');closeMobile()"><span style="font-size:16px">🗡</span> Collection</div>
+    <div class="mobile-menu-sep"></div>
+    <div class="mobile-section-label">Valeurs</div>
+    <div class="mobile-menu-item" onclick="goPage('values');valFilterDirect('all');closeMobile()"><span style="font-size:16px">📊</span> Toutes les valeurs</div>
+    <div class="mobile-menu-item" onclick="goPage('values');valFilterDirect('Ancient');closeMobile()"><span style="font-size:16px;color:#9b59b6">✦</span> Ancient</div>
+    <div class="mobile-menu-item" onclick="goPage('values');valFilterDirect('Chroma');closeMobile()"><span style="font-size:16px;color:#e67e22">◈</span> Chroma</div>
+    <div class="mobile-menu-item" onclick="goPage('values');valFilterDirect('Godly');closeMobile()"><span style="font-size:16px;color:#e74c3c">♛</span> Godly</div>
+    <div class="mobile-menu-item" onclick="goPage('values');valFilterDirect('Unique');closeMobile()"><span style="font-size:16px;color:#888">◇</span> Unique</div>
+    <div class="mobile-menu-item" onclick="goPage('values');valFilterDirect('owned');closeMobile()"><span style="font-size:16px;color:#8dc63f">✓</span> Mes armes</div>
+    <div class="mobile-menu-sep"></div>
+    <div class="mobile-menu-item" id="mobTrading" onclick="goPage('trading');closeMobile()"><span style="font-size:16px">🔄</span> Trading Bot</div>
+    <div class="mobile-menu-sep"></div>
+    <div class="mobile-menu-item" onclick="logout()" style="color:var(--red2)"><span style="font-size:16px">🚪</span> Déconnexion (<span id="mobUserName"></span>)</div>
+  </div>
 
   <!-- PAGE COLLECTION -->
   <div class="page active" id="pageCollection">
@@ -1538,42 +1622,64 @@ function renderValues(){
 
   // Group by value tier
   var tiers=[
-    {label:"TIER 3 — Ultra haute valeur (1 000+ Seers)",items:data.filter(function(v){return v.value>=1000;})},
-    {label:"TIER 2 — Haute valeur (100–999 Seers)",items:data.filter(function(v){return v.value>=100&&v.value<1000;})},
-    {label:"TIER 1 — Valeur moyenne (10–99 Seers)",items:data.filter(function(v){return v.value>=10&&v.value<100;})},
-    {label:"TIER 0 — Faible valeur (< 10 Seers)",items:data.filter(function(v){return v.value<10;})},
+    {label:"TIER 3 — Ultra haute valeur",sub:"1 000+ Seers",items:data.filter(function(v){return v.value>=1000;})},
+    {label:"TIER 2 — Haute valeur",sub:"100 – 999 Seers",items:data.filter(function(v){return v.value>=100&&v.value<1000;})},
+    {label:"TIER 1 — Valeur moyenne",sub:"10 – 99 Seers",items:data.filter(function(v){return v.value>=10&&v.value<100;})},
+    {label:"TIER 0 — Faible valeur",sub:"< 10 Seers",items:data.filter(function(v){return v.value<10;})},
   ];
 
   var globalRank=0;
-  var html='<div class="val-table-wrap">';
-  html+='<div class="val-table-head"><div>Rang</div><div>Arme</div><div>Rareté</div><div class="val-head-rarity">Type</div><div>Valeur</div><div>Demande</div></div>';
+  var html='<div class="val-grid">';
 
   tiers.forEach(function(tier){
     if(!tier.items.length)return;
-    html+='<div class="val-tier-header">'+tier.label+' <span style="color:var(--muted);font-family:var(--font-body);font-weight:400;font-size:11px;letter-spacing:0">('+tier.items.length+')</span></div>';
+    html+='<div class="val-tier-sep">'+tier.label+' <span style="color:var(--muted);font-family:var(--font-body);font-weight:400;font-size:11px;letter-spacing:0">— '+tier.sub+'</span><span class="val-tier-cnt">'+tier.items.length+' armes</span></div>';
+
     tier.items.forEach(function(v){
       globalRank++;
       var own=isOwned(v.name);
       var slug=imgSlug(v.name);
-      var dots="";
-      for(var i=1;i<=10;i++) dots+='<div class="val-dot'+(i<=Math.round(v.demand)?" on":"")+'"></div>';
       var rColor=RARITY_COLORS[v.rarity]||"#7f8c8d";
-      html+='<div class="val-row'+(own?" owned-row":"")+'">'+
-        '<div class="val-rank">'+(own?'<span style="color:#8dc63f">✓</span>':globalRank)+'</div>'+
-        '<div class="val-item-cell">'+
-          '<img class="val-item-img" src="https://mm2checker.com/images/godlies/'+slug+'.png" onerror="this.src=\'https://mm2checker.com/images/legendaries/'+slug+'.png\'" alt="'+v.name+'">'+
-          '<div>'+
-            '<div class="val-item-name">'+v.name+'</div>'+
-            '<div class="val-item-origin">'+v.origin+'</div>'+
-          '</div>'+
+
+      // Stability
+      var stab=v.stability||"Stable";
+      var stabCls=stab==="Stable"?"stab-stable":stab.indexOf("Well")>=0?"stab-up":"stab-down";
+      var stabIcon=stab==="Stable"?"⇔":stab.indexOf("Well")>=0?"↗":"⇗";
+
+      // Last change
+      var lcHtml="";
+      if(v.lc!==undefined&&v.lc!==null){
+        var lcSign=v.lc>=0?"+":"";
+        lcHtml='<span class="'+(v.lc>=0?"chg-pos":"chg-neg")+'">'+lcSign+v.lc+'</span>';
+      } else {
+        lcHtml='<span class="stab-stable">—</span>';
+      }
+
+      // Demand dots
+      var dots='';
+      for(var i=1;i<=10;i++) dots+='<span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:'+(i<=Math.round(v.demand)?'var(--gold)':'var(--border2)')+'"></span>';
+
+      html+='<div class="val-card'+(own?" owned-row":"")+'">'+
+        '<div class="val-card-img">'+
+          '<span class="val-card-rank">#'+globalRank+'</span>'+
+          '<img src="https://mm2checker.com/images/godlies/'+slug+'.png" onerror="this.src=\'https://mm2checker.com/images/legendaries/'+slug+'.png\'" alt="'+v.name+'">'+
         '</div>'+
-        '<div><span class="val-rarity-badge" style="background:'+rColor+'22;color:'+rColor+';border:1px solid '+rColor+'44">'+v.rarity+'</span></div>'+
-        '<div class="val-type-cell">'+(v.type==="K"?"🔪 Couteau":"🔫 Flingue")+'</div>'+
-        '<div class="val-value-cell">'+v.value.toLocaleString()+' <span class="val-seers">Seers</span></div>'+
-        '<div class="val-demand-cell">'+dots+'</div>'+
+        '<div class="val-card-body">'+
+          '<div class="val-card-head">'+
+            '<span class="val-card-name">'+v.name+'</span>'+
+            '<span class="val-card-type">'+(v.type==="K"?"🔪":"🔫")+'</span>'+
+            (own?'<span class="val-card-owned">✓ OWNED</span>':'')+
+          '</div>'+
+          '<div class="val-stat"><span class="lbl">Value —&nbsp;</span><span class="vv">'+v.value.toLocaleString()+'</span><span style="color:var(--dimmed);font-size:9px">&nbsp;Seers</span>'+(v.rv?'&nbsp;<span style="color:var(--dimmed)">['+v.rv+']</span>':'')+'</div>'+
+          '<div class="val-stat"><span class="lbl">Stability —&nbsp;</span><span class="'+stabCls+'">'+stab+' '+stabIcon+'</span></div>'+
+          '<div class="val-stat"><span class="lbl">Demand —&nbsp;</span><span class="dem">'+v.demand+'</span>&nbsp;'+dots+'</div>'+
+          '<div class="val-stat"><span class="lbl">Rarity —&nbsp;</span><span class="val-rarity-tag" style="background:'+rColor+'22;color:'+rColor+'">'+v.rarity+'</span>&nbsp;•&nbsp;<span class="lbl">Last Change —&nbsp;</span>'+lcHtml+'</div>'+
+          '<div class="val-stat"><span class="lbl">Origin —&nbsp;</span><span class="dem">'+v.origin+'</span></div>'+
+        '</div>'+
       '</div>';
     });
   });
+
   html+='</div>';
   document.getElementById("valContent").innerHTML=html;
 }

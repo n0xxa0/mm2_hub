@@ -213,6 +213,33 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
   .val-table-head,.val-row{grid-template-columns:40px 2fr 1fr 90px}
   .val-head-rarity,.val-rarity-badge,.val-type-cell{display:none}
 }
+
+/* ══ COLLECTION CARDS — style Supreme Value ══ */
+.wgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:8px;padding:8px;background:var(--bg)}
+.wi{display:flex;flex-direction:row;align-items:flex-start;gap:0;border-radius:8px;border:1px solid var(--border);background:var(--surface);cursor:pointer;transition:all .15s;overflow:hidden;position:relative;min-height:110px}
+.wi:hover{border-color:var(--border2);background:var(--surface2)}
+.wi.owned{border-color:#2d5a1b;background:#0a1a08}
+.wi.owned .wi-check{opacity:1}
+.wi.owned .wi-name{color:#8dc63f}
+.wi-img-wrap{width:100px;min-width:100px;height:110px;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.35);position:relative;flex-shrink:0}
+.wi-img{width:82px;height:82px;object-fit:contain;filter:drop-shadow(0 2px 8px rgba(0,0,0,.6))}
+.wi-check{position:absolute;top:5px;right:5px;width:18px;height:18px;background:#639922;border-radius:50%;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .15s;font-size:10px;color:#fff;font-weight:700}
+.wi-info{flex:1;padding:8px 10px;display:flex;flex-direction:column;gap:2px;overflow:hidden}
+.wi-header{display:flex;align-items:center;gap:6px;margin-bottom:2px}
+.wi-name{font-size:12px;font-weight:700;color:var(--text);line-height:1.2;text-decoration:underline;text-underline-offset:2px;flex:1}
+.wi-type-icon{font-size:12px;flex-shrink:0}
+.wi-cb{width:13px;height:13px;accent-color:#639922;flex-shrink:0;pointer-events:none}
+.wi-stat{font-size:10px;color:var(--muted);line-height:1.5;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.wi-stat span.lbl{color:var(--dimmed)}
+.wi-stat span.val-num{color:#e8d87a;font-weight:700}
+.wi-stat span.stab-stable{color:#aaa}
+.wi-stat span.stab-up{color:#4caf50}
+.wi-stat span.stab-down{color:#e57373}
+.wi-stat span.chg-pos{color:#4caf50}
+.wi-stat span.chg-neg{color:#e57373}
+.wi-stat span.demand-num{color:var(--text)}
+.wi-bottom{display:none}
+
 </style>
 </head>
 <body>
@@ -1186,17 +1213,71 @@ function build(){
       d.className="wi"+(isO?" owned":"");
       d.id=eid(k);
       d.onclick=(function(sid,name){return function(){tog(sid,name);};})(s.id,w.n);
+
+      // Left: image
       var imgWrap=document.createElement("div");imgWrap.className="wi-img-wrap";
       imgWrap.appendChild(makeImg(w.n,"wi-img"));
       var chk=document.createElement("div");chk.className="wi-check";chk.textContent="✓";chk.style.opacity=isO?"1":"0";
       imgWrap.appendChild(chk);
       d.appendChild(imgWrap);
-      var bot=document.createElement("div");bot.className="wi-bottom";
+
+      // Right: info block
+      var info=document.createElement("div");info.className="wi-info";
+
+      // Header: checkbox + name + type
+      var hdr=document.createElement("div");hdr.className="wi-header";
       var cb=document.createElement("input");cb.type="checkbox";cb.checked=isO;cb.className="wi-cb";
       var nm=document.createElement("span");nm.className="wi-name";nm.textContent=w.n;
-      var tp=document.createElement("span");tp.className="wi-type";tp.textContent=w.t==="K"?"🔪":"🔫";
-      bot.appendChild(cb);bot.appendChild(nm);bot.appendChild(tp);
-      d.appendChild(bot);
+      var tp=document.createElement("span");tp.className="wi-type-icon";tp.textContent=w.t==="K"?"🔪":"🔫";
+      hdr.appendChild(cb);hdr.appendChild(nm);hdr.appendChild(tp);
+      info.appendChild(hdr);
+
+      // Lookup value data
+      var vdata=null;
+      if(typeof EMBEDDED_VALUES!=="undefined"){
+        vdata=EMBEDDED_VALUES.find(function(v){return v.name.toLowerCase()===w.n.toLowerCase();});
+      }
+
+      function stat(label,content){
+        var p=document.createElement("div");p.className="wi-stat";
+        p.innerHTML='<span class="lbl">'+label+' - </span>'+content;
+        return p;
+      }
+
+      if(vdata){
+        // Value
+        var valStr='<span class="val-num">'+vdata.value.toLocaleString()+'</span>';
+        if(w.chg!==undefined){
+          var sign=w.chg>=0?"+":"";
+          valStr+=' <span class="'+(w.chg>=0?"chg-pos":"chg-neg")+'">'+sign+w.chg+'</span>';
+        }
+        info.appendChild(stat("Value",valStr));
+
+        // Ranged value
+        var rvStr=vdata.rv?'<span class="val-num">['+vdata.rv+']</span>':'<span class="stab-stable">[N/A]</span>';
+        info.appendChild(stat("Ranged Value",rvStr));
+
+        // Stability
+        var stab=vdata.stability||"Stable";
+        var stabCls=stab==="Stable"?"stab-stable":stab.indexOf("Well")>=0?"stab-up":"stab-down";
+        info.appendChild(stat("Stability",'<span class="'+stabCls+'">'+stab+' '+(stab==="Stable"?"⇔":stab.indexOf("Well")>=0?"→":"⇗")+'</span>'));
+
+        // Demand & Rarity
+        info.appendChild(stat("Demand",'<span class="demand-num">'+vdata.demand+'</span>'+'&nbsp;&nbsp;•&nbsp;&nbsp;<span class="lbl">Rarity - </span><span class="demand-num">'+(vdata.rarity_score||"?")+'</span>'));
+
+        // Origin
+        info.appendChild(stat("Origin",'<span class="demand-num">'+vdata.origin+'</span>'));
+
+        // Last change
+        if(vdata.lc!==undefined&&vdata.lc!==null){
+          var lcSign=vdata.lc>=0?"+":"";
+          info.appendChild(stat("Last Change in Value",'<span class="'+(vdata.lc>=0?"chg-pos":"chg-neg")+'">('+lcSign+vdata.lc+')</span>'));
+        }
+      } else {
+        info.appendChild(stat("Value",'<span class="stab-stable">N/A</span>'));
+      }
+
+      d.appendChild(info);
       grid.appendChild(d);
     });
     sec.appendChild(grid);
@@ -1294,27 +1375,27 @@ var EMBEDDED_VALUES = [
   {name:"Chroma Tides",rarity:"Chroma",value:41,demand:1,rarity_score:1.6,origin:"Knife Box #5",type:"K"},
   {name:"Chroma Boneblade",rarity:"Chroma",value:37,demand:1,rarity_score:1.7,origin:"Hallows 2018",type:"K"},
   // Godly Tier 3
-  {name:"Traveler's Gun",rarity:"Godly",value:6297,demand:6,rarity_score:5,origin:"Hallows 2023",type:"G"},
-  {name:"Evergun",rarity:"Godly",value:4518,demand:4.7,rarity_score:3.6,origin:"Xmas 2023",type:"G"},
-  {name:"Constellation",rarity:"Godly",value:3559,demand:4.9,rarity_score:3.9,origin:"Xmas 2024",type:"G"},
-  {name:"Evergreen",rarity:"Godly",value:3354,demand:5.2,rarity_score:4.5,origin:"Xmas 2023",type:"K"},
-  {name:"Turkey",rarity:"Godly",value:3354,demand:5.5,rarity_score:3.7,origin:"Thanksgiving 2023",type:"K"},
-  {name:"Alienbeam",rarity:"Godly",value:3046,demand:5.7,rarity_score:4.1,origin:"Hallows 2025",type:"K"},
-  {name:"Vampire's Gun",rarity:"Godly",value:2327,demand:5.4,rarity_score:4,origin:"Hallows 2024",type:"G"},
-  {name:"Darkshot",rarity:"Godly",value:1930,demand:6,rarity_score:3.7,origin:"Hallows 2023",type:"G"},
-  {name:"Darksword",rarity:"Godly",value:1903,demand:5.6,rarity_score:4.1,origin:"Hallows 2023",type:"K"},
-  {name:"Raygun",rarity:"Godly",value:1780,demand:6,rarity_score:2.7,origin:"Hallows 2025",type:"G"},
-  {name:"Blossom",rarity:"Godly",value:1643,demand:6.5,rarity_score:3,origin:"Valentine 2023",type:"G"},
-  {name:"Sakura",rarity:"Godly",value:1629,demand:6,rarity_score:4,origin:"Valentine 2023",type:"K"},
-  {name:"Sunrise",rarity:"Godly",value:1369,demand:6,rarity_score:4.5,origin:"Summer 2025",type:"G"},
-  {name:"Snowcannon",rarity:"Godly",value:1266,demand:4,rarity_score:2.7,origin:"Xmas 2025",type:"G"},
-  {name:"Bauble",rarity:"Godly",value:1232,demand:5,rarity_score:3,origin:"Xmas 2024",type:"G"},
-  {name:"Sunset",rarity:"Godly",value:719,demand:4.1,rarity_score:3,origin:"Summer 2025",type:"K"},
+  {name:"Traveler's Gun",rarity:"Godly",value:6297,demand:6,rarity_score:5,origin:"Hallows 2023",type:"G",stability:"Doing Well",rv:"4,900 - 5,000",lc:150},
+  {name:"Evergun",rarity:"Godly",value:4518,demand:4.7,rarity_score:3.6,origin:"Xmas 2023",type:"G",stability:"Stable",lc:-50},
+  {name:"Constellation",rarity:"Godly",value:3559,demand:4.9,rarity_score:3.9,origin:"Xmas 2024",type:"G",stability:"Stable",lc:-50},
+  {name:"Evergreen",rarity:"Godly",value:3354,demand:5.2,rarity_score:4.5,origin:"Xmas 2023",type:"K",stability:"Stable",lc:-50},
+  {name:"Turkey",rarity:"Godly",value:3354,demand:5.5,rarity_score:3.7,origin:"Thanksgiving 2023",type:"K",stability:"Stable",lc:-25},
+  {name:"Alienbeam",rarity:"Godly",value:3046,demand:5.7,rarity_score:4.1,origin:"Hallows 2025",type:"K",stability:"Stable",lc:-50},
+  {name:"Vampire's Gun",rarity:"Godly",value:2327,demand:5.4,rarity_score:4,origin:"Hallows 2024",type:"G",stability:"Stable",lc:-25},
+  {name:"Darkshot",rarity:"Godly",value:1930,demand:6,rarity_score:3.7,origin:"Hallows 2023",type:"G",stability:"Overpaid For",rv:"1,470 - 1,510",lc:20},
+  {name:"Darksword",rarity:"Godly",value:1903,demand:5.6,rarity_score:4.1,origin:"Hallows 2023",type:"K",stability:"Overpaid For",rv:"1,450 - 1,490",lc:20},
+  {name:"Raygun",rarity:"Godly",value:1780,demand:6,rarity_score:2.7,origin:"Hallows 2025",type:"G",stability:"Stable",lc:-50},
+  {name:"Blossom",rarity:"Godly",value:1643,demand:6.5,rarity_score:3,origin:"Valentine 2023",type:"G",stability:"Doing Well",rv:"1,245 - 1,265",lc:15},
+  {name:"Sakura",rarity:"Godly",value:1629,demand:6,rarity_score:4,origin:"Valentine 2023",type:"K",stability:"Doing Well",rv:"1,235 - 1,255",lc:15},
+  {name:"Sunrise",rarity:"Godly",value:1369,demand:6,rarity_score:4.5,origin:"Summer 2025",type:"G",stability:"Stable",lc:25},
+  {name:"Snowcannon",rarity:"Godly",value:1266,demand:4,rarity_score:2.7,origin:"Xmas 2025",type:"G",stability:"Stable",lc:-25},
+  {name:"Bauble",rarity:"Godly",value:1232,demand:5,rarity_score:3,origin:"Xmas 2024",type:"G",stability:"Stable",lc:-25},
+  {name:"Sunset",rarity:"Godly",value:719,demand:4.1,rarity_score:3,origin:"Summer 2025",type:"K",stability:"Stable"},
   {name:"Heart Wand",rarity:"Godly",value:582,demand:4,rarity_score:3,origin:"Valentine 2026",type:"K"},
-  {name:"Soul",rarity:"Godly",value:548,demand:5.3,rarity_score:2.5,origin:"Hallows 2024",type:"G"},
-  {name:"Spirit",rarity:"Godly",value:534,demand:5.2,rarity_score:3.3,origin:"Hallows 2024",type:"K"},
-  {name:"Flora",rarity:"Godly",value:445,demand:4.6,rarity_score:3,origin:"Easter 2025",type:"G"},
-  {name:"Bloom",rarity:"Godly",value:431,demand:5,rarity_score:4,origin:"Easter 2025",type:"K"},
+  {name:"Soul",rarity:"Godly",value:548,demand:5.3,rarity_score:2.5,origin:"Hallows 2024",type:"G",stability:"Overpaid For",rv:"460 - 500"},
+  {name:"Spirit",rarity:"Godly",value:534,demand:5.2,rarity_score:3.3,origin:"Hallows 2024",type:"K",stability:"Overpaid For",rv:"450 - 490"},
+  {name:"Flora",rarity:"Godly",value:445,demand:4.6,rarity_score:3,origin:"Easter 2025",type:"G",stability:"Doing Well",rv:"375 - 395"},
+  {name:"Bloom",rarity:"Godly",value:431,demand:5,rarity_score:4,origin:"Easter 2025",type:"K",stability:"Doing Well",rv:"365 - 385"},
   {name:"Rainbow Gun",rarity:"Godly",value:411,demand:4.2,rarity_score:3,origin:"Easter 2023",type:"G"},
   {name:"Rainbow",rarity:"Godly",value:397,demand:4,rarity_score:3,origin:"Easter 2023",type:"K"},
   {name:"Snow Dagger",rarity:"Godly",value:356,demand:3,rarity_score:3,origin:"Xmas 2025",type:"K"},

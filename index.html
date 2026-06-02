@@ -1612,9 +1612,7 @@ function notify(msg,type){
   var sess=getSession();
   if(sess){loginSuccess(sess);}
 })();
-</script>
-</body>
-</html>
+
 function wkey(sid,n){return sid+"|"+n;}
 function eid(k){return "i"+k.replace(/[^a-zA-Z0-9]/g,"_");}
 function totW(){return S.reduce(function(a,s){return a+s.w.length;},0);}

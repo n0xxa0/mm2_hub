@@ -249,50 +249,44 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 .inv-card.owned .inv-card-check{opacity:1}
 .inv-none{padding:32px;text-align:center;color:var(--dimmed);font-size:13px}
 
-/* ══ VALUES PAGE — Style tableau SupremeValues ══ */
+/* ══ VALUES PAGE ══ */
 .val-controls{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;align-items:center}
 .val-search{background:var(--surface2);border:1px solid var(--border2);border-radius:8px;color:var(--text);padding:9px 14px;font-family:var(--font-body);font-size:14px;outline:none;flex:1;min-width:180px}
 .val-search:focus{border-color:var(--red)}
 .val-search::placeholder{color:var(--dimmed)}
 .val-sel{background:var(--surface2);border:1px solid var(--border2);border-radius:8px;color:var(--text);padding:9px 12px;font-family:var(--font-body);font-size:13px;outline:none;cursor:pointer}
 .val-count{font-size:12px;color:var(--dimmed);margin-left:auto;white-space:nowrap}
-/* Tableau style */
-.val-table{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden}
-.val-thead{display:grid;grid-template-columns:44px 36px 2.4fr 110px 90px 80px 70px;padding:8px 14px;background:var(--surface3);border-bottom:1px solid var(--border);font-size:9px;font-weight:700;color:var(--muted);letter-spacing:2px;text-transform:uppercase;align-items:center;gap:0}
-.val-tbody{}
-.val-tr{display:grid;grid-template-columns:44px 36px 2.4fr 110px 90px 80px 70px;padding:7px 14px;border-bottom:1px solid var(--border);align-items:center;gap:0;transition:background .12s;cursor:default}
-.val-tr:last-child{border-bottom:none}
-.val-tr:hover{background:var(--surface2)}
-.val-tr.owned-tr{background:rgba(35,80,15,.13)}
-.val-tr.owned-tr:hover{background:rgba(35,80,15,.22)}
-/* Cells */
-.vt-rank{font-family:var(--font-head);font-size:10px;color:var(--dimmed);text-align:center}
-.vt-type{font-size:13px;text-align:center}
-.vt-name-cell{display:flex;align-items:center;gap:9px;min-width:0}
-.vt-img{width:40px;height:40px;object-fit:contain;flex-shrink:0;filter:drop-shadow(0 1px 4px rgba(0,0,0,.5))}
-.vt-name-wrap{min-width:0}
-.vt-name{font-size:12px;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.vt-origin{font-size:9px;color:var(--dimmed);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.vt-owned-badge{display:inline-block;font-size:8px;background:#1e4a0f;color:#7ee040;border-radius:3px;padding:1px 4px;font-weight:700;letter-spacing:.5px;margin-top:1px}
-.vt-rarity{padding:3px 7px;border-radius:4px;font-size:9px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;white-space:nowrap;text-align:center}
-.vt-value{font-family:var(--font-head);font-size:13px;font-weight:700;color:var(--gold2);text-align:right;padding-right:8px}
-.vt-value-sub{font-size:8px;color:var(--muted);font-weight:400;display:block}
-.vt-demand{display:flex;gap:2px;align-items:center;justify-content:center}
-.vt-dot{width:7px;height:7px;border-radius:50%;background:var(--border2)}
-.vt-dot.on{background:var(--gold)}
-.vt-demand-num{font-size:10px;color:var(--muted);margin-left:4px}
+/* Tier blocks */
+.val-tier{margin-bottom:12px}
+.val-tier-hdr{display:flex;align-items:center;gap:10px;padding:9px 14px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;cursor:pointer;user-select:none;transition:background .12s}
+.val-tier-hdr:hover{background:var(--surface3)}
+.val-tier-hdr.collapsed{border-radius:8px}
+.val-tier-name{font-family:var(--font-head);font-size:11px;font-weight:700;letter-spacing:2px;color:var(--gold)}
+.val-tier-sub{font-size:11px;color:var(--muted);font-family:var(--font-body)}
+.val-tier-cnt{font-size:11px;color:var(--dimmed);margin-left:auto}
+.val-tier-arr{font-size:9px;color:var(--dimmed);transition:transform .2s;margin-left:6px}
+.val-tier-arr.open{transform:rotate(90deg)}
+/* Card grid */
+.val-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:0;background:var(--surface);border:1px solid var(--border);border-top:none;border-radius:0 0 8px 8px;overflow:hidden}
+.val-card{display:flex;align-items:center;gap:8px;padding:9px 10px;border-bottom:1px solid var(--border);border-right:1px solid var(--border);transition:background .12s;min-height:76px;position:relative}
+.val-card:hover{background:var(--surface2)}
+.val-card.is-owned{background:rgba(35,70,15,.14)}
+.val-card.is-owned:hover{background:rgba(35,70,15,.22)}
+.val-img-box{width:60px;min-width:60px;height:60px;background:rgba(0,0,0,.3);border-radius:6px;display:flex;align-items:center;justify-content:center;position:relative;flex-shrink:0}
+.val-img-box img{width:50px;height:50px;object-fit:contain;filter:drop-shadow(0 1px 5px rgba(0,0,0,.5))}
+.val-owned-dot{position:absolute;top:3px;right:3px;width:13px;height:13px;background:#2a5a10;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:7px;color:#7de020;font-weight:700}
+.val-info{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.val-rarity-pill{display:inline-block;padding:2px 6px;border-radius:3px;font-size:8px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;margin-bottom:1px;width:fit-content}
+.val-name{font-size:11px;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.val-origin{font-size:9px;color:var(--dimmed);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:2px}
+.val-bottom{display:flex;align-items:center;justify-content:space-between;gap:4px}
+.val-value{font-family:var(--font-head);font-size:13px;font-weight:700;color:var(--gold2)}
+.val-seers{font-size:8px;color:var(--muted)}
+.val-dots{display:flex;gap:1px}
+.val-dot{width:6px;height:6px;border-radius:50%;background:var(--border2)}
+.val-dot.on{background:var(--gold)}
+.val-no-val{font-size:10px;color:var(--dimmed);font-style:italic}
 .val-loading{text-align:center;padding:50px;color:var(--muted);font-family:var(--font-head);font-size:13px;letter-spacing:2px}
-/* Tier separator row */
-.val-tier-sep{padding:7px 14px;background:var(--surface3);font-family:var(--font-head);font-size:10px;font-weight:700;letter-spacing:3px;color:var(--gold);border-top:1px solid var(--border);display:flex;align-items:center;gap:10px;cursor:pointer;user-select:none}
-.val-tier-sep:hover{background:rgba(26,29,53,.9)}
-.val-tier-sep-arr{font-size:9px;transition:transform .18s;margin-left:auto}
-.val-tier-sep-arr.open{transform:rotate(90deg)}
-@media(max-width:640px){
-  .val-thead{grid-template-columns:32px 28px 1fr 80px 50px}
-  .val-thead .vh-demand,.val-thead .vh-origin{display:none}
-  .val-tr{grid-template-columns:32px 28px 1fr 80px 50px}
-  .vt-demand,.vt-rarity{display:none}
-}
 
 /* ══ TRADING PAGE ══ */
 .trade-layout{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
@@ -323,25 +317,19 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 .roblox-username-input:focus{border-color:var(--cyan)}
 .roblox-username-input::placeholder{color:var(--dimmed)}
 .roblox-connect-btn{background:linear-gradient(135deg,#00b4d8,#0077b6);border:none;border-radius:8px;color:#fff;padding:10px 18px;font-family:var(--font-head);font-size:11px;font-weight:700;letter-spacing:1px;cursor:pointer;transition:all .18s}
-/* Trade inventory — full weapon list */
-.trade-inv-wrap{margin-top:16px}
-.trade-inv-controls{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:12px;align-items:center}
-.trade-inv-search{background:var(--surface2);border:1px solid var(--border2);border-radius:8px;color:var(--text);padding:8px 12px;font-family:var(--font-body);font-size:13px;outline:none;flex:1;min-width:140px}
-.trade-inv-search:focus{border-color:var(--red)}
-.trade-inv-search::placeholder{color:var(--dimmed)}
-.trade-inv-sel{background:var(--surface2);border:1px solid var(--border2);border-radius:8px;color:var(--text);padding:8px 10px;font-family:var(--font-body);font-size:12px;outline:none;cursor:pointer}
-.trade-inv-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(80px,1fr));gap:5px;max-height:380px;overflow-y:auto;padding-right:2px}
-.trade-inv-grid::-webkit-scrollbar{width:4px}
-.trade-inv-grid::-webkit-scrollbar-track{background:var(--surface2)}
-.trade-inv-grid::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
-.trade-inv-item{background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:6px 3px;text-align:center;cursor:pointer;transition:all .12s;font-size:9px;position:relative}
+/* Trade inventory */
+.trade-inv-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(80px,1fr));gap:5px}
+.trade-inv-item{background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:6px 3px;text-align:center;cursor:pointer;transition:all .12s;font-size:9px}
 .trade-inv-item:hover{border-color:var(--muted);background:var(--surface3)}
-.trade-inv-item.inv-owned{border-color:#3a7a1a;background:rgba(35,80,15,.18)}
+.trade-inv-item.sel{border-color:var(--gold);background:rgba(244,162,97,.08)}
 .trade-inv-item img{width:46px;height:46px;object-fit:contain;display:block;margin:0 auto 2px}
-.trade-inv-item-name{color:var(--text);line-height:1.2;font-size:9px;word-break:break-word}
-.trade-inv-item-val{color:var(--gold2);font-weight:700;font-size:8px;margin-top:1px}
-.trade-inv-item-owned-dot{position:absolute;top:3px;right:3px;width:8px;height:8px;background:#3a7a1a;border-radius:50%}
-.trade-inv-none{padding:24px;text-align:center;color:var(--dimmed);font-size:12px}
+.trade-inv-item-name{color:var(--text);line-height:1.2;font-size:9px}
+.trade-inv-item-val{color:var(--gold2);font-weight:700;font-size:9px}
+/* Trade side toggle */
+.trade-side-toggle{display:flex;background:var(--surface2);border:1px solid var(--border2);border-radius:8px;padding:3px;gap:3px}
+.tst-btn{background:transparent;border:none;border-radius:6px;color:var(--muted);padding:6px 12px;font-size:12px;font-weight:600;cursor:pointer;transition:all .15s;white-space:nowrap}
+.tst-btn.active{background:var(--surface3);color:var(--text)}
+
 /* Notif */
 .notif{position:fixed;bottom:20px;right:20px;background:var(--surface);border:1px solid var(--border2);border-radius:10px;padding:12px 16px;font-size:13px;z-index:9999;box-shadow:0 8px 30px rgba(0,0,0,.5);transform:translateX(120%);transition:transform .3s ease}
 .notif.show{transform:none}
@@ -496,99 +484,92 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 
   <!-- ══ PAGE VALEURS ══ -->
   <div class="page" id="pageVal">
-    <div class="page-header" style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:10px">
+    <div class="page-header" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:16px">
       <div>
         <div class="page-title">VALEURS DES ARMES</div>
-        <div class="page-desc">Toutes raretés · ✓ = dans ton inventaire · Source: supremevalues.com</div>
+        <div class="page-desc">Source: supremevalues.com · ✅ = dans ton inventaire</div>
       </div>
+      <div class="val-live-badge"><span class="val-live-dot"></span>LIVE</div>
     </div>
-    <div class="val-controls">
-      <input class="val-search" id="valQ" placeholder="🔍 Rechercher une arme..." oninput="renderValues()">
-      <select class="val-sel" id="valR" onchange="renderValues()">
-        <option value="">Toutes raretés</option>
-        <option value="Chroma">Chroma</option>
-        <option value="Godly">Godly</option>
-        <option value="Ancient">Ancient</option>
-        <option value="Vintage">Vintage</option>
-        <option value="Legendary">Legendary</option>
-        <option value="Rare">Rare</option>
-        <option value="Uncommon">Uncommon</option>
-        <option value="Common">Common</option>
-        <option value="owned">✓ Mes armes</option>
-      </select>
-      <select class="val-sel" id="valS" onchange="renderValues()">
-        <option value="value">Valeur ↓</option>
-        <option value="name">Nom A-Z</option>
-        <option value="demand">Demande ↓</option>
-      </select>
-      <span class="val-count" id="valCount"></span>
+    <!-- Filtres rareté -->
+    <div class="val-filters" id="valFilters">
+      <button class="val-filter-btn active" onclick="valFilter(this,'all')">Tout</button>
+      <button class="val-filter-btn" onclick="valFilter(this,'Chroma')">Chroma</button>
+      <button class="val-filter-btn" onclick="valFilter(this,'Godly')">Godly</button>
+      <button class="val-filter-btn" onclick="valFilter(this,'Ancient')">Ancient</button>
+      <button class="val-filter-btn" onclick="valFilter(this,'Vintage')">Vintage</button>
+      <button class="val-filter-btn" onclick="valFilter(this,'Legendary')">Legendary</button>
+      <button class="val-filter-btn" onclick="valFilter(this,'Rare')">Rare</button>
+      <button class="val-filter-btn" onclick="valFilter(this,'Uncommon')">Uncommon</button>
+      <button class="val-filter-btn" onclick="valFilter(this,'Common')">Common</button>
+      <button class="val-filter-btn" onclick="valFilter(this,'owned')" style="border-color:rgba(6,214,160,.4);color:var(--cyan)">✅ Mes armes</button>
     </div>
+    <!-- Barre recherche + tri + compteur -->
+    <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:14px">
+      <input class="val-search" id="valSearch" placeholder="🔍 Rechercher une arme..." oninput="renderValues()" style="flex:1;min-width:180px">
+      <div class="val-sort-bar" style="margin:0;gap:6px">
+        <span style="font-size:10px;color:var(--dimmed);text-transform:uppercase;letter-spacing:1px">Tri:</span>
+        <button class="val-sort-btn active" id="vsb-value" onclick="setSort('value',this)">Valeur ↓</button>
+        <button class="val-sort-btn" id="vsb-name" onclick="setSort('name',this)">Nom A–Z</button>
+        <button class="val-sort-btn" id="vsb-demand" onclick="setSort('demand',this)">Demande ↓</button>
+      </div>
+      <span class="val-count" id="valCount" style="margin-left:0"></span>
+    </div>
+    <!-- Tableau -->
     <div id="valContent"><div class="val-loading">CHARGEMENT…</div></div>
   </div>
 
   <!-- ══ PAGE TRADING ══ -->
   <div class="page" id="pageTrade">
     <div class="page-header">
-      <div class="page-title">TRADING BOT MM2</div>
-      <div class="page-desc">Simule tes trades · Connecte ton compte Roblox</div>
+      <div class="page-title">SIMULATEUR DE TRADE</div>
+      <div class="page-desc">Analyse la valeur de tes trades · Clique sur une arme pour l'ajouter</div>
     </div>
-    <div class="roblox-connect-panel" id="robloxConnectPanel">
-      <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px">
-        <div style="width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#00b4d8,#0077b6);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0">🎮</div>
-        <div>
-          <div style="font-family:var(--font-head);font-size:13px;font-weight:700;margin-bottom:2px">Connexion Roblox</div>
-          <div style="font-size:12px;color:var(--muted)">Entre ton pseudo Roblox pour afficher ton inventaire</div>
-        </div>
-      </div>
-      <div style="display:flex;gap:8px;flex-wrap:wrap">
-        <input class="roblox-username-input" id="robloxUsernameInput" placeholder="Ton pseudo Roblox..." style="flex:1;min-width:160px">
-        <button class="roblox-connect-btn" onclick="connectRoblox()">🔗 Connecter</button>
-      </div>
-    </div>
-    <div class="bot-info" id="botInfoPanel" style="display:none">
-      <div class="bot-avatar">🤖</div>
-      <div style="flex:1">
-        <div class="bot-name">MM2Hub_Bot · <span id="robloxConnectedUser" style="color:var(--cyan)"></span></div>
-        <div class="bot-status">En ligne · Prêt à trader</div>
-      </div>
-      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-left:auto">
-        <a class="roblox-btn" href="https://www.roblox.com/games/142823291/Murder-Mystery-2" target="_blank">🎮 Ouvrir MM2</a>
-        <button class="roblox-btn" style="background:linear-gradient(135deg,#7b2d8b,#4a1560)" onclick="disconnectRoblox()">✕ Déco</button>
-      </div>
-    </div>
+
+    <!-- Status du trade -->
     <div class="trade-status" id="tradeStatus">
-      <div class="trade-status-icon">🎮</div>
+      <div class="trade-status-icon">⚖️</div>
       <div class="trade-status-text">CONFIGURE TON TRADE</div>
-      <div class="trade-status-sub">Ajoute des armes des deux côtés pour analyser</div>
-      <div style="margin-top:14px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
-        <button class="inv-btn" onclick="clearTrade()">🗑 Vider</button>
+      <div class="trade-status-sub">Sélectionne des armes des deux côtés pour analyser le trade</div>
+      <div style="margin-top:12px">
+        <button class="inv-btn danger" onclick="clearTrade()">🗑 Vider le trade</button>
       </div>
     </div>
+
+    <!-- Slots trade -->
     <div class="trade-layout">
       <div class="trade-panel">
-        <div class="trade-panel-title">Tu donnes</div>
+        <div class="trade-panel-title" style="color:var(--red2)">📤 Tu donnes</div>
         <div class="trade-slots" id="offerSlots"></div>
         <div class="trade-val-bar">
-          <span style="color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:1px">Valeur</span>
-          <span class="trade-val-num" id="offerVal" style="color:var(--red2)">0</span>
+          <span style="color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:1px">Valeur totale</span>
+          <span class="trade-val-num" id="offerVal" style="color:var(--red2)">0 <span style="font-size:10px;font-family:var(--font-body);color:var(--muted)">Seers</span></span>
         </div>
       </div>
       <div class="trade-panel">
-        <div class="trade-panel-title">Tu reçois</div>
+        <div class="trade-panel-title" style="color:var(--cyan)">📥 Tu reçois</div>
         <div class="trade-slots" id="receiveSlots"></div>
         <div class="trade-val-bar">
-          <span style="color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:1px">Valeur</span>
-          <span class="trade-val-num" id="receiveVal" style="color:var(--cyan)">0</span>
+          <span style="color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:1px">Valeur totale</span>
+          <span class="trade-val-num" id="receiveVal" style="color:var(--cyan)">0 <span style="font-size:10px;font-family:var(--font-body);color:var(--muted)">Seers</span></span>
         </div>
       </div>
     </div>
-    <div class="trade-panel">
-      <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;flex-wrap:wrap">
-        <div class="trade-panel-title" style="margin-bottom:0">Mon inventaire</div>
-        <select class="inv-sel" id="tradeInvSideSelect" style="margin-left:auto;font-size:12px">
-          <option value="offer">➕ Tu donnes</option>
-          <option value="receive">➕ Tu reçois</option>
-        </select>
+
+    <!-- Inventaire pour le trade -->
+    <div class="trade-panel" style="margin-top:0">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap">
+        <div class="trade-panel-title" style="margin-bottom:0;font-size:13px">🎒 MON INVENTAIRE</div>
+        <div style="display:flex;gap:6px;margin-left:auto;flex-wrap:wrap;align-items:center">
+          <input id="tradeInvSearch" class="roblox-username-input" placeholder="🔍 Filtrer..." oninput="filterTradeInv()" style="width:160px;margin:0;padding:7px 10px;font-size:12px">
+          <div class="trade-side-toggle" id="tradeSideToggle">
+            <button class="tst-btn active" id="tstOffer" onclick="setTradeSide('offer',this)">📤 Donner</button>
+            <button class="tst-btn" id="tstReceive" onclick="setTradeSide('receive',this)">📥 Recevoir</button>
+          </div>
+        </div>
+      </div>
+      <div id="tradeInvEmpty" style="display:none;padding:24px;text-align:center;color:var(--dimmed);font-size:12px">
+        Aucune arme dans ton inventaire.<br>Coche des armes dans l'onglet <strong style="color:var(--text)">Inventaire</strong> d'abord.
       </div>
       <div class="trade-inv-grid" id="myInvGrid"></div>
     </div>
@@ -1173,8 +1154,7 @@ function loginSuccess(user,persist){
   if(user.provider&&user.provider!=="local") providerEl.textContent=(icons[user.provider]||"")+" "+user.provider;
   else providerEl.textContent="";
   if(user.robloxUser){
-    document.getElementById("robloxUsernameInput").value=user.robloxUser;
-    connectRoblox();
+    robloxConnectedUsername=user.robloxUser;
   }
   build();
   loadValues();
@@ -1680,36 +1660,6 @@ var offerItems=[];
 var receiveItems=[];
 var robloxConnectedUsername=null;
 
-function buildTrading(){
-  renderSlots("offer");renderSlots("receive");
-  var grid=document.getElementById("myInvGrid");
-  if(!grid)return;
-  grid.innerHTML="";
-  var myItems=[];
-  S.forEach(function(s){
-    s.w.forEach(function(w){
-      if(owned[wkey(s.id,w.n)]){
-        myItems.push({name:w.n,type:w.t,rarity:s.label,value:VALUES_DATA[w.n]||0});
-      }
-    });
-  });
-  myItems.sort(function(a,b){return b.value-a.value;});
-  if(!myItems.length){
-    grid.innerHTML='<div style="color:var(--dimmed);font-size:12px;padding:16px">Coche des armes dans ton inventaire pour les voir ici.</div>';
-    return;
-  }
-  myItems.forEach(function(item){
-    var d=document.createElement("div");
-    d.className="trade-inv-item";
-    var slug=imgSlug(item.name);
-    d.innerHTML='<img src="https://mm2checker.com/images/godlies/'+slug+'.png" onerror="this.src=\'https://mm2checker.com/images/legendaries/'+slug+'.png\'" loading="lazy">'
-      +'<div class="trade-inv-item-name">'+item.name+'</div>'
-      +(item.value?'<div class="trade-inv-item-val">'+item.value+' S</div>':'');
-    d.onclick=function(){addToSlot(item,document.getElementById("tradeInvSideSelect").value||"offer");};
-    grid.appendChild(d);
-  });
-}
-
 function addToSlot(item,side){
   var arr=side==="offer"?offerItems:receiveItems;
   if(arr.length>=4){notify("Max 4 armes !","err");return;}
@@ -1760,37 +1710,8 @@ function updateTradeValues(){
 
 function clearTrade(){offerItems=[];receiveItems=[];renderSlots("offer");renderSlots("receive");updateTradeValues();}
 
-function connectRoblox(){
-  var username=document.getElementById("robloxUsernameInput").value.trim();
-  if(!username){notify("Entre un pseudo Roblox valide.","err");return;}
-  robloxConnectedUsername=username;
-  document.getElementById("robloxConnectPanel").style.display="none";
-  document.getElementById("botInfoPanel").style.display="flex";
-  document.getElementById("robloxConnectedUser").textContent=username;
-  if(currentUser){
-    currentUser.robloxUser=username;
-    var users=getUsers();
-    var key=Object.keys(users).find(function(k){return users[k].username===currentUser.username;});
-    if(key){users[key].robloxUser=username;saveUsers(users);}
-    saveSession(currentUser);
-  }
-  notify("🎮 Roblox connecté : "+username,"ok");
-}
-
-function disconnectRoblox(){
-  robloxConnectedUsername=null;
-  if(currentUser){
-    currentUser.robloxUser=null;
-    var users=getUsers();
-    var key=Object.keys(users).find(function(k){return users[k].username===currentUser.username;});
-    if(key){users[key].robloxUser=null;saveUsers(users);}
-    saveSession(currentUser);
-  }
-  document.getElementById("botInfoPanel").style.display="none";
-  document.getElementById("robloxConnectPanel").style.display="block";
-  document.getElementById("robloxUsernameInput").value="";
-  notify("Roblox déconnecté.","ok");
-}
+function connectRoblox(){} // panel supprimé
+function disconnectRoblox(){} // panel supprimé
 
 // ═══════════════════════════════════════
 // NAVIGATION
@@ -1944,7 +1865,7 @@ function makeImg(name,cls){
 }
 
 function build(){
-  var main=document.getElementById("collMain");
+  var main=document.getElementById("invMain");
   main.innerHTML="";
   S.forEach(function(s){
     var sec=document.createElement("div");
@@ -2293,8 +2214,8 @@ function isOwned(name){
 }
 
 function renderValues(){
-  var search=(document.getElementById("valSearch")||{}).value||"";
-  search=search.toLowerCase();
+  var searchEl=document.getElementById("valSearch");
+  var search=searchEl?searchEl.value.toLowerCase():"";
   var data=ALL_VALUES.filter(function(v){
     var matchFilter=valCurrentFilter==="all"||v.rarity===valCurrentFilter||(valCurrentFilter==="owned"&&isOwned(v.name));
     var matchSearch=!search||v.name.toLowerCase().indexOf(search)>=0;
@@ -2362,34 +2283,48 @@ var offerItems=[];
 var receiveItems=[];
 var robloxConnectedUsername=null;
 
+var _tradeSide="offer";
+var _tradeAllItems=[];
+
+function setTradeSide(side,btn){
+  _tradeSide=side;
+  document.querySelectorAll(".tst-btn").forEach(function(b){b.classList.remove("active");});
+  btn.classList.add("active");
+}
+
+function filterTradeInv(){
+  var q=(document.getElementById("tradeInvSearch").value||"").toLowerCase();
+  document.querySelectorAll("#myInvGrid .trade-inv-item").forEach(function(el){
+    el.style.display=(!q||el.dataset.name.indexOf(q)>=0)?"":"none";
+  });
+}
+
 function buildTrading(){
   renderSlots("offer");renderSlots("receive");
   var grid=document.getElementById("myInvGrid");
+  var empty=document.getElementById("tradeInvEmpty");
   if(!grid)return;
   grid.innerHTML="";
-  var myItems=[];
+  _tradeAllItems=[];
   S.forEach(function(s){
     s.w.forEach(function(w){
       if(owned[wkey(s.id,w.n)]){
-        myItems.push({name:w.n,type:w.t,rarity:s.label,value:VALUES_DATA[w.n]||0});
+        _tradeAllItems.push({name:w.n,type:w.t,rarity:s.label,value:VALUES_DATA[w.n]||0});
       }
     });
   });
-  myItems.sort(function(a,b){return b.value-a.value;});
-  if(!myItems.length){
-    grid.innerHTML='<div style="color:var(--dimmed);font-size:12px;padding:16px">Coche des armes dans ta collection pour les voir ici.</div>';
-    return;
-  }
-  myItems.forEach(function(item){
+  _tradeAllItems.sort(function(a,b){return b.value-a.value;});
+  if(empty)empty.style.display=_tradeAllItems.length?"none":"block";
+  if(!_tradeAllItems.length)return;
+  _tradeAllItems.forEach(function(item){
     var d=document.createElement("div");
-    d.className="inv-item";
-    var slug=imgSlug(item.name);
-    d.innerHTML='<img src="https://mm2checker.com/images/godlies/'+slug+'.png" onerror="this.src=\'https://mm2checker.com/images/legendaries/'+slug+'.png\'" style="width:50px;height:50px;object-fit:contain"><div class="inv-item-name">'+item.name+'</div>'+
-      (item.value?'<div style="font-size:10px;color:var(--gold2)">'+item.value+' S</div>':'');
-    d.onclick=function(){
-      var side=document.getElementById("tradeInvSideSelect").value||"offer";
-      addToSlot(item,side);
-    };
+    d.className="trade-inv-item";
+    d.dataset.name=item.name.toLowerCase();
+    var rc=RARITY_COLORS[item.rarity]||"#888";
+    d.innerHTML='<img src="https://mm2checker.com/images/godlies/'+imgSlug(item.name)+'.png" onerror="this.src=\'https://mm2checker.com/images/legendaries/'+imgSlug(item.name)+'.png\'" loading="lazy">'
+      +'<div class="trade-inv-item-name" style="border-top:2px solid '+rc+'22">'+item.name+'</div>'
+      +(item.value?'<div class="trade-inv-item-val">'+item.value.toLocaleString()+' S</div>':'<div class="trade-inv-item-val" style="color:var(--dimmed)">—</div>');
+    d.onclick=function(){addToSlot(item,_tradeSide);};
     grid.appendChild(d);
   });
 }
@@ -2456,39 +2391,9 @@ function clearTrade(){
   renderSlots("offer");renderSlots("receive");updateTradeValues();
 }
 
-// Roblox Connect
-function connectRoblox(){
-  var username=document.getElementById("robloxUsernameInput").value.trim();
-  if(!username){notify("Entre un pseudo Roblox valide.","err");return;}
-  robloxConnectedUsername=username;
-  document.getElementById("robloxConnectPanel").style.display="none";
-  document.getElementById("botInfoPanel").style.display="flex";
-  document.getElementById("robloxConnectedUser").textContent=username;
-  // Save to user profile
-  if(currentUser){
-    currentUser.robloxUser=username;
-    var users=getUsers();
-    var key=Object.keys(users).find(function(k){return users[k].username===currentUser.username;});
-    if(key){users[key].robloxUser=username;saveUsers(users);}
-    saveSession(currentUser);
-  }
-  notify("🎮 Roblox connecté : "+username,"ok");
-}
-
-function disconnectRoblox(){
-  robloxConnectedUsername=null;
-  if(currentUser){
-    currentUser.robloxUser=null;
-    var users=getUsers();
-    var key=Object.keys(users).find(function(k){return users[k].username===currentUser.username;});
-    if(key){users[key].robloxUser=null;saveUsers(users);}
-    saveSession(currentUser);
-  }
-  document.getElementById("botInfoPanel").style.display="none";
-  document.getElementById("robloxConnectPanel").style.display="block";
-  document.getElementById("robloxUsernameInput").value="";
-  notify("Roblox déconnecté.","ok");
-}
+// Roblox Connect (panel supprimé en v5)
+function connectRoblox2(){}
+function disconnectRoblox2(){}
 
 // ═══════════════════════════════════════
 // NAVIGATION

@@ -249,44 +249,50 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 .inv-card.owned .inv-card-check{opacity:1}
 .inv-none{padding:32px;text-align:center;color:var(--dimmed);font-size:13px}
 
-/* ══ VALUES PAGE ══ */
+/* ══ VALUES PAGE — Style tableau SupremeValues ══ */
 .val-controls{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;align-items:center}
 .val-search{background:var(--surface2);border:1px solid var(--border2);border-radius:8px;color:var(--text);padding:9px 14px;font-family:var(--font-body);font-size:14px;outline:none;flex:1;min-width:180px}
 .val-search:focus{border-color:var(--red)}
 .val-search::placeholder{color:var(--dimmed)}
 .val-sel{background:var(--surface2);border:1px solid var(--border2);border-radius:8px;color:var(--text);padding:9px 12px;font-family:var(--font-body);font-size:13px;outline:none;cursor:pointer}
 .val-count{font-size:12px;color:var(--dimmed);margin-left:auto;white-space:nowrap}
-/* Tier blocks */
-.val-tier{margin-bottom:12px}
-.val-tier-hdr{display:flex;align-items:center;gap:10px;padding:9px 14px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;cursor:pointer;user-select:none;transition:background .12s}
-.val-tier-hdr:hover{background:var(--surface3)}
-.val-tier-hdr.collapsed{border-radius:8px}
-.val-tier-name{font-family:var(--font-head);font-size:11px;font-weight:700;letter-spacing:2px;color:var(--gold)}
-.val-tier-sub{font-size:11px;color:var(--muted);font-family:var(--font-body)}
-.val-tier-cnt{font-size:11px;color:var(--dimmed);margin-left:auto}
-.val-tier-arr{font-size:9px;color:var(--dimmed);transition:transform .2s;margin-left:6px}
-.val-tier-arr.open{transform:rotate(90deg)}
-/* Card grid */
-.val-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:0;background:var(--surface);border:1px solid var(--border);border-top:none;border-radius:0 0 8px 8px;overflow:hidden}
-.val-card{display:flex;align-items:center;gap:8px;padding:9px 10px;border-bottom:1px solid var(--border);border-right:1px solid var(--border);transition:background .12s;min-height:76px;position:relative}
-.val-card:hover{background:var(--surface2)}
-.val-card.is-owned{background:rgba(35,70,15,.14)}
-.val-card.is-owned:hover{background:rgba(35,70,15,.22)}
-.val-img-box{width:60px;min-width:60px;height:60px;background:rgba(0,0,0,.3);border-radius:6px;display:flex;align-items:center;justify-content:center;position:relative;flex-shrink:0}
-.val-img-box img{width:50px;height:50px;object-fit:contain;filter:drop-shadow(0 1px 5px rgba(0,0,0,.5))}
-.val-owned-dot{position:absolute;top:3px;right:3px;width:13px;height:13px;background:#2a5a10;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:7px;color:#7de020;font-weight:700}
-.val-info{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
-.val-rarity-pill{display:inline-block;padding:2px 6px;border-radius:3px;font-size:8px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;margin-bottom:1px;width:fit-content}
-.val-name{font-size:11px;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.val-origin{font-size:9px;color:var(--dimmed);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:2px}
-.val-bottom{display:flex;align-items:center;justify-content:space-between;gap:4px}
-.val-value{font-family:var(--font-head);font-size:13px;font-weight:700;color:var(--gold2)}
-.val-seers{font-size:8px;color:var(--muted)}
-.val-dots{display:flex;gap:1px}
-.val-dot{width:6px;height:6px;border-radius:50%;background:var(--border2)}
-.val-dot.on{background:var(--gold)}
-.val-no-val{font-size:10px;color:var(--dimmed);font-style:italic}
+/* Tableau style */
+.val-table{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden}
+.val-thead{display:grid;grid-template-columns:44px 36px 2.4fr 110px 90px 80px 70px;padding:8px 14px;background:var(--surface3);border-bottom:1px solid var(--border);font-size:9px;font-weight:700;color:var(--muted);letter-spacing:2px;text-transform:uppercase;align-items:center;gap:0}
+.val-tbody{}
+.val-tr{display:grid;grid-template-columns:44px 36px 2.4fr 110px 90px 80px 70px;padding:7px 14px;border-bottom:1px solid var(--border);align-items:center;gap:0;transition:background .12s;cursor:default}
+.val-tr:last-child{border-bottom:none}
+.val-tr:hover{background:var(--surface2)}
+.val-tr.owned-tr{background:rgba(35,80,15,.13)}
+.val-tr.owned-tr:hover{background:rgba(35,80,15,.22)}
+/* Cells */
+.vt-rank{font-family:var(--font-head);font-size:10px;color:var(--dimmed);text-align:center}
+.vt-type{font-size:13px;text-align:center}
+.vt-name-cell{display:flex;align-items:center;gap:9px;min-width:0}
+.vt-img{width:40px;height:40px;object-fit:contain;flex-shrink:0;filter:drop-shadow(0 1px 4px rgba(0,0,0,.5))}
+.vt-name-wrap{min-width:0}
+.vt-name{font-size:12px;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.vt-origin{font-size:9px;color:var(--dimmed);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.vt-owned-badge{display:inline-block;font-size:8px;background:#1e4a0f;color:#7ee040;border-radius:3px;padding:1px 4px;font-weight:700;letter-spacing:.5px;margin-top:1px}
+.vt-rarity{padding:3px 7px;border-radius:4px;font-size:9px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;white-space:nowrap;text-align:center}
+.vt-value{font-family:var(--font-head);font-size:13px;font-weight:700;color:var(--gold2);text-align:right;padding-right:8px}
+.vt-value-sub{font-size:8px;color:var(--muted);font-weight:400;display:block}
+.vt-demand{display:flex;gap:2px;align-items:center;justify-content:center}
+.vt-dot{width:7px;height:7px;border-radius:50%;background:var(--border2)}
+.vt-dot.on{background:var(--gold)}
+.vt-demand-num{font-size:10px;color:var(--muted);margin-left:4px}
 .val-loading{text-align:center;padding:50px;color:var(--muted);font-family:var(--font-head);font-size:13px;letter-spacing:2px}
+/* Tier separator row */
+.val-tier-sep{padding:7px 14px;background:var(--surface3);font-family:var(--font-head);font-size:10px;font-weight:700;letter-spacing:3px;color:var(--gold);border-top:1px solid var(--border);display:flex;align-items:center;gap:10px;cursor:pointer;user-select:none}
+.val-tier-sep:hover{background:rgba(26,29,53,.9)}
+.val-tier-sep-arr{font-size:9px;transition:transform .18s;margin-left:auto}
+.val-tier-sep-arr.open{transform:rotate(90deg)}
+@media(max-width:640px){
+  .val-thead{grid-template-columns:32px 28px 1fr 80px 50px}
+  .val-thead .vh-demand,.val-thead .vh-origin{display:none}
+  .val-tr{grid-template-columns:32px 28px 1fr 80px 50px}
+  .vt-demand,.vt-rarity{display:none}
+}
 
 /* ══ TRADING PAGE ══ */
 .trade-layout{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
@@ -317,14 +323,25 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 .roblox-username-input:focus{border-color:var(--cyan)}
 .roblox-username-input::placeholder{color:var(--dimmed)}
 .roblox-connect-btn{background:linear-gradient(135deg,#00b4d8,#0077b6);border:none;border-radius:8px;color:#fff;padding:10px 18px;font-family:var(--font-head);font-size:11px;font-weight:700;letter-spacing:1px;cursor:pointer;transition:all .18s}
-/* Trade inventory */
-.trade-inv-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(80px,1fr));gap:5px}
-.trade-inv-item{background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:6px 3px;text-align:center;cursor:pointer;transition:all .12s;font-size:9px}
+/* Trade inventory — full weapon list */
+.trade-inv-wrap{margin-top:16px}
+.trade-inv-controls{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:12px;align-items:center}
+.trade-inv-search{background:var(--surface2);border:1px solid var(--border2);border-radius:8px;color:var(--text);padding:8px 12px;font-family:var(--font-body);font-size:13px;outline:none;flex:1;min-width:140px}
+.trade-inv-search:focus{border-color:var(--red)}
+.trade-inv-search::placeholder{color:var(--dimmed)}
+.trade-inv-sel{background:var(--surface2);border:1px solid var(--border2);border-radius:8px;color:var(--text);padding:8px 10px;font-family:var(--font-body);font-size:12px;outline:none;cursor:pointer}
+.trade-inv-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(80px,1fr));gap:5px;max-height:380px;overflow-y:auto;padding-right:2px}
+.trade-inv-grid::-webkit-scrollbar{width:4px}
+.trade-inv-grid::-webkit-scrollbar-track{background:var(--surface2)}
+.trade-inv-grid::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
+.trade-inv-item{background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:6px 3px;text-align:center;cursor:pointer;transition:all .12s;font-size:9px;position:relative}
 .trade-inv-item:hover{border-color:var(--muted);background:var(--surface3)}
-.trade-inv-item.sel{border-color:var(--gold);background:rgba(244,162,97,.08)}
+.trade-inv-item.inv-owned{border-color:#3a7a1a;background:rgba(35,80,15,.18)}
 .trade-inv-item img{width:46px;height:46px;object-fit:contain;display:block;margin:0 auto 2px}
-.trade-inv-item-name{color:var(--text);line-height:1.2;font-size:9px}
-.trade-inv-item-val{color:var(--gold2);font-weight:700;font-size:9px}
+.trade-inv-item-name{color:var(--text);line-height:1.2;font-size:9px;word-break:break-word}
+.trade-inv-item-val{color:var(--gold2);font-weight:700;font-size:8px;margin-top:1px}
+.trade-inv-item-owned-dot{position:absolute;top:3px;right:3px;width:8px;height:8px;background:#3a7a1a;border-radius:50%}
+.trade-inv-none{padding:24px;text-align:center;color:var(--dimmed);font-size:12px}
 /* Notif */
 .notif{position:fixed;bottom:20px;right:20px;background:var(--surface);border:1px solid var(--border2);border-radius:10px;padding:12px 16px;font-size:13px;z-index:9999;box-shadow:0 8px 30px rgba(0,0,0,.5);transform:translateX(120%);transition:transform .3s ease}
 .notif.show{transform:none}

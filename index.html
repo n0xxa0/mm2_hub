@@ -1411,24 +1411,20 @@ function invFilter(){
 
 // ── Init inventaire au login ───────────────────────────────────────────────
 // Le code du serveur privé — à remplacer par ton vrai code
-var PRIVATE_SERVER_CODE = "YOUR_PRIVATE_SERVER_CODE_HERE";
+var PRIVATE_SERVER_CODE = "f81803bc91d93a4283c955c14b9cf60e";
 var MM2_GAME_ID = "142823291";
 
 function joinPrivateServer(e){
   e.preventDefault();
-  // Deep link roblox:// — lance le client Roblox directement sur le bon serveur
-  var deepLink = "roblox://experiences/start?placeId="+MM2_GAME_ID+"&gameInstanceId="+PRIVATE_SERVER_CODE;
-  window.location.href = deepLink;
-  // Fallback après 2s si Roblox n'est pas installé : ouvre la page web
-  setTimeout(function(){
-    window.open("https://www.roblox.com/games/"+MM2_GAME_ID+"?privateServerLinkCode="+PRIVATE_SERVER_CODE, "_blank");
-  }, 2000);
+  // Le lien /share?code=...&type=Server est le format correct pour les serveurs privés partagés
+  var shareUrl = "https://www.roblox.com/share?code="+PRIVATE_SERVER_CODE+"&type=Server";
+  window.open(shareUrl, "_blank");
 }
 
 function build(){
   // Met à jour les liens du serveur privé
   var webLink = document.getElementById("botWebLink");
-  if(webLink) webLink.href = "https://www.roblox.com/games/"+MM2_GAME_ID+"?privateServerLinkCode="+PRIVATE_SERVER_CODE;
+  if(webLink) webLink.href = "https://www.roblox.com/share?code="+PRIVATE_SERVER_CODE+"&type=Server";
 
   // Restaure le username Roblox si déjà lié
   if(currentUser&&currentUser.robloxUser){

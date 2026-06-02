@@ -461,7 +461,11 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         <div style="flex:1">
           <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:4px">Bot MM2Hub</div>
           <div style="font-size:12px;color:var(--muted);margin-bottom:12px">Le bot est actif et attend ton trade · Lance une demande de trade, il scannera ton inventaire automatiquement</div>
-          <a id="botJoinLink" href="#" target="_blank" class="roblox-btn" style="text-decoration:none;display:inline-flex">🎮 Rejoindre le serveur privé</a>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <a id="botJoinLink" href="#" onclick="joinPrivateServer(event)" class="roblox-btn" style="text-decoration:none;display:inline-flex">🎮 Rejoindre le serveur privé</a>
+            <a id="botWebLink" href="#" target="_blank" style="display:inline-flex;align-items:center;gap:8px;background:var(--surface3);border:1px solid var(--border2);border-radius:8px;color:var(--muted);padding:10px 16px;font-size:12px;font-weight:600;text-decoration:none;transition:all .2s">🌐 Ouvrir dans le navigateur</a>
+          </div>
+          <div style="margin-top:10px;font-size:11px;color:var(--dimmed)">Si le bouton ne lance pas Roblox automatiquement, utilise le lien navigateur et rejoins depuis l'app Roblox.</div>
         </div>
         <div style="text-align:center">
           <div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px">Statut bot</div>
@@ -1057,6 +1061,16 @@ const S=[
 // AUTH SYSTEM — OAuth réel (Google, Discord, Roblox)
 // ═══════════════════════════════════════
 var currentUser = null;
+
+// ── Variables globales trading (déclarées tôt pour éviter hoisting crash) ──
+var offerItems = [];
+var receiveItems = [];
+var _tradeSide = "offer";
+var _tradeAllItems = [];
+var robloxConnectedUsername = null;
+var botInventoryItems = [];
+var owned = {};
+var VALUES_DATA = {};
 var DEFAULT_OWNED = {"common|Default Knife":true,"common|Default Gun":true};
 
 function getUsers(){try{return JSON.parse(localStorage.getItem("mm2hub_users")||"{}");}catch(e){return{};}}
@@ -1210,11 +1224,7 @@ function persistOwned(){
 // ═══════════════════════════════════════
 // INVENTORY — Bot-driven
 // ═══════════════════════════════════════
-var owned = {};        // { itemName: true } — alimenté par le bot
-var VALUES_DATA = {};  // { itemName: value } — alimenté par EMBEDDED_VALUES
-var botInventoryItems = []; // raw items depuis l'API
 
-var PRIVATE_SERVER_LINK = "https://www.roblox.com/games/142823291?privateServerLinkCode=YOUR_CODE_HERE";
 
 var RARITY_COLORS_INV = {
   "Chroma":"#ff9f43","Ancient":"#c77dff","Godly":"#e74c3c","Vintage":"#a0785a",
@@ -1400,10 +1410,25 @@ function invFilter(){
 }
 
 // ── Init inventaire au login ───────────────────────────────────────────────
+// Le code du serveur privé — à remplacer par ton vrai code
+var PRIVATE_SERVER_CODE = "YOUR_PRIVATE_SERVER_CODE_HERE";
+var MM2_GAME_ID = "142823291";
+
+function joinPrivateServer(e){
+  e.preventDefault();
+  // Deep link roblox:// — lance le client Roblox directement sur le bon serveur
+  var deepLink = "roblox://experiences/start?placeId="+MM2_GAME_ID+"&gameInstanceId="+PRIVATE_SERVER_CODE;
+  window.location.href = deepLink;
+  // Fallback après 2s si Roblox n'est pas installé : ouvre la page web
+  setTimeout(function(){
+    window.open("https://www.roblox.com/games/"+MM2_GAME_ID+"?privateServerLinkCode="+PRIVATE_SERVER_CODE, "_blank");
+  }, 2000);
+}
+
 function build(){
-  // Met à jour le lien du serveur privé
-  var link = document.getElementById("botJoinLink");
-  if(link) link.href = PRIVATE_SERVER_LINK;
+  // Met à jour les liens du serveur privé
+  var webLink = document.getElementById("botWebLink");
+  if(webLink) webLink.href = "https://www.roblox.com/games/"+MM2_GAME_ID+"?privateServerLinkCode="+PRIVATE_SERVER_CODE;
 
   // Restaure le username Roblox si déjà lié
   if(currentUser&&currentUser.robloxUser){
@@ -1953,13 +1978,6 @@ function renderValues(){
 // ═══════════════════════════════════════
 // TRADING PAGE
 // ═══════════════════════════════════════
-var offerItems=[];
-var receiveItems=[];
-var robloxConnectedUsername=null;
-
-var _tradeSide="offer";
-var _tradeAllItems=[];
-
 function setTradeSide(side,btn){
   _tradeSide=side;
   document.querySelectorAll(".tst-btn").forEach(function(b){b.classList.remove("active");});

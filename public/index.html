@@ -73,6 +73,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:15
 .scroll-top:hover{color:var(--text)}
 .data-info{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:8px 14px;font-size:11px;color:var(--dimmed);margin-bottom:16px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+@keyframes slide{0%{transform:translateX(-60%)}100%{transform:translateX(260%)}}
 @media(max-width:900px){.sidebar{display:none}.main{padding:12px}}
 @media(max-width:600px){.grid{grid-template-columns:1fr 1fr}.card-img-box{width:58px;min-width:58px;height:58px}.card-img-box img{width:50px;height:50px}.topbar{padding:0 10px}}
 </style>
@@ -160,10 +161,55 @@ const STAB = {
 
 let currentRarity="all", currentType="all", currentSort="value";
 
-// ─── FULL DATASET (supremevalues.com — June 2nd, 2026) ────────
-const ALL_ITEMS = [
-  // ── CHROMAS ──────────────────────────────────────────────────
-  {name:"C. Traveler's Gun",  rarity:"Chroma",t:"G",value:225000,demand:9, stab:"Stable",      lc:5000,  origin:"Hallows 2023 (Unboxed)", img:"https://supremevalues.com/media/mm2chromas/CTG.png"},
+// ─── DYNAMIC DATASET — loaded from /api/values ────────────────
+let ALL_ITEMS = [];
+
+function showLoading() {
+  document.getElementById("content").innerHTML = `
+    <div style="text-align:center;padding:80px 20px;color:var(--muted)">
+      <div style="font-family:var(--fonthead);font-size:22px;letter-spacing:3px;color:var(--gold);margin-bottom:14px">⚡ CHARGEMENT</div>
+      <div style="font-size:13px;color:var(--dimmed)">Récupération des données depuis supremevalues.com…</div>
+      <div style="margin-top:20px;width:200px;height:3px;background:var(--border);border-radius:2px;overflow:hidden;margin-inline:auto">
+        <div style="height:100%;width:40%;background:linear-gradient(90deg,var(--red),var(--gold));border-radius:2px;animation:slide 1.2s ease-in-out infinite alternate"></div>
+      </div>
+    </div>`;
+  document.getElementById("countLbl").textContent = "— items";
+}
+
+function showError(msg) {
+  document.getElementById("content").innerHTML = `
+    <div style="text-align:center;padding:60px 20px;color:var(--muted)">
+      <div style="font-size:28px;margin-bottom:10px">⚠️</div>
+      <div style="font-family:var(--fonthead);font-size:14px;color:var(--red);margin-bottom:8px">ERREUR DE CHARGEMENT</div>
+      <div style="font-size:12px;color:var(--dimmed);max-width:400px;margin:auto">${msg}</div>
+      <button onclick="loadItems()" style="margin-top:16px;background:var(--surface3);border:1px solid var(--border2);border-radius:7px;color:var(--muted);padding:8px 18px;font-family:var(--font);cursor:pointer;font-size:13px">🔄 Réessayer</button>
+    </div>`;
+}
+
+async function loadItems() {
+  showLoading();
+  try {
+    const res = await fetch("/api/values");
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const data = await res.json();
+    if (!data.items || !data.items.length) throw new Error("Aucun item reçu de l'API");
+    // Normalize field: API returns item.type, front uses item.t
+    ALL_ITEMS = data.items.map(i => ({...i, t: i.t || i.type || "K"}));
+    // Update badge date
+    const badge = document.querySelector(".data-badge");
+    if (badge && data.cachedAt) {
+      const d = new Date(data.cachedAt);
+      badge.textContent = `⚡ supremevalues.com · ${d.toLocaleDateString("fr-FR",{day:"numeric",month:"short",year:"numeric"})}`;
+    }
+    updateCounts();
+    render();
+  } catch(err) {
+    showError(err.message + "<br><br>Assure-toi que la serverless function <b>/api/values</b> est bien déployée sur Vercel.");
+  }
+}
+
+// ─── PLACEHOLDER DATA (supprimé — tout vient de l'API) ────────
+const _PLACEHOLDER = [
   {name:"Chroma Evergun",     rarity:"Chroma",t:"G",value:76000, demand:8, stab:"Stable",      lc:-1000, origin:"Xmas 2023 (Gifting)",    img:"https://supremevalues.com/media/mm2chromas/CEvergun.png"},
   {name:"Chroma Evergreen",   rarity:"Chroma",t:"K",value:60000, demand:7, stab:"Stable",      lc:-1000, origin:"Xmas 2023 (Unboxed)",   img:"https://supremevalues.com/media/mm2chromas/CEvergreen.png"},
   {name:"Chroma Bauble",      rarity:"Chroma",t:"G",value:38000, demand:7, stab:"Stable",      lc:-1000, origin:"Xmas 2024 (Gifting)",   img:"https://supremevalues.com/media/mm2chromas/CBaub.png"},
@@ -325,7 +371,7 @@ const ALL_ITEMS = [
   {name:"Ghoulish",           rarity:"Common",t:"K",value:70,   demand:3,stab:"Stable",  lc:0, origin:"Hallows 2021 (Unboxed)", img:"https://supremevalues.com/media/mm2commons/Ghoulish.png"},
   {name:"Webbed",             rarity:"Common",t:"G",value:12,   demand:2,stab:"Stable",  lc:0, origin:"Hallows 2023",           img:"https://supremevalues.com/media/mm2commons/Webbed_Gun.png"},
   {name:"Starry",             rarity:"Common",t:"K",value:3,    demand:1,stab:"Stable",  lc:0, origin:"Xmas 2022",              img:"https://supremevalues.com/media/mm2commons/Starry.png"},
-];
+]; // fin placeholder (non utilisé)
 
 // ─── RENDER ───────────────────────────────────────────────────
 function render() {
@@ -434,8 +480,7 @@ window.addEventListener("scroll", () => {
   document.getElementById("scrollTop").classList.toggle("show", window.scrollY > 400);
 });
 
-updateCounts();
-render();
+loadItems();
 </script>
 </body>
 </html>

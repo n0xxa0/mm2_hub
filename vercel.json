@@ -1,9 +1,11 @@
 {
-  "rewrites": [
-    { "source": "/api/auth/google", "destination": "/api/auth/google" },
-    { "source": "/api/auth/discord", "destination": "/api/auth/discord" },
-    { "source": "/api/auth/roblox", "destination": "/api/auth/roblox" },
-    { "source": "/api/auth/callback/google", "destination": "/api/auth/callback/google" },
-    { "source": "/api/auth/callback/discord", "destination": "/api/auth/callback/discord" }
+  "version": 2,
+  "builds": [
+    { "src": "api/**/*.js", "use": "@vercel/node" },
+    { "src": "public/**", "use": "@vercel/static" }
+  ],
+  "routes": [
+    { "src": "/api/(.*)", "dest": "/api/$1" },
+    { "src": "/(.*)", "dest": "/public/$1" }
   ]
 }

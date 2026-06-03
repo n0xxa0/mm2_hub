@@ -334,6 +334,8 @@ function renderWithCacheInfo(cacheHtml) {
     infoDiv.innerHTML = cacheHtml;
     main.innerHTML = "";
     main.appendChild(infoDiv);
+  } else {
+    main.innerHTML = "";
   }
 
   main.appendChild(renderDiv);
@@ -394,18 +396,6 @@ function render() {
   ];
 
   let html = "";
-  tiers.forEach(tier => {
-    if (!tier.items.length) return;
-    html += `<div class="tier-hdr">${tier.label}<span>${tier.sub} · ${tier.items.length} items</span></div>`;
-    html += `<div class="grid">`;
-    tier.items.forEach(item => buildCard(item, html => { html += html; }));
-    // Rebuild properly
-    html += tier.items.map(item => cardHtml(item)).join("");
-    html += `</div>`;
-  });
-
-  // Fix: rebuild correctly
-  html = "";
   tiers.forEach(tier => {
     if (!tier.items.length) return;
     html += `<div class="tier-hdr">${tier.label}<span>${tier.sub} · ${tier.items.length} items</span></div>`;

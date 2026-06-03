@@ -1,0 +1,110 @@
+[
+  {
+    "name": "Mystery Key",
+    "rarity": "Misc",
+    "t": "K",
+    "value": 1,
+    "demand": 2,
+    "stab": "Stable",
+    "lc": 0,
+    "origin": "MM2 In-Game Shop",
+    "range": null,
+    "img": ""
+  },
+  {
+    "name": "Box of Blue Papers",
+    "rarity": "Misc",
+    "t": "K",
+    "value": 2,
+    "demand": 1,
+    "stab": "Stable",
+    "lc": -1,
+    "origin": "Xmas 2017 (Bought)",
+    "range": null,
+    "img": ""
+  },
+  {
+    "name": "Box of Fertilizer",
+    "rarity": "Misc",
+    "t": "K",
+    "value": 2,
+    "demand": 1,
+    "stab": "Stable",
+    "lc": 0,
+    "origin": "Xmas 2018 (Bought)",
+    "range": null,
+    "img": ""
+  },
+  {
+    "name": "Box of Gold Papers",
+    "rarity": "Misc",
+    "t": "K",
+    "value": 2,
+    "demand": 1,
+    "stab": "Stable",
+    "lc": -1,
+    "origin": "Xmas 2016 (Bought)",
+    "range": null,
+    "img": ""
+  },
+  {
+    "name": "Box of Green Papers",
+    "rarity": "Misc",
+    "t": "K",
+    "value": 2,
+    "demand": 1,
+    "stab": "Stable",
+    "lc": 0,
+    "origin": "Xmas 2016 (Bought)",
+    "range": null,
+    "img": ""
+  },
+  {
+    "name": "Box of Purple Papers",
+    "rarity": "Misc",
+    "t": "K",
+    "value": 2,
+    "demand": 1,
+    "stab": "Stable",
+    "lc": -1,
+    "origin": "Xmas 2016 (Bought)",
+    "range": null,
+    "img": ""
+  },
+  {
+    "name": "Box of Red Papers",
+    "rarity": "Misc",
+    "t": "K",
+    "value": 2,
+    "demand": 1,
+    "stab": "Stable",
+    "lc": -1,
+    "origin": "Xmas 2016 (Bought)",
+    "range": null,
+    "img": ""
+  },
+  {
+    "name": "Box of Ultra Wrap",
+    "rarity": "Misc",
+    "t": "K",
+    "value": 2,
+    "demand": 1,
+    "stab": "Stable",
+    "lc": -1,
+    "origin": "Xmas 2017 (Bought)",
+    "range": null,
+    "img": ""
+  },
+  {
+    "name": "Skeleton Key",
+    "rarity": "Misc",
+    "t": "K",
+    "value": 5,
+    "demand": 1,
+    "stab": "Stable",
+    "lc": 0,
+    "origin": "Hallows 2018 (Tiers)",
+    "range": null,
+    "img": ""
+  }
+]

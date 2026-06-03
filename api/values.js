@@ -1,11 +1,13 @@
 // api/values.js — Vercel Serverless Function
 // Lit les données depuis /public/data/*.json (générés par l'extracteur navigateur)
-// Plus de scraping Cloudflare — impossible depuis un serveur.
 
 import { readFileSync, existsSync } from "fs";
 import { join } from "path";
 
-const RARITIES = ["Chroma","Ancient","Godly","Vintage","Legendary","Rare","Uncommon","Common"];
+const RARITIES = [
+  "Chroma","Ancient","Godly","Vintage","Legendary",
+  "Rare","Uncommon","Common","Unique","Pet","Set","Misc"
+];
 
 export default async function handler(req, res) {
   res.setHeader("Access-Control-Allow-Origin", "*");
@@ -15,7 +17,7 @@ export default async function handler(req, res) {
   const missing = [];
 
   for (const rarity of RARITIES) {
-    const filePath = join(process.cwd(), "public", "data", `mm2_${rarity.toLowerCase()}_items.json`);
+    const filePath = join(process.cwd(), "public", "data", `mm2_${rarity.toLowerCase()}_v4.json`);
     if (existsSync(filePath)) {
       try {
         const items = JSON.parse(readFileSync(filePath, "utf-8"));
@@ -31,7 +33,7 @@ export default async function handler(req, res) {
   if (!all.length) {
     return res.status(404).json({
       error: "Aucun fichier de données trouvé.",
-      hint: "Lance l'extracteur navigateur sur supremevalues.com et place les JSON dans /public/data/",
+      hint: "Place les JSON v4 dans /public/data/",
       missing
     });
   }

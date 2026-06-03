@@ -1,0 +1,17 @@
+[
+  {
+    "name": "Corrupt",
+    "rarity": "Unique",
+    "t": "K",
+    "value": 525,
+    "demand": 4,
+    "stab": "Underpaid For",
+    "lc": -25,
+    "origin": "Data Loss",
+    "range": [
+      500,
+      525
+    ],
+    "img": ""
+  }
+]

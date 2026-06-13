@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>MM2 Hub — Trade</title>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0a0a0f;--surface:#111118;--surface2:#16161f;--surface3:#1c1c28;
+  --border:#232336;--border2:#2a2a40;
+  --text:#e8eaf6;--muted:#8888aa;--dimmed:#44445a;
+  --red:#e63946;--gold:#ffd166;--cyan:#06d6a0;
+  --font:'Rajdhani',sans-serif;--fonthead:'Orbitron',monospace;
+}
+body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:15px;min-height:100vh;display:flex;flex-direction:column}
+
+/* ── TOPBAR ── */
+.topbar{background:#0d0d15;border-bottom:1px solid var(--border);padding:0 24px;height:56px;display:flex;align-items:center;gap:16px;flex-shrink:0}
+.logo{font-family:var(--fonthead);font-size:14px;font-weight:900;letter-spacing:3px;background:linear-gradient(135deg,#e63946,#ffd166);-webkit-background-clip:text;-webkit-text-fill-color:transparent;cursor:pointer}
+.nav-link{background:none;border:none;color:var(--muted);font-family:var(--font);font-size:15px;font-weight:700;letter-spacing:1px;padding:8px 16px;cursor:pointer;border-radius:8px;transition:all .15s}
+.nav-link:hover,.nav-link.active{color:var(--text);background:var(--surface3)}
+.topbar-right{margin-left:auto;display:flex;align-items:center;gap:10px}
+.data-badge{display:inline-flex;align-items:center;gap:5px;background:rgba(6,214,160,.1);border:1px solid rgba(6,214,160,.3);border-radius:20px;padding:4px 12px;font-size:11px;color:var(--cyan)}
+
+/* ── HERO ── */
+.hero{background:linear-gradient(135deg,#0d0d18 0%,#13131f 50%,#0a0a0f 100%);border-bottom:1px solid var(--border);padding:40px 32px 32px;text-align:center;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(230,57,70,.12) 0%,transparent 70%);pointer-events:none}
+.hero-tag{display:inline-flex;align-items:center;gap:6px;background:rgba(230,57,70,.12);border:1px solid rgba(230,57,70,.3);border-radius:20px;padding:4px 14px;font-size:12px;color:var(--red);font-weight:700;letter-spacing:1px;margin-bottom:16px}
+.hero h1{font-family:var(--fonthead);font-size:32px;font-weight:900;letter-spacing:2px;margin-bottom:10px;line-height:1.2}
+.hero h1 span{background:linear-gradient(135deg,#e63946,#ffd166);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.hero p{color:var(--muted);font-size:16px;max-width:540px;margin:0 auto 24px;line-height:1.6}
+.hero-stats{display:flex;justify-content:center;gap:40px;margin-top:8px;flex-wrap:wrap}
+.hero-stat{text-align:center}
+.hero-stat-val{font-family:var(--fonthead);font-size:22px;font-weight:900;color:var(--gold)}
+.hero-stat-lbl{font-size:11px;color:var(--dimmed);letter-spacing:1px;text-transform:uppercase;margin-top:2px}
+
+/* ── MAIN TRADE AREA ── */
+.trade-wrap{display:grid;grid-template-columns:1fr auto 1fr;gap:0;flex:1;min-height:0;height:calc(100vh - 56px - 160px)}
+.trade-panel{display:flex;flex-direction:column;background:var(--surface);border:1px solid var(--border)}
+.trade-panel:first-child{border-right:none;border-radius:0}
+.trade-panel:last-child{border-left:none;border-radius:0}
+.panel-header{padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;flex-shrink:0}
+.panel-title{font-family:var(--fonthead);font-size:13px;font-weight:900;letter-spacing:2px}
+.panel-value{margin-left:auto;display:flex;align-items:center;gap:6px;font-family:var(--fonthead);font-size:14px;color:var(--gold);font-weight:700}
+.coin-icon{width:18px;height:18px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#ffe066,#ffd166,#b8960c);display:inline-block;flex-shrink:0;box-shadow:0 1px 4px rgba(0,0,0,.4)}
+
+/* offer drop zone */
+.offer-zone{flex:1;overflow-y:auto;padding:14px;display:flex;flex-wrap:wrap;gap:8px;align-content:flex-start;min-height:200px}
+.offer-empty{width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--dimmed);gap:10px;pointer-events:none}
+.offer-empty-icon{font-size:36px;opacity:.3}
+.offer-empty-txt{font-size:13px;letter-spacing:1px}
+.offer-item{background:var(--surface2);border:1px solid var(--border2);border-radius:10px;padding:10px;width:100px;flex-shrink:0;position:relative;cursor:pointer;transition:all .15s}
+.offer-item:hover{border-color:var(--red);background:rgba(230,57,70,.08)}
+.offer-item img{width:70px;height:70px;object-fit:contain;display:block;margin:0 auto 6px;filter:drop-shadow(0 2px 6px rgba(0,0,0,.5))}
+.offer-item-name{font-size:11px;font-weight:700;text-align:center;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.offer-item-val{font-size:10px;text-align:center;color:var(--gold);font-family:var(--fonthead);margin-top:2px}
+.offer-item-del{position:absolute;top:4px;right:4px;width:18px;height:18px;border-radius:4px;background:rgba(230,57,70,.15);border:1px solid rgba(230,57,70,.3);color:var(--red);font-size:12px;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .15s;cursor:pointer}
+.offer-item:hover .offer-item-del{opacity:1}
+.offer-item-qty{position:absolute;top:4px;left:4px;background:rgba(0,0,0,.6);border-radius:4px;padding:1px 5px;font-size:10px;font-weight:700;color:var(--cyan)}
+
+/* middle column */
+.trade-mid{width:200px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:20px;background:var(--bg);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+.trade-btn-main{width:100%;padding:14px 0;background:linear-gradient(135deg,#e63946,#ff6b35);border:none;border-radius:12px;color:#fff;font-family:var(--fonthead);font-size:12px;font-weight:900;letter-spacing:2px;cursor:pointer;transition:all .2s;box-shadow:0 4px 20px rgba(230,57,70,.4)}
+.trade-btn-main:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(230,57,70,.55)}
+.trade-arrows{font-size:28px;color:var(--dimmed);line-height:1}
+.trade-fairness{width:100%;background:var(--surface);border:1px solid var(--border2);border-radius:10px;padding:12px;text-align:center}
+.fair-label{font-size:10px;color:var(--dimmed);letter-spacing:1px;text-transform:uppercase;margin-bottom:6px}
+.fair-bar-wrap{height:6px;background:var(--border2);border-radius:3px;overflow:hidden;margin-bottom:6px}
+.fair-bar{height:100%;background:linear-gradient(90deg,var(--red),var(--gold));border-radius:3px;transition:width .4s;width:50%}
+.fair-pct{font-family:var(--fonthead);font-size:16px;font-weight:900;color:var(--gold)}
+
+/* item browser */
+.browser{display:flex;flex-direction:column;background:var(--surface2);border-top:1px solid var(--border)}
+.browser-header{padding:10px 14px;border-bottom:1px solid var(--border);display:flex;gap:8px;align-items:center;flex-shrink:0}
+.browser-search{flex:1;background:var(--surface3);border:1px solid var(--border2);border-radius:7px;color:var(--text);padding:7px 12px;font-family:var(--font);font-size:13px;outline:none}
+.browser-search:focus{border-color:var(--red)}
+.browser-search::placeholder{color:var(--dimmed)}
+.rarity-filter{display:flex;gap:4px;padding:8px 14px;border-bottom:1px solid var(--border);flex-wrap:wrap;flex-shrink:0}
+.rf-btn{background:none;border:1px solid var(--border2);border-radius:6px;color:var(--muted);font-family:var(--font);font-size:11px;font-weight:700;padding:3px 9px;cursor:pointer;transition:all .15s;white-space:nowrap}
+.rf-btn:hover,.rf-btn.active{border-color:currentColor}
+.rf-btn.active{background:rgba(255,255,255,.06)}
+.browser-grid{flex:1;overflow-y:auto;display:grid;grid-template-columns:repeat(auto-fill,minmax(90px,1fr));gap:6px;padding:10px}
+.br-item{background:var(--surface);border:1px solid var(--border2);border-radius:8px;padding:8px 6px;cursor:pointer;transition:all .15s;text-align:center;position:relative}
+.br-item:hover{border-color:var(--cyan);background:rgba(6,214,160,.06);transform:translateY(-1px)}
+.br-item img{width:56px;height:56px;object-fit:contain;display:block;margin:0 auto 4px;filter:drop-shadow(0 2px 5px rgba(0,0,0,.6))}
+.br-item-name{font-size:10px;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.br-item-val{font-size:10px;color:var(--gold);font-family:var(--fonthead)}
+.br-item-rarity{font-size:9px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;margin-bottom:2px}
+
+/* sections layout */
+.left-col,.right-col{display:flex;flex-direction:column;overflow:hidden}
+.left-col .trade-panel,.right-col .trade-panel{flex:0 0 280px;overflow:hidden;display:flex;flex-direction:column}
+.left-col .browser,.right-col .browser{flex:1;overflow:hidden;display:flex;flex-direction:column}
+.trade-layout{display:grid;grid-template-columns:1fr 200px 1fr;flex:1;overflow:hidden;border-top:1px solid var(--border)}
+
+/* scrollbar */
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
+
+@media(max-width:900px){.trade-layout{grid-template-columns:1fr;}.trade-mid{width:100%;flex-direction:row;flex-wrap:wrap;height:auto;border:none;border-top:1px solid var(--border);border-bottom:1px solid var(--border)}.right-col{display:none}}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="logo" onclick="window.location.href='index.html'">MM2 HUB</div>
+  <button class="nav-link" onclick="window.location.href='index.html'">📊 Values</button>
+  <button class="nav-link active">⚡ Trade</button>
+  <div class="topbar-right">
+    <div class="data-badge">🔄 Trading 24h/24 · 7j/7</div>
+  </div>
+</div>
+
+<div class="hero">
+  <div class="hero-tag">⚡ LIVE TRADING</div>
+  <h1>Négociez des items MM2<br><span>instantanément</span></h1>
+  <p>Construisez votre offre, choisissez ce que vous voulez recevoir, et démarrez le trade en quelques secondes.</p>
+  <div class="hero-stats">
+    <div class="hero-stat">
+      <div class="hero-stat-val">24/7</div>
+      <div class="hero-stat-lbl">Trading actif</div>
+    </div>
+    <div class="hero-stat">
+      <div class="hero-stat-val">500+</div>
+      <div class="hero-stat-lbl">Items disponibles</div>
+    </div>
+    <div class="hero-stat">
+      <div class="hero-stat-val">0%</div>
+      <div class="hero-stat-lbl">Commission</div>
+    </div>
+  </div>
+</div>
+
+<div class="trade-layout">
+  <!-- LEFT: Votre offre + browser -->
+  <div class="left-col">
+    <div class="trade-panel">
+      <div class="panel-header">
+        <span style="color:var(--red)">●</span>
+        <span class="panel-title">VOTRE OFFRE</span>
+        <div class="panel-value"><span class="coin-icon"></span><span id="offerTotal">0.00</span></div>
+      </div>
+      <div class="offer-zone" id="offerZone">
+        <div class="offer-empty" id="offerEmpty">
+          <div class="offer-empty-icon">🎒</div>
+          <div class="offer-empty-txt">Ajoutez des items ci-dessous</div>
+        </div>
+      </div>
+    </div>
+    <div class="browser">
+      <div class="browser-header">
+        <input class="browser-search" id="leftSearch" placeholder="🔍 Rechercher..." oninput="filterBrowser('left')">
+      </div>
+      <div class="rarity-filter" id="leftRarityFilter">
+        <button class="rf-btn active" data-r="all" onclick="setRarityFilter('left','all',this)">Tous</button>
+        <button class="rf-btn" data-r="Chroma"    onclick="setRarityFilter('left','Chroma',this)"    style="color:#ff6b35">Chroma</button>
+        <button class="rf-btn" data-r="Ancient"   onclick="setRarityFilter('left','Ancient',this)"   style="color:#c77dff">Ancient</button>
+        <button class="rf-btn" data-r="Godly"     onclick="setRarityFilter('left','Godly',this)"     style="color:#e74c3c">Godly</button>
+        <button class="rf-btn" data-r="Legendary" onclick="setRarityFilter('left','Legendary',this)" style="color:#f1c40f">Legendary</button>
+        <button class="rf-btn" data-r="Rare"      onclick="setRarityFilter('left','Rare',this)"      style="color:#3498db">Rare</button>
+      </div>
+      <div class="browser-grid" id="leftBrowser"></div>
+    </div>
+  </div>
+
+  <!-- MIDDLE -->
+  <div class="trade-mid">
+    <div class="trade-fairness">
+      <div class="fair-label">Équité du trade</div>
+      <div class="fair-bar-wrap"><div class="fair-bar" id="fairBar"></div></div>
+      <div class="fair-pct" id="fairPct">—</div>
+    </div>
+    <div class="trade-arrows">⇄</div>
+    <button class="trade-btn-main" onclick="startTrade()">⚡ DÉMARRER<br>LE TRADE</button>
+    <button style="width:100%;padding:9px 0;background:none;border:1px solid var(--border2);border-radius:10px;color:var(--muted);font-family:var(--font);font-size:13px;font-weight:700;cursor:pointer;transition:all .15s" onmouseover="this.style.borderColor='var(--red)';this.style.color='var(--red)'" onmouseout="this.style.borderColor='var(--border2)';this.style.color='var(--muted)'" onclick="clearAll()">✕ Tout effacer</button>
+  </div>
+
+  <!-- RIGHT: Ce que vous recevez + browser -->
+  <div class="right-col">
+    <div class="trade-panel">
+      <div class="panel-header">
+        <span style="color:var(--cyan)">●</span>
+        <span class="panel-title" style="color:var(--cyan)">VOUS RECEVEZ</span>
+        <div class="panel-value"><span class="coin-icon"></span><span id="receiveTotal">0.00</span></div>
+      </div>
+      <div class="offer-zone" id="receiveZone">
+        <div class="offer-empty" id="receiveEmpty">
+          <div class="offer-empty-icon">✨</div>
+          <div class="offer-empty-txt">Choisissez vos items de rêve</div>
+        </div>
+      </div>
+    </div>
+    <div class="browser">
+      <div class="browser-header">
+        <input class="browser-search" id="rightSearch" placeholder="🔍 Rechercher..." oninput="filterBrowser('right')">
+      </div>
+      <div class="rarity-filter" id="rightRarityFilter">
+        <button class="rf-btn active" data-r="all" onclick="setRarityFilter('right','all',this)">Tous</button>
+        <button class="rf-btn" data-r="Chroma"    onclick="setRarityFilter('right','Chroma',this)"    style="color:#ff6b35">Chroma</button>
+        <button class="rf-btn" data-r="Ancient"   onclick="setRarityFilter('right','Ancient',this)"   style="color:#c77dff">Ancient</button>
+        <button class="rf-btn" data-r="Godly"     onclick="setRarityFilter('right','Godly',this)"     style="color:#e74c3c">Godly</button>
+        <button class="rf-btn" data-r="Legendary" onclick="setRarityFilter('right','Legendary',this)" style="color:#f1c40f">Legendary</button>
+        <button class="rf-btn" data-r="Rare"      onclick="setRarityFilter('right','Rare',this)"      style="color:#3498db">Rare</button>
+      </div>
+      <div class="browser-grid" id="rightBrowser"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+const RC = {
+  Chroma:{color:"#ff6b35"},Ancient:{color:"#c77dff"},Godly:{color:"#e74c3c"},
+  Vintage:{color:"#c8a882"},Legendary:{color:"#f1c40f"},Rare:{color:"#3498db"},
+  Uncommon:{color:"#5dade2"},Common:{color:"#95a5a6"},
+};
+
+const ALL_ITEMS = [
+  {name:"Chroma Traveler's Gun",rarity:"Chroma",t:"G",value:225000,img:"https://supremevalues.com/media/mm2chromas/CTG.png"},
+  {name:"Chroma Evergun",rarity:"Chroma",t:"G",value:76000,img:"https://supremevalues.com/media/mm2chromas/CEvergun.png"},
+  {name:"Chroma Evergreen",rarity:"Chroma",t:"K",value:60000,img:"https://supremevalues.com/media/mm2chromas/CEvergreen.png"},
+  {name:"Chroma Bauble",rarity:"Chroma",t:"K",value:38000,img:"https://supremevalues.com/media/mm2chromas/CBaub.png"},
+  {name:"Chroma Vampire's Gun",rarity:"Chroma",t:"G",value:35000,img:"https://supremevalues.com/media/mm2chromas/CVG.png"},
+  {name:"Chroma Constellation",rarity:"Chroma",t:"K",value:33000,img:"https://supremevalues.com/media/mm2chromas/CConst.png"},
+  {name:"Chroma Alienbeam",rarity:"Chroma",t:"G",value:30000,img:"https://supremevalues.com/media/mm2chromas/CAB.png"},
+  {name:"Chroma Raygun",rarity:"Chroma",t:"G",value:14500,img:"https://supremevalues.com/media/mm2chromas/CRG.png"},
+  {name:"Chroma Sunrise",rarity:"Chroma",t:"K",value:11250,img:"https://supremevalues.com/media/mm2chromas/CSR.png"},
+  {name:"Chroma Snowcannon",rarity:"Chroma",t:"G",value:8500,img:"https://supremevalues.com/media/mm2chromas/CCannon.png"},
+  {name:"Chroma Blizzard",rarity:"Chroma",t:"K",value:8000,img:"https://supremevalues.com/media/mm2chromas/CBZ.png"},
+  {name:"Chroma Sunset",rarity:"Chroma",t:"K",value:6500,img:"https://supremevalues.com/media/mm2chromas/CSS.png"},
+  {name:"Chroma Snow Dagger",rarity:"Chroma",t:"K",value:5750,img:"https://supremevalues.com/media/mm2chromas/CDagger.png"},
+  {name:"Corrupt",rarity:"Ancient",t:"K",value:120000,img:"https://supremevalues.com/media/mm2ancients/Corrupt.png"},
+  {name:"Eternal",rarity:"Ancient",t:"K",value:48000,img:"https://supremevalues.com/media/mm2ancients/Eternal.png"},
+  {name:"Batwing",rarity:"Ancient",t:"K",value:28000,img:"https://supremevalues.com/media/mm2ancients/Batwing.png"},
+  {name:"Tides",rarity:"Ancient",t:"K",value:20000,img:"https://supremevalues.com/media/mm2ancients/Tides.png"},
+  {name:"Darkshard",rarity:"Ancient",t:"K",value:16000,img:"https://supremevalues.com/media/mm2ancients/Darkshard.png"},
+  {name:"Amarok",rarity:"Ancient",t:"K",value:9000,img:"https://supremevalues.com/media/mm2ancients/Amarok.png"},
+  {name:"Zodiac",rarity:"Ancient",t:"K",value:8000,img:"https://supremevalues.com/media/mm2ancients/Zodiac.png"},
+  {name:"Seer",rarity:"Godly",t:"K",value:1,img:"https://supremevalues.com/media/mm2godlies/Yellow_Seer.png"},
+  {name:"Harvester",rarity:"Godly",t:"K",value:5500,img:"https://supremevalues.com/media/mm2godlies/Harvester.png"},
+  {name:"Elderwood Scythe",rarity:"Godly",t:"K",value:4800,img:"https://supremevalues.com/media/mm2godlies/Elderwood_Scythe.png"},
+  {name:"Darksword",rarity:"Godly",t:"K",value:1480,img:"https://supremevalues.com/media/mm2godlies/Darksword.png"},
+  {name:"Blossom",rarity:"Godly",t:"K",value:1265,img:"https://supremevalues.com/media/mm2godlies/Blossom.png"},
+  {name:"Sunrise",rarity:"Godly",t:"K",value:1150,img:"https://supremevalues.com/media/mm2godlies/Sunrise.png"},
+  {name:"Bauble",rarity:"Godly",t:"K",value:900,img:"https://supremevalues.com/media/mm2godlies/Bauble.png"},
+  {name:"Rainbow Gun",rarity:"Godly",t:"G",value:345,img:"https://supremevalues.com/media/mm2godlies/Rainbow_Gun.png"},
+  {name:"Ocean",rarity:"Godly",t:"K",value:275,img:"https://supremevalues.com/media/mm2godlies/Ocean.png"},
+  {name:"Pearlshine",rarity:"Godly",t:"K",value:95,img:"https://supremevalues.com/media/mm2godlies/Pearlshine.png"},
+  {name:"Candy",rarity:"Godly",t:"K",value:85,img:"https://supremevalues.com/media/mm2godlies/Candy.png"},
+  {name:"Luger",rarity:"Godly",t:"K",value:45,img:"https://supremevalues.com/media/mm2godlies/Luger.png"},
+  {name:"Icewing",rarity:"Legendary",t:"K",value:700,img:"https://supremevalues.com/media/mm2legendaries/Icewing.png"},
+  {name:"Slaughter",rarity:"Legendary",t:"K",value:550,img:"https://supremevalues.com/media/mm2legendaries/Slaughter.png"},
+  {name:"Flames",rarity:"Legendary",t:"K",value:310,img:"https://supremevalues.com/media/mm2legendaries/Flames.png"},
+  {name:"Hallows Edge",rarity:"Legendary",t:"K",value:115,img:"https://supremevalues.com/media/mm2legendaries/Hallows_Edge.png"},
+  {name:"Saw",rarity:"Legendary",t:"K",value:90,img:"https://supremevalues.com/media/mm2legendaries/Saw.png"},
+  {name:"Spooky",rarity:"Rare",t:"K",value:18,img:"https://supremevalues.com/media/mm2rares/Spooky.png"},
+  {name:"Shark Seeker",rarity:"Rare",t:"K",value:12,img:"https://supremevalues.com/media/mm2rares/Shark_Seeker.png"},
+  {name:"Gingerblade",rarity:"Rare",t:"K",value:8,img:"https://supremevalues.com/media/mm2rares/Gingerblade.png"},
+];
+
+// State
+let offerItems   = {}; // name → {item, qty}
+let receiveItems = {};
+let leftRarity   = "all";
+let rightRarity  = "all";
+
+function fmt(v){
+  if(v>=1000) return (v/1000).toFixed(v%1000===0?0:2)+"K";
+  return v.toLocaleString();
+}
+
+// ── BROWSER ──
+function renderBrowser(side) {
+  const searchId = side==="left" ? "leftSearch" : "rightSearch";
+  const gridId   = side==="left" ? "leftBrowser" : "rightBrowser";
+  const rarity   = side==="left" ? leftRarity : rightRarity;
+  const q        = (document.getElementById(searchId).value||"").toLowerCase();
+
+  const items = ALL_ITEMS.filter(i => {
+    if(rarity!=="all" && i.rarity!==rarity) return false;
+    if(q && !i.name.toLowerCase().includes(q)) return false;
+    return true;
+  }).sort((a,b)=>b.value-a.value);
+
+  const grid = document.getElementById(gridId);
+  grid.innerHTML = items.map(item => {
+    const rc = RC[item.rarity]||{color:"#888"};
+    const fb = `https://mm2checker.com/images/godlies/${item.name.toLowerCase().replace(/[^a-z0-9]/g,"-").replace(/-+/g,"-")}.png`;
+    return `<div class="br-item" onclick="addItem('${side}','${item.name.replace(/'/g,"\\'")}')">
+      <div class="br-item-rarity" style="color:${rc.color}">${item.rarity}</div>
+      <img src="${item.img}" onerror="this.src='${fb}';this.onerror=null" loading="lazy" alt="${item.name}">
+      <div class="br-item-name" title="${item.name}">${item.name}</div>
+      <div class="br-item-val">${fmt(item.value)}</div>
+    </div>`;
+  }).join("");
+}
+
+function filterBrowser(side){ renderBrowser(side); }
+
+function setRarityFilter(side, r, btn) {
+  if(side==="left") leftRarity=r; else rightRarity=r;
+  const container = document.getElementById(side==="left"?"leftRarityFilter":"rightRarityFilter");
+  container.querySelectorAll(".rf-btn").forEach(b=>b.classList.toggle("active", b.dataset.r===r));
+  renderBrowser(side);
+}
+
+// ── ADD / REMOVE ──
+function addItem(side, name) {
+  const item = ALL_ITEMS.find(i=>i.name===name);
+  if(!item) return;
+  const bag = side==="left" ? offerItems : receiveItems;
+  if(!bag[name]) bag[name]={item,qty:0};
+  bag[name].qty++;
+  renderZone(side);
+  updateFairness();
+}
+
+function removeItem(side, name) {
+  const bag = side==="left" ? offerItems : receiveItems;
+  if(!bag[name]) return;
+  bag[name].qty--;
+  if(bag[name].qty<=0) delete bag[name];
+  renderZone(side);
+  updateFairness();
+}
+
+function renderZone(side) {
+  const zoneId   = side==="left" ? "offerZone"   : "receiveZone";
+  const emptyId  = side==="left" ? "offerEmpty"  : "receiveEmpty";
+  const totalId  = side==="left" ? "offerTotal"  : "receiveTotal";
+  const bag      = side==="left" ? offerItems     : receiveItems;
+  const zone     = document.getElementById(zoneId);
+  const keys     = Object.keys(bag);
+
+  let total = 0;
+  keys.forEach(k => total += bag[k].item.value * bag[k].qty);
+  document.getElementById(totalId).textContent = fmt(total);
+
+  if(!keys.length){
+    zone.innerHTML = `<div class="offer-empty" id="${emptyId}">
+      <div class="offer-empty-icon">${side==="left"?"🎒":"✨"}</div>
+      <div class="offer-empty-txt">${side==="left"?"Ajoutez des items ci-dessous":"Choisissez vos items de rêve"}</div>
+    </div>`;
+    return;
+  }
+
+  zone.innerHTML = keys.map(k => {
+    const {item, qty} = bag[k];
+    const fb = `https://mm2checker.com/images/godlies/${item.name.toLowerCase().replace(/[^a-z0-9]/g,"-").replace(/-+/g,"-")}.png`;
+    const esc = item.name.replace(/'/g,"\\'");
+    return `<div class="offer-item">
+      ${qty>1?`<div class="offer-item-qty">×${qty}</div>`:""}
+      <div class="offer-item-del" onclick="removeItem('${side}','${esc}')">✕</div>
+      <img src="${item.img}" onerror="this.src='${fb}';this.onerror=null" alt="${item.name}">
+      <div class="offer-item-name">${item.name}</div>
+      <div class="offer-item-val">${fmt(item.value * qty)}</div>
+    </div>`;
+  }).join("");
+}
+
+function updateFairness() {
+  const offerVal   = Object.values(offerItems).reduce((s,x)=>s+x.item.value*x.qty, 0);
+  const receiveVal = Object.values(receiveItems).reduce((s,x)=>s+x.item.value*x.qty, 0);
+  const bar   = document.getElementById("fairBar");
+  const label = document.getElementById("fairPct");
+
+  if(!offerVal && !receiveVal){ bar.style.width="50%"; label.textContent="—"; label.style.color="var(--dimmed)"; return; }
+  const total = offerVal + receiveVal;
+  const pct   = total ? Math.round((offerVal/total)*100) : 50;
+  bar.style.width = pct+"%";
+  // colour feedback
+  const diff = Math.abs(pct-50);
+  const color = diff<5 ? "var(--cyan)" : diff<15 ? "var(--gold)" : "var(--red)";
+  label.style.color = color;
+  if(diff<5) label.textContent = "✓ Fair";
+  else if(pct>50) label.textContent = `+${pct-50}% vous donnez plus`;
+  else label.textContent = `+${50-pct}% vous recevez plus`;
+}
+
+function startTrade() {
+  const offerKeys   = Object.keys(offerItems);
+  const receiveKeys = Object.keys(receiveItems);
+  if(!offerKeys.length || !receiveKeys.length){
+    alert("Ajoutez des items des deux côtés pour démarrer un trade !");
+    return;
+  }
+  alert("✅ Trade initié !\n\nVous offrez : " + offerKeys.map(k=>`${offerItems[k].qty}x ${k}`).join(", ") +
+        "\n\nVous recevez : " + receiveKeys.map(k=>`${receiveItems[k].qty}x ${k}`).join(", "));
+}
+
+function clearAll() {
+  offerItems = {}; receiveItems = {};
+  renderZone("left"); renderZone("right"); updateFairness();
+}
+
+// init
+renderBrowser("left");
+renderBrowser("right");
+updateFairness();
+</script>
+</body>
+</html>

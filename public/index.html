@@ -26,6 +26,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:15
 .sb-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
 .sb-divider{height:1px;background:var(--border);margin:10px 18px}
 .sb-count{font-size:11px;color:var(--dimmed);margin-left:auto}
+.trade-btn{width:100%;padding:11px 0;background:linear-gradient(135deg,#e63946,#ff6b35);border:none;border-radius:10px;color:#fff;font-family:var(--fonthead);font-size:13px;font-weight:900;letter-spacing:3px;cursor:pointer;transition:all .2s;box-shadow:0 4px 18px rgba(230,57,70,.35)}
+.trade-btn:hover{transform:translateY(-1px);box-shadow:0 6px 24px rgba(230,57,70,.5)}
 .main{flex:1;padding:18px 20px;min-width:0}
 .filter-bar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:18px;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 14px}
 .filter-input{background:var(--surface2);border:1px solid var(--border2);border-radius:7px;color:var(--text);padding:7px 12px;font-family:var(--font);font-size:14px;outline:none;min-width:200px;flex:1}
@@ -122,6 +124,10 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:15
     <div class="sb-item active" data-sort="value"  onclick="setSort('value',this)">📊 Value ↓</div>
     <div class="sb-item" data-sort="name"           onclick="setSort('name',this)">🔤 Name A→Z</div>
     <div class="sb-item" data-sort="demand"         onclick="setSort('demand',this)">📈 Demand ↓</div>
+    <div class="sb-divider"></div>
+    <div style="padding:10px 14px">
+      <button class="trade-btn" onclick="window.open('trade.html','_blank')">⚡ TRADE</button>
+    </div>
   </aside>
 
   <main class="main">
@@ -726,7 +732,6 @@ const EVENT_KEYWORDS = [
 
 function populateEventFilter() {
   const sel = document.getElementById("eventSel");
-  // Detect which events actually exist in dataset
   EVENT_KEYWORDS.forEach(ev => {
     const exists = ALL_ITEMS.some(i => (i.origin||"").includes(ev.key));
     if (exists) {
@@ -736,29 +741,6 @@ function populateEventFilter() {
       sel.appendChild(opt);
     }
   });
-  // Also add any other origins that don't match keywords (Boxes, Packs, etc.)
-  const others = new Set();
-  ALL_ITEMS.forEach(i => {
-    if (!i.origin) return;
-    const matched = EVENT_KEYWORDS.some(ev => i.origin.includes(ev.key));
-    if (!matched) {
-      // Extract base origin name (strip year for grouping)
-      const base = i.origin.replace(/\s*\(.*\)/, "").replace(/\s*\d{4}/, "").trim();
-      if (base) others.add(base);
-    }
-  });
-  if (others.size) {
-    const sep = document.createElement("option");
-    sep.disabled = true;
-    sep.textContent = "──────────";
-    sel.appendChild(sep);
-    [...others].sort().forEach(o => {
-      const opt = document.createElement("option");
-      opt.value = o;
-      opt.textContent = "📦 " + o;
-      sel.appendChild(opt);
-    });
-  }
 }
 
 // ─── RENDER ───────────────────────────────────────────────────

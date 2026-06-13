@@ -24,6 +24,14 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:15
 .tb-right{margin-left:auto;display:flex;align-items:center;gap:10px}
 .data-badge{display:inline-flex;align-items:center;gap:5px;background:rgba(6,214,160,.1);border:1px solid rgba(6,214,160,.3);border-radius:20px;padding:3px 10px;font-size:11px;color:var(--cyan)}
 
+/* ROBLOX LOGIN BADGE */
+.roblox-btn{display:inline-flex;align-items:center;gap:7px;padding:5px 14px;border-radius:20px;border:1px solid var(--border2);background:var(--surface2);cursor:pointer;font-family:var(--font);font-size:13px;font-weight:700;color:var(--muted);transition:all .2s}
+.roblox-btn:hover{border-color:var(--cyan);color:var(--cyan)}
+.roblox-btn.connected{background:rgba(6,214,160,.1);border-color:rgba(6,214,160,.4);color:var(--cyan)}
+.roblox-avatar{width:22px;height:22px;border-radius:50%;object-fit:cover;border:1px solid rgba(6,214,160,.4)}
+.roblox-dot{width:8px;height:8px;border-radius:50%;background:var(--cyan);animation:pulse-dot 2s infinite}
+@keyframes pulse-dot{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.6;transform:scale(.8)}}
+
 /* PAGE */
 .page{max-width:1100px;margin:0 auto;padding:28px 20px}
 
@@ -62,6 +70,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:15
 .ad-type.wts{background:rgba(255,209,102,.15);color:var(--gold)}
 .ad-type.wtt{background:rgba(199,125,255,.15);color:#c77dff}
 .ad-user{font-size:13px;font-weight:700;color:var(--text)}
+.ad-user-avatar{width:18px;height:18px;border-radius:50%;object-fit:cover}
 .ad-time{font-size:11px;color:var(--dimmed);margin-left:auto}
 .ad-body{padding:12px 14px}
 .ad-section-label{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--dimmed);margin-bottom:8px}
@@ -83,7 +92,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:15
 .empty-icon{font-size:48px;margin-bottom:12px;opacity:.4}
 .empty-txt{font-size:14px}
 
-/* MODAL */
+/* MODAL OVERLAY */
 .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:500;display:flex;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(4px)}
 .modal-overlay.hidden{display:none}
 .modal{background:var(--surface);border:1px solid var(--border2);border-radius:16px;width:100%;max-width:620px;max-height:90vh;overflow-y:auto}
@@ -97,6 +106,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:15
 .form-input{width:100%;background:var(--surface2);border:1px solid var(--border2);border-radius:8px;color:var(--text);padding:9px 12px;font-family:var(--font);font-size:14px;outline:none}
 .form-input:focus{border-color:var(--red)}
 .form-input::placeholder{color:var(--dimmed)}
+.form-input:disabled{opacity:.6;cursor:not-allowed}
 textarea.form-input{resize:vertical;min-height:70px}
 .form-row{display:flex;gap:10px}
 .form-row .form-group{flex:1}
@@ -106,6 +116,15 @@ textarea.form-input{resize:vertical;min-height:70px}
 .type-btn.active-wtb{background:rgba(6,214,160,.12);border-color:var(--cyan);color:var(--cyan)}
 .type-btn.active-wts{background:rgba(255,209,102,.12);border-color:var(--gold);color:var(--gold)}
 .type-btn.active-wtt{background:rgba(199,125,255,.12);border-color:#c77dff;color:#c77dff}
+
+/* ROBLOX CONNECTED INFO IN MODAL */
+.roblox-info-box{display:flex;align-items:center;gap:10px;padding:10px 14px;background:rgba(6,214,160,.07);border:1px solid rgba(6,214,160,.25);border-radius:10px;margin-bottom:16px}
+.roblox-info-avatar{width:36px;height:36px;border-radius:50%;object-fit:cover;border:2px solid rgba(6,214,160,.4)}
+.roblox-info-name{font-weight:700;font-size:14px;color:var(--text)}
+.roblox-info-sub{font-size:11px;color:var(--cyan)}
+.roblox-info-disconnect{margin-left:auto;background:none;border:1px solid var(--border2);border-radius:6px;color:var(--dimmed);font-size:11px;padding:4px 8px;cursor:pointer;font-family:var(--font);transition:all .15s}
+.roblox-info-disconnect:hover{border-color:var(--red);color:var(--red)}
+
 .item-picker{background:var(--surface2);border:1px solid var(--border2);border-radius:8px;overflow:hidden}
 .item-picker-search{width:100%;background:transparent;border:none;border-bottom:1px solid var(--border2);color:var(--text);padding:9px 12px;font-family:var(--font);font-size:13px;outline:none}
 .item-picker-search::placeholder{color:var(--dimmed)}
@@ -114,6 +133,7 @@ textarea.form-input{resize:vertical;min-height:70px}
 .picker-item:hover{background:var(--surface3);border-color:var(--border2)}
 .picker-item img{width:44px;height:44px;object-fit:contain;display:block;margin:0 auto 3px;filter:drop-shadow(0 1px 3px rgba(0,0,0,.5))}
 .picker-item-name{font-size:9px;font-weight:700;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.picker-item-val{font-size:8px;color:var(--gold);font-family:var(--fonthead)}
 .picked-items{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;min-height:36px}
 .picked-chip{background:var(--surface3);border:1px solid var(--border2);border-radius:7px;padding:5px 8px;display:flex;align-items:center;gap:6px;font-size:12px;font-weight:700;color:var(--text)}
 .picked-chip img{width:28px;height:28px;object-fit:contain}
@@ -124,6 +144,25 @@ textarea.form-input{resize:vertical;min-height:70px}
 .btn-cancel:hover{border-color:var(--red);color:var(--red)}
 .btn-submit{padding:9px 24px;background:linear-gradient(135deg,#e63946,#ff6b35);border:none;border-radius:8px;color:#fff;font-family:var(--fonthead);font-size:12px;font-weight:900;letter-spacing:1px;cursor:pointer;transition:all .2s;box-shadow:0 3px 12px rgba(230,57,70,.3)}
 .btn-submit:hover{transform:translateY(-1px);box-shadow:0 5px 18px rgba(230,57,70,.45)}
+
+/* ROBLOX LOGIN MODAL */
+.rlogin-modal{background:var(--surface);border:1px solid var(--border2);border-radius:16px;width:100%;max-width:440px;padding:30px}
+.rlogin-title{font-family:var(--fonthead);font-size:18px;font-weight:900;letter-spacing:2px;text-align:center;margin-bottom:6px}
+.rlogin-sub{font-size:13px;color:var(--muted);text-align:center;margin-bottom:24px;line-height:1.5}
+.rlogin-icon{text-align:center;font-size:48px;margin-bottom:16px}
+.rlogin-input-wrap{display:flex;gap:8px;margin-bottom:12px}
+.rlogin-input{flex:1;background:var(--surface2);border:1px solid var(--border2);border-radius:8px;color:var(--text);padding:10px 14px;font-family:var(--font);font-size:14px;outline:none}
+.rlogin-input:focus{border-color:var(--cyan)}
+.rlogin-input::placeholder{color:var(--dimmed)}
+.rlogin-input.error{border-color:var(--red)}
+.btn-rlogin{padding:10px 20px;background:linear-gradient(135deg,var(--cyan),#04b589);border:none;border-radius:8px;color:#000;font-family:var(--fonthead);font-size:12px;font-weight:900;letter-spacing:1px;cursor:pointer;transition:all .2s;white-space:nowrap}
+.btn-rlogin:hover{transform:translateY(-1px);box-shadow:0 4px 16px rgba(6,214,160,.35)}
+.rlogin-error{font-size:12px;color:var(--red);text-align:center;min-height:16px;margin-bottom:8px}
+.rlogin-note{font-size:11px;color:var(--dimmed);text-align:center;line-height:1.6}
+.rlogin-note a{color:var(--muted);text-decoration:underline;cursor:pointer}
+.rlogin-loading{display:flex;align-items:center;justify-content:center;gap:8px;font-size:13px;color:var(--muted);padding:8px 0}
+.spinner{width:16px;height:16px;border:2px solid var(--border2);border-top-color:var(--cyan);border-radius:50%;animation:spin .6s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
 
 ::-webkit-scrollbar{width:4px;height:4px}
 ::-webkit-scrollbar-track{background:transparent}
@@ -138,6 +177,9 @@ textarea.form-input{resize:vertical;min-height:70px}
   <button class="tb-link active">⚡ Trade</button>
   <div class="tb-right">
     <div class="data-badge">🔄 Trading 24h/24 · 7j/7</div>
+    <div id="robloxBadge" class="roblox-btn" onclick="openRobloxLogin()">
+      🎮 Connecter Roblox
+    </div>
   </div>
 </div>
 
@@ -147,7 +189,7 @@ textarea.form-input{resize:vertical;min-height:70px}
       <div class="page-title">Annonces de <span>Trade</span></div>
       <div style="font-size:13px;color:var(--muted);margin-top:4px">Postez ce que vous offrez et ce que vous cherchez</div>
     </div>
-    <button class="btn-post" onclick="openModal()">+ Poster une annonce</button>
+    <button class="btn-post" onclick="onClickPost()">+ Poster une annonce</button>
   </div>
 
   <div class="tabs">
@@ -166,13 +208,40 @@ textarea.form-input{resize:vertical;min-height:70px}
       <option value="Godly">Godly</option>
       <option value="Legendary">Legendary</option>
       <option value="Rare">Rare</option>
+      <option value="Uncommon">Uncommon</option>
     </select>
   </div>
 
   <div class="ads-grid" id="adsGrid"></div>
 </div>
 
-<!-- MODAL POST -->
+<!-- ROBLOX LOGIN MODAL -->
+<div class="modal-overlay hidden" id="robloxOverlay">
+  <div class="rlogin-modal">
+    <div class="rlogin-icon">🎮</div>
+    <div class="rlogin-title">CONNEXION ROBLOX</div>
+    <div class="rlogin-sub">Entrez votre pseudo Roblox pour poster des annonces.<br>Votre identité sera vérifiée automatiquement.</div>
+    <div id="rloginContent">
+      <div class="rlogin-input-wrap">
+        <input class="rlogin-input" id="rloginInput" placeholder="Votre pseudo Roblox..." maxlength="20" onkeydown="if(event.key==='Enter')doRobloxLogin()">
+        <button class="btn-rlogin" onclick="doRobloxLogin()">Vérifier</button>
+      </div>
+      <div class="rlogin-error" id="rloginError"></div>
+      <div class="rlogin-note">
+        Votre pseudo est utilisé uniquement pour identifier vos annonces.<br>
+        Aucun mot de passe requis.
+      </div>
+    </div>
+    <div id="rloginLoading" class="rlogin-loading hidden">
+      <div class="spinner"></div> Vérification en cours...
+    </div>
+    <div style="text-align:center;margin-top:16px">
+      <button class="btn-cancel" onclick="closeRobloxLogin()">Annuler</button>
+    </div>
+  </div>
+</div>
+
+<!-- POST AD MODAL -->
 <div class="modal-overlay hidden" id="modalOverlay">
   <div class="modal">
     <div class="modal-head">
@@ -180,6 +249,17 @@ textarea.form-input{resize:vertical;min-height:70px}
       <button class="modal-close" onclick="closeModal()">✕</button>
     </div>
     <div class="modal-body">
+
+      <!-- Roblox connected info -->
+      <div class="roblox-info-box" id="robloxInfoBox">
+        <img class="roblox-info-avatar" id="robloxInfoAvatar" src="" alt="avatar">
+        <div>
+          <div class="roblox-info-name" id="robloxInfoName"></div>
+          <div class="roblox-info-sub">✅ Compte Roblox connecté</div>
+        </div>
+        <button class="roblox-info-disconnect" onclick="disconnectRoblox()">Changer</button>
+      </div>
+
       <div class="form-group">
         <label class="form-label">Type d'annonce</label>
         <div class="type-btns">
@@ -188,15 +268,10 @@ textarea.form-input{resize:vertical;min-height:70px}
           <button class="type-btn" id="tbWTB" onclick="selectType('wtb')">🛒 WTB — Je cherche</button>
         </div>
       </div>
-      <div class="form-row">
-        <div class="form-group">
-          <label class="form-label">Votre pseudo</label>
-          <input class="form-input" id="fUsername" placeholder="Ex: n0xxa0" maxlength="24">
-        </div>
-        <div class="form-group">
-          <label class="form-label">Contact (Discord, Roblox…)</label>
-          <input class="form-input" id="fContact" placeholder="Ex: n0xxa0#1234">
-        </div>
+
+      <div class="form-group">
+        <label class="form-label">Contact Discord (optionnel)</label>
+        <input class="form-input" id="fContact" placeholder="Ex: pseudo#1234 ou @pseudo">
       </div>
 
       <div class="form-group" id="grpOffer">
@@ -236,7 +311,9 @@ const RC = {
   Uncommon:{color:"#5dade2"},Common:{color:"#95a5a6"},
 };
 
+// ── FULL DATASET (from index.html / supremevalues.com) ──
 const ALL_ITEMS = [
+  // CHROMA
   {name:"Chroma Traveler's Gun",rarity:"Chroma",value:225000,img:"https://supremevalues.com/media/mm2chromas/CTG.png"},
   {name:"Chroma Evergun",rarity:"Chroma",value:76000,img:"https://supremevalues.com/media/mm2chromas/CEvergun.png"},
   {name:"Chroma Evergreen",rarity:"Chroma",value:60000,img:"https://supremevalues.com/media/mm2chromas/CEvergreen.png"},
@@ -250,45 +327,244 @@ const ALL_ITEMS = [
   {name:"Chroma Blizzard",rarity:"Chroma",value:8000,img:"https://supremevalues.com/media/mm2chromas/CBZ.png"},
   {name:"Chroma Sunset",rarity:"Chroma",value:6500,img:"https://supremevalues.com/media/mm2chromas/CSS.png"},
   {name:"Chroma Snow Dagger",rarity:"Chroma",value:5750,img:"https://supremevalues.com/media/mm2chromas/CDagger.png"},
-  {name:"Corrupt",rarity:"Ancient",value:120000,img:"https://supremevalues.com/media/mm2ancients/Corrupt.png"},
-  {name:"Eternal",rarity:"Ancient",value:48000,img:"https://supremevalues.com/media/mm2ancients/Eternal.png"},
-  {name:"Batwing",rarity:"Ancient",value:28000,img:"https://supremevalues.com/media/mm2ancients/Batwing.png"},
-  {name:"Tides",rarity:"Ancient",value:20000,img:"https://supremevalues.com/media/mm2ancients/Tides.png"},
-  {name:"Darkshard",rarity:"Ancient",value:16000,img:"https://supremevalues.com/media/mm2ancients/Darkshard.png"},
-  {name:"Amarok",rarity:"Ancient",value:9000,img:"https://supremevalues.com/media/mm2ancients/Amarok.png"},
-  {name:"Zodiac",rarity:"Ancient",value:8000,img:"https://supremevalues.com/media/mm2ancients/Zodiac.png"},
-  {name:"Seer",rarity:"Godly",value:1,img:"https://supremevalues.com/media/mm2godlies/Yellow_Seer.png"},
-  {name:"Harvester",rarity:"Godly",value:5500,img:"https://supremevalues.com/media/mm2godlies/Harvester.png"},
-  {name:"Elderwood Scythe",rarity:"Godly",value:4800,img:"https://supremevalues.com/media/mm2godlies/Elderwood_Scythe.png"},
+  {name:"Chroma Heart Wand",rarity:"Chroma",value:4750,img:"https://supremevalues.com/media/mm2chromas/CHW.png"},
+  {name:"Chroma Snowstorm",rarity:"Chroma",value:4250,img:"https://supremevalues.com/media/mm2chromas/CSnowstorm.png"},
+  {name:"Chroma Watergun",rarity:"Chroma",value:3400,img:"https://supremevalues.com/media/mm2chromas/CWG.png"},
+  {name:"Chroma Treat",rarity:"Chroma",value:3000,img:"https://supremevalues.com/media/mm2chromas/CTreat.png"},
+  {name:"Chroma Sweet",rarity:"Chroma",value:2500,img:"https://supremevalues.com/media/mm2chromas/CSweet.png"},
+  {name:"Chroma Ornament",rarity:"Chroma",value:2100,img:"https://supremevalues.com/media/mm2chromas/COR.png"},
+  {name:"Chroma Darkbringer",rarity:"Chroma",value:75,img:"https://supremevalues.com/media/mm2chromas/CDB.png"},
+  {name:"Chroma Lightbringer",rarity:"Chroma",value:70,img:"https://supremevalues.com/media/mm2chromas/CLB.png"},
+  {name:"Chroma Luger",rarity:"Chroma",value:55,img:"https://supremevalues.com/media/mm2chromas/CLuger.png"},
+  {name:"Chroma Candleflame",rarity:"Chroma",value:45,img:"https://supremevalues.com/media/mm2chromas/CCF.png"},
+  {name:"Chroma Elderwood Blade",rarity:"Chroma",value:45,img:"https://supremevalues.com/media/mm2chromas/CEB.png"},
+  {name:"Chroma Swirly Gun",rarity:"Chroma",value:45,img:"https://supremevalues.com/media/mm2chromas/CSG.png"},
+  {name:"Chroma Laser",rarity:"Chroma",value:42,img:"https://supremevalues.com/media/mm2chromas/CLaser.png"},
+  {name:"Chroma Cookiecane",rarity:"Chroma",value:38,img:"https://supremevalues.com/media/mm2chromas/CCC.png"},
+  {name:"Chroma Deathshard",rarity:"Chroma",value:38,img:"https://supremevalues.com/media/mm2chromas/CDS.png"},
+  {name:"Chroma Slasher",rarity:"Chroma",value:38,img:"https://supremevalues.com/media/mm2chromas/CSlasher.png"},
+  {name:"Chroma Fang",rarity:"Chroma",value:35,img:"https://supremevalues.com/media/mm2chromas/CFang.png"},
+  {name:"Chroma Shark",rarity:"Chroma",value:35,img:"https://supremevalues.com/media/mm2chromas/CShark.png"},
+  {name:"Chroma Gemstone",rarity:"Chroma",value:32,img:"https://supremevalues.com/media/mm2chromas/CGem.png"},
+  {name:"Chroma Gingerblade",rarity:"Chroma",value:32,img:"https://supremevalues.com/media/mm2chromas/CGB.png"},
+  {name:"Chroma Heat",rarity:"Chroma",value:32,img:"https://supremevalues.com/media/mm2chromas/CHeat.png"},
+  {name:"Chroma Seer",rarity:"Chroma",value:32,img:"https://supremevalues.com/media/mm2chromas/CSeer.png"},
+  {name:"Chroma Saw",rarity:"Chroma",value:30,img:"https://supremevalues.com/media/mm2chromas/CSaw.png"},
+  {name:"Chroma Tides",rarity:"Chroma",value:30,img:"https://supremevalues.com/media/mm2chromas/CTides.png"},
+  {name:"Chroma Boneblade",rarity:"Chroma",value:27,img:"https://supremevalues.com/media/mm2chromas/CBB.png"},
+  // ANCIENT
+  {name:"Gingerscope",rarity:"Ancient",value:17000,img:"https://supremevalues.com/media/mm2ancients/Gingerscope.png"},
+  {name:"Traveler's Axe",rarity:"Ancient",value:8400,img:"https://supremevalues.com/media/mm2ancients/TravelersAxe.png"},
+  {name:"Celestial",rarity:"Ancient",value:1800,img:"https://supremevalues.com/media/mm2ancients/Celestial.png"},
+  {name:"Vampire's Axe",rarity:"Ancient",value:1200,img:"https://supremevalues.com/media/mm2ancients/Vampires_Axe.png"},
+  {name:"Harvester",rarity:"Ancient",value:260,img:"https://supremevalues.com/media/mm2ancients/Harvester.png"},
+  {name:"Icepiercer",rarity:"Ancient",value:170,img:"https://supremevalues.com/media/mm2ancients/Icepiercer.png"},
+  {name:"Icebreaker",rarity:"Ancient",value:70,img:"https://supremevalues.com/media/mm2ancients/Icebreaker.png"},
+  {name:"Batwing",rarity:"Ancient",value:45,img:"https://supremevalues.com/media/mm2ancients/Batwing.png"},
+  {name:"Elderwood Scythe",rarity:"Ancient",value:45,img:"https://supremevalues.com/media/mm2ancients/Elderwood_Scythe.png"},
+  {name:"Swirly Axe",rarity:"Ancient",value:42,img:"https://supremevalues.com/media/mm2ancients/Swirly_Axe.png"},
+  {name:"Hallowscythe",rarity:"Ancient",value:32,img:"https://supremevalues.com/media/mm2ancients/Hallowscythe.png"},
+  {name:"Logchopper",rarity:"Ancient",value:18,img:"https://supremevalues.com/media/mm2ancients/Logchopper.png"},
+  {name:"Icewing",rarity:"Ancient",value:15,img:"https://supremevalues.com/media/mm2ancients/Icewing.png"},
+  // GODLY
+  {name:"Traveler's Gun",rarity:"Godly",value:6000,img:"https://supremevalues.com/media/mm2godlies/TravelersGun.png"},
+  {name:"Evergun",rarity:"Godly",value:3300,img:"https://supremevalues.com/media/mm2godlies/Evergun.png"},
+  {name:"Constellation",rarity:"Godly",value:2600,img:"https://supremevalues.com/media/mm2godlies/Constellation.png"},
+  {name:"Turkey",rarity:"Godly",value:2450,img:"https://supremevalues.com/media/mm2godlies/Turkey.png"},
+  {name:"Evergreen",rarity:"Godly",value:2425,img:"https://supremevalues.com/media/mm2godlies/Evergreen.png"},
+  {name:"Alienbeam",rarity:"Godly",value:2000,img:"https://supremevalues.com/media/mm2godlies/Alienbeam.png"},
+  {name:"Vampire's Gun",rarity:"Godly",value:1700,img:"https://supremevalues.com/media/mm2godlies/Vampires_Gun.png"},
+  {name:"Darkshot",rarity:"Godly",value:1500,img:"https://supremevalues.com/media/mm2godlies/Darkshot.png"},
   {name:"Darksword",rarity:"Godly",value:1480,img:"https://supremevalues.com/media/mm2godlies/Darksword.png"},
   {name:"Blossom",rarity:"Godly",value:1265,img:"https://supremevalues.com/media/mm2godlies/Blossom.png"},
+  {name:"Sakura",rarity:"Godly",value:1255,img:"https://supremevalues.com/media/mm2godlies/Sakura.png"},
   {name:"Sunrise",rarity:"Godly",value:1150,img:"https://supremevalues.com/media/mm2godlies/Sunrise.png"},
+  {name:"Raygun",rarity:"Godly",value:1150,img:"https://supremevalues.com/media/mm2godlies/Raygun.png"},
   {name:"Bauble",rarity:"Godly",value:900,img:"https://supremevalues.com/media/mm2godlies/Bauble.png"},
+  {name:"Snowcannon",rarity:"Godly",value:750,img:"https://supremevalues.com/media/mm2godlies/Snowcannon.png"},
+  {name:"Sunset",rarity:"Godly",value:550,img:"https://supremevalues.com/media/mm2godlies/Sunset.png"},
+  {name:"Soul",rarity:"Godly",value:500,img:"https://supremevalues.com/media/mm2godlies/Soul.png"},
+  {name:"Spirit",rarity:"Godly",value:490,img:"https://supremevalues.com/media/mm2godlies/Spirit.png"},
+  {name:"Flora",rarity:"Godly",value:410,img:"https://supremevalues.com/media/mm2godlies/Flora.png"},
+  {name:"Bloom",rarity:"Godly",value:400,img:"https://supremevalues.com/media/mm2godlies/Bloom.png"},
   {name:"Rainbow Gun",rarity:"Godly",value:345,img:"https://supremevalues.com/media/mm2godlies/Rainbow_Gun.png"},
+  {name:"Rainbow",rarity:"Godly",value:335,img:"https://supremevalues.com/media/mm2godlies/Rainbow_Knife.png"},
+  {name:"Heart Wand",rarity:"Godly",value:300,img:"https://supremevalues.com/media/mm2godlies/Heart_Wand.png"},
   {name:"Ocean",rarity:"Godly",value:275,img:"https://supremevalues.com/media/mm2godlies/Ocean.png"},
+  {name:"Xenoknife",rarity:"Godly",value:275,img:"https://supremevalues.com/media/mm2godlies/Xenoknife.png"},
+  {name:"Xenoshot",rarity:"Godly",value:275,img:"https://supremevalues.com/media/mm2godlies/Xenoshot.png"},
+  {name:"Waves",rarity:"Godly",value:270,img:"https://supremevalues.com/media/mm2godlies/Waves.png"},
+  {name:"Watergun",rarity:"Godly",value:270,img:"https://supremevalues.com/media/mm2godlies/Watergun.png"},
+  {name:"Flowerwood Gun",rarity:"Godly",value:260,img:"https://supremevalues.com/media/mm2godlies/Flowerwood_Gun.png"},
+  {name:"Flowerwood",rarity:"Godly",value:255,img:"https://supremevalues.com/media/mm2godlies/Flowerwood.png"},
+  {name:"Snow Dagger",rarity:"Godly",value:250,img:"https://supremevalues.com/media/mm2godlies/Snow_Dagger.png"},
   {name:"Pearlshine",rarity:"Godly",value:95,img:"https://supremevalues.com/media/mm2godlies/Pearlshine.png"},
   {name:"Candy",rarity:"Godly",value:85,img:"https://supremevalues.com/media/mm2godlies/Candy.png"},
   {name:"Luger",rarity:"Godly",value:45,img:"https://supremevalues.com/media/mm2godlies/Luger.png"},
-  {name:"Icewing",rarity:"Legendary",value:700,img:"https://supremevalues.com/media/mm2legendaries/Icewing.png"},
+  {name:"Elderwood Revolver",rarity:"Godly",value:40,img:"https://supremevalues.com/media/mm2godlies/Elderwood_Revolver.png"},
+  {name:"Iceblaster",rarity:"Godly",value:40,img:"https://supremevalues.com/media/mm2godlies/Iceblaster.png"},
+  {name:"Makeshift",rarity:"Godly",value:40,img:"https://supremevalues.com/media/mm2godlies/Makeshift.png"},
+  {name:"Phantom",rarity:"Godly",value:40,img:"https://supremevalues.com/media/mm2godlies/Phantom.png"},
+  {name:"Spectre",rarity:"Godly",value:40,img:"https://supremevalues.com/media/mm2godlies/Spectre.png"},
+  {name:"Lightbringer",rarity:"Godly",value:37,img:"https://supremevalues.com/media/mm2godlies/Lightbringer.png"},
+  {name:"Ornament",rarity:"Godly",value:28,img:"https://supremevalues.com/media/mm2godlies/Ornament.png"},
+  {name:"Green Luger",rarity:"Godly",value:25,img:"https://supremevalues.com/media/mm2godlies/Green_Luger.png"},
+  {name:"Amerilaser",rarity:"Godly",value:23,img:"https://supremevalues.com/media/mm2godlies/Amerilaser.png"},
+  {name:"Laser",rarity:"Godly",value:23,img:"https://supremevalues.com/media/mm2godlies/Laser.png"},
+  {name:"Swirly Gun",rarity:"Godly",value:23,img:"https://supremevalues.com/media/mm2godlies/Swirly_Gun.png"},
+  {name:"Icebeam",rarity:"Godly",value:20,img:"https://supremevalues.com/media/mm2godlies/Ice_Beam.png"},
+  {name:"Nightblade",rarity:"Godly",value:20,img:"https://supremevalues.com/media/mm2godlies/Nightblade.png"},
+  {name:"Shark",rarity:"Godly",value:20,img:"https://supremevalues.com/media/mm2godlies/Shark.png"},
+  {name:"Blaster",rarity:"Godly",value:18,img:"https://supremevalues.com/media/mm2godlies/Blaster.png"},
+  {name:"Iceflake",rarity:"Godly",value:18,img:"https://supremevalues.com/media/mm2godlies/Ice_Flake.png"},
+  {name:"Plasmabeam",rarity:"Godly",value:18,img:"https://supremevalues.com/media/mm2godlies/Plasmabeam.png"},
+  {name:"Gingerblade",rarity:"Godly",value:15,img:"https://supremevalues.com/media/mm2godlies/Gingerblade.png"},
+  {name:"Deathshard",rarity:"Godly",value:13,img:"https://supremevalues.com/media/mm2godlies/Deathshard.png"},
+  {name:"Battleaxe",rarity:"Godly",value:12,img:"https://supremevalues.com/media/mm2godlies/Battleaxe.png"},
+  {name:"Fang",rarity:"Godly",value:10,img:"https://supremevalues.com/media/mm2godlies/Fang.png"},
+  {name:"Saw",rarity:"Godly",value:7,img:"https://supremevalues.com/media/mm2godlies/Saw.png"},
+  {name:"Seer",rarity:"Godly",value:3,img:"https://supremevalues.com/media/mm2godlies/Seer.png"},
+  {name:"Blue Seer",rarity:"Godly",value:3,img:"https://supremevalues.com/media/mm2godlies/Blue_Seer.png"},
+  {name:"Yellow Seer",rarity:"Godly",value:2,img:"https://supremevalues.com/media/mm2godlies/Yellow_Seer.png"},
+  // VINTAGE
+  {name:"Ghost",rarity:"Vintage",value:10,img:"https://supremevalues.com/media/mm2vintages/Ghost.png"},
+  {name:"Blood",rarity:"Vintage",value:8,img:"https://supremevalues.com/media/mm2vintages/Blood.png"},
+  {name:"Laser (Vintage)",rarity:"Vintage",value:8,img:"https://supremevalues.com/media/mm2vintages/Laser.png"},
+  {name:"America",rarity:"Vintage",value:7,img:"https://supremevalues.com/media/mm2vintages/America.png"},
+  {name:"Prince",rarity:"Vintage",value:6,img:"https://supremevalues.com/media/mm2vintages/Prince.png"},
+  {name:"Shadow",rarity:"Vintage",value:6,img:"https://supremevalues.com/media/mm2vintages/Shadow.png"},
+  {name:"Phaser",rarity:"Vintage",value:5,img:"https://supremevalues.com/media/mm2vintages/Phaser.png"},
+  // LEGENDARY
+  {name:"Latte (Gun)",rarity:"Legendary",value:135,img:"https://supremevalues.com/media/mm2legendaries/Latte_Fade_Gun.png"},
+  {name:"Latte (Knife)",rarity:"Legendary",value:135,img:"https://supremevalues.com/media/mm2legendaries/Latte_Fade_Knife.png"},
+  {name:"Spectral (Knife)",rarity:"Legendary",value:55,img:"https://supremevalues.com/media/mm2legendaries/Spectral_Knife.png"},
+  {name:"Traveler (Gun)",rarity:"Legendary",value:55,img:"https://supremevalues.com/media/mm2legendaries/Traveler_Gun.png"},
+  {name:"Aurora (Gun)",rarity:"Legendary",value:45,img:"https://supremevalues.com/media/mm2legendaries/Aurora_Gun.png"},
+  {name:"Vampire (Gun)",rarity:"Legendary",value:45,img:"https://supremevalues.com/media/mm2legendaries/Vampire_Gun.png"},
+  {name:"Cotton Candy",rarity:"Legendary",value:40,img:"https://supremevalues.com/media/mm2legendaries/Cotton_Candy.png"},
+  {name:"JD",rarity:"Legendary",value:35,img:"https://supremevalues.com/media/mm2legendaries/JD.png"},
+  {name:"Beach",rarity:"Legendary",value:30,img:"https://supremevalues.com/media/mm2legendaries/Beach.png"},
+  {name:"Icewing (Legendary)",rarity:"Legendary",value:700,img:"https://supremevalues.com/media/mm2legendaries/Icewing.png"},
   {name:"Slaughter",rarity:"Legendary",value:550,img:"https://supremevalues.com/media/mm2legendaries/Slaughter.png"},
-  {name:"Flames",rarity:"Legendary",value:310,img:"https://supremevalues.com/media/mm2legendaries/Flames.png"},
+  {name:"Flames (Legendary)",rarity:"Legendary",value:310,img:"https://supremevalues.com/media/mm2legendaries/Flames.png"},
   {name:"Hallows Edge",rarity:"Legendary",value:115,img:"https://supremevalues.com/media/mm2legendaries/Hallows_Edge.png"},
-  {name:"Saw",rarity:"Legendary",value:90,img:"https://supremevalues.com/media/mm2legendaries/Saw.png"},
+  {name:"Saw (Legendary)",rarity:"Legendary",value:90,img:"https://supremevalues.com/media/mm2legendaries/Saw.png"},
+  // RARE
+  {name:"Cane Knife (2018)",rarity:"Rare",value:900,img:"https://supremevalues.com/media/mm2rares/Cane_Knife_2018.png"},
+  {name:"Dungeon",rarity:"Rare",value:80,img:"https://supremevalues.com/media/mm2rares/Dungeon.png"},
+  {name:"Silent Night (Knife)",rarity:"Rare",value:50,img:"https://supremevalues.com/media/mm2rares/Silent_Night_Knife.png"},
+  {name:"Darkknife",rarity:"Rare",value:40,img:"https://supremevalues.com/media/mm2rares/Darkknife.png"},
+  {name:"Makeshift (Knife)",rarity:"Rare",value:35,img:"https://supremevalues.com/media/mm2rares/Makeshift.png"},
+  {name:"Zombified",rarity:"Rare",value:35,img:"https://supremevalues.com/media/mm2rares/Zombified.png"},
   {name:"Spooky",rarity:"Rare",value:18,img:"https://supremevalues.com/media/mm2rares/Spooky.png"},
+  {name:"Starry (Gun)",rarity:"Rare",value:15,img:"https://supremevalues.com/media/mm2rares/Starry_Gun.png"},
+  {name:"Swirl",rarity:"Rare",value:15,img:"https://supremevalues.com/media/mm2rares/Swirl.png"},
   {name:"Shark Seeker",rarity:"Rare",value:12,img:"https://supremevalues.com/media/mm2rares/Shark_Seeker.png"},
-  {name:"Gingerblade",rarity:"Rare",value:8,img:"https://supremevalues.com/media/mm2rares/Gingerblade.png"},
+  {name:"Aurora (Rare)",rarity:"Rare",value:12,img:"https://supremevalues.com/media/mm2rares/Aurora_Knife.png"},
+  {name:"Floral (Knife)",rarity:"Rare",value:10,img:"https://supremevalues.com/media/mm2rares/Floral.png"},
+  {name:"Magma (Gun)",rarity:"Rare",value:8,img:"https://supremevalues.com/media/mm2rares/Magma_Gun.png"},
+  {name:"Gingerblade (Rare)",rarity:"Rare",value:8,img:"https://supremevalues.com/media/mm2rares/Gingerblade.png"},
+  {name:"Icicles (Gun)",rarity:"Rare",value:8,img:"https://supremevalues.com/media/mm2rares/Icicles_Gun.png"},
+  {name:"Jack",rarity:"Rare",value:3,img:"https://supremevalues.com/media/mm2rares/Jack.png"},
+  {name:"Bats",rarity:"Rare",value:3,img:"https://supremevalues.com/media/mm2rares/Bats.png"},
+  // UNCOMMON
+  {name:"Bones",rarity:"Uncommon",value:150,img:"https://supremevalues.com/media/mm2uncommons/Bones_Gun.png"},
+  {name:"Zombified (Knife)",rarity:"Uncommon",value:80,img:"https://supremevalues.com/media/mm2uncommons/Zombified_Knife.png"},
 ];
 
 function fmt(v){if(v>=1000)return(v/1000).toFixed(v%1000===0?0:2)+"K";return v.toLocaleString();}
 function timeAgo(ts){const d=Date.now()-ts;if(d<60000)return"À l'instant";if(d<3600000)return Math.floor(d/60000)+"min";if(d<86400000)return Math.floor(d/3600000)+"h";return Math.floor(d/86400000)+"j";}
 
+// ── ROBLOX SESSION ──
+let robloxUser = null; // {username, avatarUrl}
+
+// Fetch real Roblox user info via public API (no auth needed)
+async function fetchRobloxUser(username) {
+  try {
+    // Search user by username
+    const res = await fetch(`https://users.roblox.com/v1/usernames/users`, {
+      method: "POST",
+      headers: {"Content-Type":"application/json"},
+      body: JSON.stringify({usernames:[username], excludeBannedUsers:true})
+    });
+    const data = await res.json();
+    if (!data.data || !data.data.length) return null;
+    const user = data.data[0];
+    // Get avatar thumbnail
+    const thumbRes = await fetch(`https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds=${user.id}&size=48x48&format=Png&isCircular=true`);
+    const thumbData = await thumbRes.json();
+    const avatarUrl = thumbData.data && thumbData.data[0] ? thumbData.data[0].imageUrl : null;
+    return {username: user.displayName || user.name, robloxName: user.name, id: user.id, avatarUrl};
+  } catch(e) {
+    return null;
+  }
+}
+
+function updateRobloxBadge() {
+  const badge = document.getElementById("robloxBadge");
+  if (robloxUser) {
+    const avatarHtml = robloxUser.avatarUrl
+      ? `<img class="roblox-avatar" src="${robloxUser.avatarUrl}" alt="avatar">`
+      : "🎮";
+    badge.innerHTML = `${avatarHtml} ${robloxUser.robloxName} <div class="roblox-dot"></div>`;
+    badge.className = "roblox-btn connected";
+    badge.onclick = disconnectRoblox;
+  } else {
+    badge.innerHTML = "🎮 Connecter Roblox";
+    badge.className = "roblox-btn";
+    badge.onclick = openRobloxLogin;
+  }
+}
+
+function openRobloxLogin() {
+  document.getElementById("robloxOverlay").classList.remove("hidden");
+  document.getElementById("rloginInput").value = "";
+  document.getElementById("rloginError").textContent = "";
+  document.getElementById("rloginContent").classList.remove("hidden");
+  document.getElementById("rloginLoading").classList.add("hidden");
+  setTimeout(() => document.getElementById("rloginInput").focus(), 100);
+}
+function closeRobloxLogin() {
+  document.getElementById("robloxOverlay").classList.add("hidden");
+}
+
+async function doRobloxLogin() {
+  const raw = document.getElementById("rloginInput").value.trim();
+  const errEl = document.getElementById("rloginError");
+  if (!raw) { errEl.textContent = "Entrez votre pseudo Roblox !"; return; }
+  if (raw.length < 3) { errEl.textContent = "Pseudo trop court (min 3 caractères)."; return; }
+
+  errEl.textContent = "";
+  document.getElementById("rloginContent").classList.add("hidden");
+  document.getElementById("rloginLoading").classList.remove("hidden");
+
+  const user = await fetchRobloxUser(raw);
+  document.getElementById("rloginLoading").classList.add("hidden");
+  document.getElementById("rloginContent").classList.remove("hidden");
+
+  if (!user) {
+    document.getElementById("rloginInput").classList.add("error");
+    errEl.textContent = `Pseudo introuvable : "${raw}". Vérifiez l'orthographe.`;
+    return;
+  }
+  robloxUser = user;
+  updateRobloxBadge();
+  closeRobloxLogin();
+}
+
+function disconnectRoblox() {
+  robloxUser = null;
+  updateRobloxBadge();
+  closeModal();
+}
+
 // ── STATE ──
 let ads = [
-  {id:1,type:"wtt",user:"ShadowTrader",contact:"Shadow#4521",offerItems:[{name:"Chroma Evergun",qty:1},{name:"Bauble",qty:2}],wantItems:[{name:"Corrupt",qty:1}],note:"Overpay accepté si bon item",ts:Date.now()-3600000*2},
-  {id:2,type:"wts",user:"GodlyKing",contact:"GodlyKing#9012",offerItems:[{name:"Harvester",qty:1},{name:"Darksword",qty:1}],wantItems:[],note:"Cherche Seers ou items de valeur équivalente",ts:Date.now()-3600000*5},
-  {id:3,type:"wtb",user:"n0xxa0",contact:"n0xxa0#0001",offerItems:[],wantItems:[{name:"Chroma Traveler's Gun",qty:1}],note:"Je paye en Godlies/Ancients",ts:Date.now()-60000*25},
-  {id:4,type:"wtt",user:"FrostBlade99",contact:"FrostBlade99#3344",offerItems:[{name:"Icewing",qty:1},{name:"Flames",qty:1}],wantItems:[{name:"Amarok",qty:1}],note:"",ts:Date.now()-3600000*12},
-  {id:5,type:"wts",user:"ChromaHunter",contact:"ChromaHunter#7788",offerItems:[{name:"Chroma Bauble",qty:1}],wantItems:[],note:"50K Seers ou équivalent uniquement",ts:Date.now()-60000*8},
+  {id:1,type:"wtt",user:"ShadowTrader",avatarUrl:null,contact:"Shadow#4521",offerItems:[{name:"Chroma Evergun",qty:1},{name:"Bauble",qty:2}],wantItems:[{name:"Gingerscope",qty:1}],note:"Overpay accepté si bon item",ts:Date.now()-3600000*2},
+  {id:2,type:"wts",user:"GodlyKing",avatarUrl:null,contact:"GodlyKing#9012",offerItems:[{name:"Traveler's Gun",qty:1},{name:"Darksword",qty:1}],wantItems:[],note:"Cherche Seers ou items de valeur équivalente",ts:Date.now()-3600000*5},
+  {id:3,type:"wtb",user:"n0xxa0",avatarUrl:null,contact:"n0xxa0#0001",offerItems:[],wantItems:[{name:"Chroma Traveler's Gun",qty:1}],note:"Je paye en Godlies/Ancients",ts:Date.now()-60000*25},
+  {id:4,type:"wtt",user:"FrostBlade99",avatarUrl:null,contact:"FrostBlade99#3344",offerItems:[{name:"Icewing",qty:1},{name:"Batwing",qty:1}],wantItems:[{name:"Celestial",qty:1}],note:"",ts:Date.now()-3600000*12},
+  {id:5,type:"wts",user:"ChromaHunter",avatarUrl:null,contact:"ChromaHunter#7788",offerItems:[{name:"Chroma Bauble",qty:1}],wantItems:[],note:"50K Seers ou équivalent uniquement",ts:Date.now()-60000*8},
 ];
 let nextId = 6;
 let currentTab = "all";
@@ -325,7 +601,7 @@ function renderAds() {
   });
 
   if(!list.length){
-    grid.innerHTML=`<div class="empty-state" style="grid-column:1/-1"><div class="empty-icon">📋</div><div class="empty-txt">Aucune annonce trouvée.<br><span style="color:var(--red);cursor:pointer;font-weight:700" onclick="openModal()">+ Poster la première !</span></div></div>`;
+    grid.innerHTML=`<div class="empty-state" style="grid-column:1/-1"><div class="empty-icon">📋</div><div class="empty-txt">Aucune annonce trouvée.<br><span style="color:var(--red);cursor:pointer;font-weight:700" onclick="onClickPost()">+ Poster la première !</span></div></div>`;
     return;
   }
 
@@ -335,6 +611,10 @@ function renderAds() {
     const wantHtml  = ad.wantItems.map(it => itemChipHtml(it)).join("");
     const offerVal  = ad.offerItems.reduce((s,it)=>{const f=ALL_ITEMS.find(x=>x.name===it.name);return s+(f?f.value*it.qty:0);},0);
     const wantVal   = ad.wantItems.reduce((s,it)=>{const f=ALL_ITEMS.find(x=>x.name===it.name);return s+(f?f.value*it.qty:0);},0);
+
+    const avatarEl = ad.avatarUrl
+      ? `<img class="ad-user-avatar" src="${ad.avatarUrl}" alt="" onerror="this.style.display='none'">`
+      : "👤";
 
     let bodyHtml = "";
     if(ad.type==="wtt"){
@@ -352,7 +632,7 @@ function renderAds() {
     return `<div class="ad-card ${ad.type}">
       <div class="ad-header">
         <span class="ad-type ${ad.type}">${typeLabel}</span>
-        <span class="ad-user">👤 ${ad.user}</span>
+        <span class="ad-user">${avatarEl} ${ad.user}</span>
         <span class="ad-time">${timeAgo(ad.ts)}</span>
       </div>
       <div class="ad-body">
@@ -370,12 +650,12 @@ function renderAds() {
 function itemChipHtml(it) {
   const found = ALL_ITEMS.find(x=>x.name===it.name);
   if(!found) return "";
-  const fb = `https://mm2checker.com/images/godlies/${it.name.toLowerCase().replace(/[^a-z0-9]/g,"-").replace(/-+/g,"-")}.png`;
+  const rc = RC[found.rarity]||{color:"#888"};
   return `<div class="ad-item">
-    <img src="${found.img}" onerror="this.src='${fb}';this.onerror=null" alt="${it.name}">
+    <img src="${found.img}" onerror="this.style.display='none'" alt="${it.name}">
     <div class="ad-item-info">
-      <div class="ad-item-name">${it.name}</div>
-      <div class="ad-item-val">${fmt(found.value)}${it.qty>1?`<span class="ad-item-qty"> ×${it.qty}</span>`:""}</div>
+      <div class="ad-item-name" title="${it.name}">${it.name}</div>
+      <div class="ad-item-val" style="color:${rc.color}">${fmt(found.value)}${it.qty>1?`<span class="ad-item-qty"> ×${it.qty}</span>`:""}</div>
     </div>
   </div>`;
 }
@@ -386,8 +666,26 @@ function contactAd(user, contact) {
   alert(`📬 Contact pour ${user}\n\n${contact}`);
 }
 
+// ── OPEN POST MODAL (requires Roblox) ──
+function onClickPost() {
+  if (!robloxUser) {
+    openRobloxLogin();
+    return;
+  }
+  openModal();
+}
+
 // ── MODAL ──
 function openModal(){
+  // Fill roblox info box
+  document.getElementById("robloxInfoName").textContent = robloxUser.robloxName;
+  const avatarEl = document.getElementById("robloxInfoAvatar");
+  if (robloxUser.avatarUrl) {
+    avatarEl.src = robloxUser.avatarUrl;
+    avatarEl.style.display = "";
+  } else {
+    avatarEl.style.display = "none";
+  }
   document.getElementById("modalOverlay").classList.remove("hidden");
   renderPicker("offer","");
   renderPicker("want","");
@@ -417,13 +715,14 @@ function updateModalLayout(){
 
 function renderPicker(side, q){
   const listId=side==="offer"?"offerPickerList":"wantPickerList";
-  const items=ALL_ITEMS.filter(i=>!q||i.name.toLowerCase().includes(q.toLowerCase())).slice(0,40);
+  const items=ALL_ITEMS.filter(i=>!q||i.name.toLowerCase().includes(q.toLowerCase())).slice(0,60);
   document.getElementById(listId).innerHTML=items.map(item=>{
-    const fb=`https://mm2checker.com/images/godlies/${item.name.toLowerCase().replace(/[^a-z0-9]/g,"-").replace(/-+/g,"-")}.png`;
+    const rc = RC[item.rarity]||{color:"#888"};
     const esc=item.name.replace(/'/g,"\\'");
     return`<div class="picker-item" onclick="pickItem('${side}','${esc}')">
-      <img src="${item.img}" onerror="this.src='${fb}';this.onerror=null" alt="${item.name}">
+      <img src="${item.img}" onerror="this.style.display='none'" alt="${item.name}">
       <div class="picker-item-name">${item.name}</div>
+      <div class="picker-item-val" style="color:${rc.color}">${fmt(item.value)}</div>
     </div>`;
   }).join("");
 }
@@ -453,10 +752,9 @@ function renderPickedChips(side){
   el.innerHTML=arr.map(it=>{
     const found=ALL_ITEMS.find(x=>x.name===it.name);
     if(!found)return"";
-    const fb=`https://mm2checker.com/images/godlies/${it.name.toLowerCase().replace(/[^a-z0-9]/g,"-").replace(/-+/g,"-")}.png`;
     const esc=it.name.replace(/'/g,"\\'");
     return`<div class="picked-chip">
-      <img src="${found.img}" onerror="this.src='${fb}';this.onerror=null" alt="${it.name}">
+      <img src="${found.img}" onerror="this.style.display='none'" alt="${it.name}">
       ${it.name}${it.qty>1?` ×${it.qty}`:""}
       <span class="picked-chip-del" onclick="unpickItem('${side}','${esc}')">✕</span>
     </div>`;
@@ -464,30 +762,31 @@ function renderPickedChips(side){
 }
 
 function submitAd(){
-  const user=document.getElementById("fUsername").value.trim();
+  if(!robloxUser){alert("Connectez votre compte Roblox d'abord !");return;}
   const contact=document.getElementById("fContact").value.trim();
   const note=document.getElementById("fNote").value.trim();
-  if(!user){alert("Entrez votre pseudo !");return;}
   if(formType==="wtt"&&(!offerPicked.length||!wantPicked.length)){alert("Ajoutez des items des deux côtés !");return;}
   if(formType==="wts"&&!offerPicked.length){alert("Ajoutez ce que vous vendez !");return;}
   if(formType==="wtb"&&!wantPicked.length){alert("Ajoutez ce que vous cherchez !");return;}
 
   ads.push({
-    id:nextId++,type:formType,user,contact:contact||user,
+    id:nextId++,type:formType,
+    user:robloxUser.robloxName,
+    avatarUrl:robloxUser.avatarUrl,
+    contact:contact||robloxUser.robloxName,
     offerItems:formType==="wtb"?[]:offerPicked.map(x=>({...x})),
     wantItems:formType==="wts"?[]:wantPicked.map(x=>({...x})),
     note,ts:Date.now()
   });
 
-  // reset
   offerPicked=[];wantPicked=[];
-  document.getElementById("fUsername").value="";
   document.getElementById("fContact").value="";
   document.getElementById("fNote").value="";
   closeModal();
   renderAds();
 }
 
+updateRobloxBadge();
 renderAds();
 </script>
 </body>

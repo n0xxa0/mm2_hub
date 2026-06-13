@@ -552,12 +552,11 @@ const ROBLOX_CLIENT_ID = "1029807529105283785";
 const ROBLOX_REDIRECT  = "https://mm2-hub.vercel.app/api/auth/callback/roblox";
 const ROBLOX_SCOPE     = "openid profile";
 
-// ── LOCAL STORAGE HELPERS ──
+const API_BASE = ""; // same-origin: /api/ads, /api/profiles, /api/conversations
+
+// ── LOCAL STORAGE HELPERS (session/login + local read-state only) ──
 const LS = {
-  ads:   "mm2_ads",
   user:  "mm2_roblox_user",
-  profiles: "mm2_profiles",
-  convos: "mm2_conversations",
   reads: "mm2_conv_reads",
 };
 function lsGet(key, fallback){
@@ -637,30 +636,40 @@ function disconnectRoblox() {
   renderAds();
 }
 
-// ── PROFILES ──
-function getProfiles(){ return lsGet(LS.profiles, {}); }
-function getProfile(id){ return getProfiles()[id] || null; }
-function upsertProfile(u){
-  const profiles = getProfiles();
-  const existing = profiles[u.id] || {};
-  profiles[u.id] = {
-    id: u.id,
-    robloxName: u.robloxName,
-    displayName: u.displayName,
-    avatarUrl: u.avatarUrl,
-    bio: existing.bio || "",
-    createdAt: existing.createdAt || Date.now(),
-  };
-  lsSet(LS.profiles, profiles);
+// ── PROFILES (shared DB) ──
+let profilesCache = {};
+async function fetchProfiles(){
+  try{
+    const r = await fetch(`${API_BASE}/api/profiles`);
+    const d = await r.json();
+    profilesCache = d.profiles || {};
+  }catch(e){ console.error("fetchProfiles failed", e); }
+}
+function getProfile(id){ return profilesCache[id] || null; }
+async function upsertProfile(u){
+  try{
+    const r = await fetch(`${API_BASE}/api/profiles`, {
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body: JSON.stringify(u),
+    });
+    const d = await r.json();
+    if(d.profile) profilesCache[d.profile.id] = d.profile;
+  }catch(e){ console.error("upsertProfile failed", e); }
 }
 
-function openProfile(userId){
+async function openProfile(userId){
   const isMe = robloxUser && robloxUser.id === userId;
   let prof = getProfile(userId);
   if(!prof){
-    // fallback minimal profile from ad data if not stored (shouldn't normally happen)
-    prof = {id:userId, robloxName:"Joueur inconnu", avatarUrl:null, bio:""};
+    try{
+      const r = await fetch(`${API_BASE}/api/profiles?id=${encodeURIComponent(userId)}`);
+      const d = await r.json();
+      prof = d.profile;
+    }catch(e){}
   }
+  if(!prof) prof = {id:userId, robloxName:"Joueur inconnu", avatarUrl:null, bio:""};
+
   document.getElementById("profName").textContent = prof.displayName || prof.robloxName;
   document.getElementById("profSub").textContent = "@"+prof.robloxName + (prof.createdAt ? " · membre depuis "+new Date(prof.createdAt).toLocaleDateString("fr-FR") : "");
   const av = document.getElementById("profAvatar");
@@ -674,25 +683,33 @@ function openProfile(userId){
   document.getElementById("profileOverlay").classList.remove("hidden");
 }
 function closeProfile(){ document.getElementById("profileOverlay").classList.add("hidden"); }
-function saveProfileBio(){
+async function saveProfileBio(){
   if(!robloxUser) return;
-  const profiles = getProfiles();
-  const prof = profiles[robloxUser.id] || {id:robloxUser.id, robloxName:robloxUser.robloxName, avatarUrl:robloxUser.avatarUrl, createdAt:Date.now()};
-  prof.bio = document.getElementById("profBio").value.trim();
-  profiles[robloxUser.id] = prof;
-  lsSet(LS.profiles, profiles);
+  const bio = document.getElementById("profBio").value.trim();
+  await upsertProfile({
+    id: robloxUser.id,
+    robloxName: robloxUser.robloxName,
+    displayName: robloxUser.displayName,
+    avatarUrl: robloxUser.avatarUrl,
+    bio,
+  });
   closeProfile();
 }
 
 // ── STATE ──
-let ads = lsGet(LS.ads, []);
-let nextId = ads.reduce((m,a)=>Math.max(m,a.id||0),0) + 1;
+let ads = [];
 let currentTab = "all";
 let formType = "wtt";
 let offerPicked = [];
 let wantPicked  = [];
 
-function saveAds(){ lsSet(LS.ads, ads); }
+async function fetchAds(){
+  try{
+    const r = await fetch(`${API_BASE}/api/ads`);
+    const d = await r.json();
+    ads = d.ads || [];
+  }catch(e){ console.error("fetchAds failed", e); }
+}
 
 // ── TABS ──
 function setTab(t, btn) {
@@ -774,13 +791,19 @@ function renderAds() {
   }).join("");
 }
 
-function deleteAd(id){
+async function deleteAd(id){
   if(!robloxUser) return;
   const ad = ads.find(a=>a.id===id);
   if(!ad || ad.ownerId !== robloxUser.id) return;
   if(!confirm("Supprimer cette annonce ?")) return;
-  ads = ads.filter(a=>a.id!==id);
-  saveAds();
+  try{
+    await fetch(`${API_BASE}/api/ads`, {
+      method:"DELETE",
+      headers:{"Content-Type":"application/json"},
+      body: JSON.stringify({id, ownerId: robloxUser.id}),
+    });
+  }catch(e){ console.error("deleteAd failed", e); }
+  await fetchAds();
   renderAds();
 }
 
@@ -801,8 +824,15 @@ function emptyItems(){return`<span style="font-size:12px;color:var(--dimmed)">�
 
 // ── MESSAGING SYSTEM ──
 // Conversation = {id, adId, adLabel, participants:[idA, idB], messages:[{from, text, ts}]}
-function getConvos(){ return lsGet(LS.convos, []); }
-function saveConvos(c){ lsSet(LS.convos, c); }
+let convosCache = [];
+async function fetchConvos(){
+  if(!robloxUser) { convosCache = []; return; }
+  try{
+    const r = await fetch(`${API_BASE}/api/conversations?userId=${encodeURIComponent(robloxUser.id)}`);
+    const d = await r.json();
+    convosCache = d.conversations || [];
+  }catch(e){ console.error("fetchConvos failed", e); }
+}
 function getReads(){ return lsGet(LS.reads, {}); } // {convId: timestamp}
 function setRead(convId){
   const reads = getReads();
@@ -811,38 +841,52 @@ function setRead(convId){
   updateUnreadBadge();
 }
 
-function startOffer(adId){
+async function startOffer(adId){
   if(!robloxUser){ openRobloxLogin(); return; }
   const ad = ads.find(a=>a.id===adId);
   if(!ad) return;
   if(ad.ownerId === robloxUser.id){ alert("C'est votre propre annonce !"); return; }
 
-  const convos = getConvos();
-  let convo = convos.find(c=>c.adId===adId && c.participants.includes(robloxUser.id) && c.participants.includes(ad.ownerId));
-  if(!convo){
-    const typeLabel = {wtt:"WTT",wts:"WTS",wtb:"WTB"}[ad.type];
-    convo = {
-      id: "c"+Date.now()+Math.random().toString(36).slice(2,6),
-      adId: ad.id,
-      adLabel: `${typeLabel} de ${ad.user}`,
-      participants: [robloxUser.id, ad.ownerId],
-      messages: [{from:robloxUser.id, text:"👋 Bonjour, je suis intéressé par votre annonce !", ts:Date.now()}],
-    };
-    convos.push(convo);
-    saveConvos(convos);
-  }
-  openMessages(convo.id);
+  const typeLabel = {wtt:"WTT",wts:"WTS",wtb:"WTB"}[ad.type];
+  try{
+    const r = await fetch(`${API_BASE}/api/conversations`, {
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body: JSON.stringify({
+        action:"start",
+        adId: ad.id,
+        adLabel: `${typeLabel} de ${ad.user}`,
+        userId: robloxUser.id,
+        otherUserId: ad.ownerId,
+      }),
+    });
+    const d = await r.json();
+    let convo = d.conversation;
+    if(convo && !convo.messages.length){
+      // send the initial "interested" message
+      const mr = await fetch(`${API_BASE}/api/conversations`, {
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body: JSON.stringify({action:"message", convoId: convo.id, from: robloxUser.id, text:"👋 Bonjour, je suis intéressé par votre annonce !"}),
+      });
+      const md = await mr.json();
+      convo = md.conversation || convo;
+    }
+    await fetchConvos();
+    openMessages(convo.id);
+  }catch(e){ console.error("startOffer failed", e); }
 }
 
-function openMessages(convoIdToOpen){
+async function openMessages(convoIdToOpen){
   if(!robloxUser){ openRobloxLogin(); return; }
   document.getElementById("messagesOverlay").classList.remove("hidden");
+  await fetchConvos();
   renderConvoList(convoIdToOpen);
 }
 function closeMessages(){ document.getElementById("messagesOverlay").classList.add("hidden"); }
 
 function renderConvoList(activeId){
-  const convos = getConvos().filter(c=>c.participants.includes(robloxUser.id));
+  const convos = convosCache;
   const reads = getReads();
   const listEl = document.getElementById("convList");
 
@@ -877,17 +921,15 @@ function renderConvoList(activeId){
     </div>`;
   }).join("");
 
-  openConversation(activeId);
+  renderConversationThread(activeId);
 }
 
 let activeConvoId = null;
-function openConversation(convoId){
+function renderConversationThread(convoId){
   activeConvoId = convoId;
-  const convos = getConvos();
-  const c = convos.find(x=>x.id===convoId);
+  const c = convosCache.find(x=>x.id===convoId);
   if(!c) return;
   setRead(convoId);
-  renderConvoList(convoId);
 
   const otherId = c.participants.find(p=>p!==robloxUser.id);
   const otherProf = getProfile(otherId);
@@ -904,26 +946,35 @@ function openConversation(convoId){
   document.getElementById("msgInputRow").style.display = "";
 }
 
-function sendMessage(){
+// re-render list + thread without losing the active conversation
+function openConversation(convoId){
+  renderConvoList(convoId);
+}
+
+async function sendMessage(){
   if(!activeConvoId || !robloxUser) return;
   const input = document.getElementById("msgInput");
   const text = input.value.trim();
   if(!text) return;
-  const convos = getConvos();
-  const c = convos.find(x=>x.id===activeConvoId);
-  if(!c) return;
-  c.messages.push({from:robloxUser.id, text, ts:Date.now()});
-  saveConvos(convos);
   input.value="";
-  openConversation(activeConvoId);
+  try{
+    const r = await fetch(`${API_BASE}/api/conversations`, {
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body: JSON.stringify({action:"message", convoId: activeConvoId, from: robloxUser.id, text}),
+    });
+    const d = await r.json();
+    const idx = convosCache.findIndex(c=>c.id===activeConvoId);
+    if(idx>=0 && d.conversation) convosCache[idx] = d.conversation;
+  }catch(e){ console.error("sendMessage failed", e); }
+  renderConvoList(activeConvoId);
 }
 
 function updateUnreadBadge(){
   if(!robloxUser) return;
-  const convos = getConvos().filter(c=>c.participants.includes(robloxUser.id));
   const reads = getReads();
   let count = 0;
-  convos.forEach(c=>{
+  convosCache.forEach(c=>{
     const last = c.messages[c.messages.length-1];
     if(last && last.from!==robloxUser.id && last.ts>(reads[c.id]||0)) count++;
   });

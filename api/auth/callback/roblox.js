@@ -11,7 +11,7 @@ export default async function handler(req) {
 
   // ⚠️ TEMPORAIRE — remplace par variables d'env une fois que ça marche
   const CLIENT_ID     = process.env.ROBLOX_CLIENT_ID     || '1029807529105283785';
-  const CLIENT_SECRET = process.env.ROBLOX_CLIENT_SECRET || 'METS_TON_NOUVEAU_SECRET_ICI';
+  const CLIENT_SECRET = process.env.ROBLOX_CLIENT_SECRET || 'RBX-tUTsXxuEhUmdM8_qSmy4jdESRH-L7TqMMqdUlvW-axkUjtsQYJYh-LB56wyQ1d-4';
   const REDIRECT_URI  = `${BASE}/api/auth/callback/roblox`;
 
   console.log('CLIENT_ID:', CLIENT_ID);

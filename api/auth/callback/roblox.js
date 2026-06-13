@@ -1,58 +1,61 @@
 export const config = { runtime: 'edge' };
 
 export default async function handler(req) {
-  const url    = new URL(req.url);
-  const code   = url.searchParams.get('code');
-  const error  = url.searchParams.get('error');
+  const url   = new URL(req.url);
+  const code  = url.searchParams.get('code');
+  const error = url.searchParams.get('error');
+  const BASE  = 'https://mm2-hub.vercel.app';
 
-  const BASE = 'https://mm2-hub.vercel.app';
-
-  if (error) {
-    return Response.redirect(`${BASE}/trade.html?error=${encodeURIComponent(error)}`);
-  }
-  if (!code) {
-    return Response.redirect(`${BASE}/trade.html?error=no_code`);
-  }
+  if (error) return Response.redirect(`${BASE}/trade.html?error=${encodeURIComponent(error)}`);
+  if (!code)  return Response.redirect(`${BASE}/trade.html?error=no_code`);
 
   const CLIENT_ID     = process.env.ROBLOX_CLIENT_ID;
   const CLIENT_SECRET = process.env.ROBLOX_CLIENT_SECRET;
   const REDIRECT_URI  = `${BASE}/api/auth/callback/roblox`;
-
-  const basicAuth = btoa(`${CLIENT_ID}:${CLIENT_SECRET}`);
+  const basicAuth     = btoa(`${CLIENT_ID}:${CLIENT_SECRET}`);
 
   try {
+    const body = new URLSearchParams({
+      grant_type:   'authorization_code',
+      code,
+      redirect_uri: REDIRECT_URI,
+    }).toString();
+
     const tokenRes = await fetch('https://apis.roblox.com/oauth/v1/token', {
       method: 'POST',
       headers: {
         'Content-Type':  'application/x-www-form-urlencoded',
         'Authorization': `Basic ${basicAuth}`,
-        'User-Agent':    'MM2Hub/1.0 (https://mm2-hub.vercel.app)',
+        'Accept':        'application/json',
       },
-      body: new URLSearchParams({
-        grant_type:   'authorization_code',
-        code,
-        redirect_uri: REDIRECT_URI,
-      }).toString(),
+      body,
     });
 
+    const rawText = await tokenRes.text();
+    console.error('Token response:', tokenRes.status, rawText);
+
     if (!tokenRes.ok) {
-      const err = await tokenRes.text();
-      console.error('Token error:', tokenRes.status, err);
-      return Response.redirect(`${BASE}/trade.html?error=token_failed&detail=${tokenRes.status}`);
+      return Response.redirect(`${BASE}/trade.html?error=token_${tokenRes.status}`);
     }
 
-    const tokenData   = await tokenRes.json();
+    const tokenData   = JSON.parse(rawText);
     const accessToken = tokenData.access_token;
 
     const userRes = await fetch('https://apis.roblox.com/oauth/v1/userinfo', {
-      headers: { Authorization: `Bearer ${accessToken}` },
+      headers: {
+        'Authorization': `Bearer ${accessToken}`,
+        'Accept':        'application/json',
+      },
     });
 
     if (!userRes.ok) {
-      return Response.redirect(`${BASE}/trade.html?error=userinfo_failed`);
+      const u = await userRes.text();
+      console.error('Userinfo error:', userRes.status, u);
+      return Response.redirect(`${BASE}/trade.html?error=userinfo_${userRes.status}`);
     }
 
     const user = await userRes.json();
+    console.log('User:', JSON.stringify(user));
 
     const params = new URLSearchParams({
       roblox_id:      user.sub      || '',
@@ -64,7 +67,7 @@ export default async function handler(req) {
     return Response.redirect(`${BASE}/trade.html?${params.toString()}`);
 
   } catch (err) {
-    console.error('OAuth error:', err.message);
-    return Response.redirect(`${BASE}/trade.html?error=server_error`);
+    console.error('Catch error:', err.message);
+    return Response.redirect(`${BASE}/trade.html?error=exception`);
   }
 }

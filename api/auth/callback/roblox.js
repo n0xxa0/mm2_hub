@@ -1,5 +1,3 @@
-export const config = { runtime: 'edge' };
-
 export default async function handler(req) {
   const url   = new URL(req.url);
   const code  = url.searchParams.get('code');
@@ -9,10 +7,14 @@ export default async function handler(req) {
   if (error) return Response.redirect(`${BASE}/trade.html?error=${encodeURIComponent(error)}`);
   if (!code)  return Response.redirect(`${BASE}/trade.html?error=no_code`);
 
-  // ⚠️ TEMPORAIRE — remplace par variables d'env une fois que ça marche
-  const CLIENT_ID     = process.env.ROBLOX_CLIENT_ID     || '1029807529105283785';
-  const CLIENT_SECRET = process.env.ROBLOX_CLIENT_SECRET || 'RBX-tUTsXxuEhUmdM8_qSmy4jdESRH-L7TqMMqdUlvW-axkUjtsQYJYh-LB56wyQ1d-4';
+  const CLIENT_ID     = process.env.ROBLOX_CLIENT_ID;
+  const CLIENT_SECRET = process.env.ROBLOX_CLIENT_SECRET;
   const REDIRECT_URI  = `${BASE}/api/auth/callback/roblox`;
+
+  if (!CLIENT_ID || !CLIENT_SECRET) {
+    console.error('Missing ROBLOX_CLIENT_ID or ROBLOX_CLIENT_SECRET env vars');
+    return Response.redirect(`${BASE}/trade.html?error=server_misconfigured`);
+  }
 
   console.log('CLIENT_ID:', CLIENT_ID);
   console.log('code length:', code?.length);
@@ -35,10 +37,11 @@ export default async function handler(req) {
         'Content-Type':  'application/x-www-form-urlencoded',
         'Authorization': `Basic ${basicAuth}`,
         'Accept':        'application/json',
+        'User-Agent':    'mm2-hub-oauth/1.0',
       },
       body,
     });
-  } catch(fetchErr) {
+  } catch (fetchErr) {
     console.error('fetch threw:', fetchErr.message);
     return Response.redirect(`${BASE}/trade.html?error=fetch_failed`);
   }
@@ -54,7 +57,11 @@ export default async function handler(req) {
   const accessToken = tokenData.access_token;
 
   const userRes = await fetch('https://apis.roblox.com/oauth/v1/userinfo', {
-    headers: { 'Authorization': `Bearer ${accessToken}`, 'Accept': 'application/json' },
+    headers: {
+      'Authorization': `Bearer ${accessToken}`,
+      'Accept':        'application/json',
+      'User-Agent':    'mm2-hub-oauth/1.0',
+    },
   });
 
   if (!userRes.ok) {

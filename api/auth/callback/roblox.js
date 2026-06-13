@@ -26,6 +26,7 @@ export default async function handler(req) {
       headers: {
         'Content-Type':  'application/x-www-form-urlencoded',
         'Authorization': `Basic ${basicAuth}`,
+        'User-Agent':    'MM2Hub/1.0 (https://mm2-hub.vercel.app)',
       },
       body: new URLSearchParams({
         grant_type:   'authorization_code',

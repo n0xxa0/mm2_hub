@@ -69,11 +69,13 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:15
 .card-demand{display:flex;gap:3px;margin-top:6px}
 .d-dot{width:8px;height:8px;border-radius:50%;background:var(--border2)}
 .d-dot.on{background:var(--gold)}
-/* Add/Remove calc button */
-.calc-btn{position:absolute;top:10px;right:10px;width:28px;height:28px;border-radius:6px;border:1px solid var(--border2);background:var(--surface3);color:var(--muted);font-size:18px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;line-height:1;padding:0}
-.calc-btn:hover{border-color:var(--cyan);color:var(--cyan);background:rgba(6,214,160,.1)}
-.calc-btn.added{background:rgba(6,214,160,.15);border-color:var(--cyan);color:var(--cyan)}
-.calc-btn.added:hover{background:rgba(230,57,70,.15);border-color:var(--red);color:var(--red)}
+/* Quantity calc controls */
+.calc-controls{position:absolute;top:10px;right:10px;display:flex;align-items:center;gap:4px}
+.calc-btn{width:26px;height:26px;border-radius:6px;border:1px solid var(--border2);background:var(--surface3);color:var(--muted);font-size:17px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;line-height:1;padding:0}
+.calc-btn.add-btn:hover{border-color:var(--cyan);color:var(--cyan);background:rgba(6,214,160,.1)}
+.calc-btn.rem-btn{border-color:rgba(230,57,70,.4);color:var(--red);background:rgba(230,57,70,.1)}
+.calc-btn.rem-btn:hover{background:rgba(230,57,70,.25)}
+.calc-qty{font-family:var(--fonthead);font-size:13px;font-weight:700;color:var(--cyan);min-width:18px;text-align:center}
 /* Inventory panel */
 .inv-panel{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#0d0d18;border:1px solid var(--border2);border-radius:12px;padding:10px 18px;display:flex;align-items:center;gap:14px;z-index:200;box-shadow:0 4px 32px rgba(0,0,0,.6);min-width:340px;flex-wrap:wrap;justify-content:center}
 .inv-panel.hidden{display:none}
@@ -763,38 +765,52 @@ function render() {
 }
 
 // ─── INVENTORY CALC ───────────────────────────────────────────
-let calcItems = {}; // key: item name, value: {value, count}
+let calcItems = {}; // key: item name → {value, qty}
 
-function toggleCalc(name, value, btn) {
-  if (calcItems[name]) {
-    delete calcItems[name];
-    btn.textContent = "+";
-    btn.classList.remove("added");
-    btn.closest(".card").classList.remove("in-calc");
-  } else {
-    calcItems[name] = value;
-    btn.textContent = "−";
-    btn.classList.add("added");
-    btn.closest(".card").classList.add("in-calc");
-  }
+function addToCalc(name, value) {
+  if (!calcItems[name]) calcItems[name] = {value, qty: 0};
+  calcItems[name].qty++;
+  refreshCardControls(name);
   updateInvPanel();
+}
+
+function removeFromCalc(name) {
+  if (!calcItems[name]) return;
+  calcItems[name].qty--;
+  if (calcItems[name].qty <= 0) delete calcItems[name];
+  refreshCardControls(name);
+  updateInvPanel();
+}
+
+function refreshCardControls(name) {
+  // Update all cards with this name (only 1 in DOM at a time, but safe)
+  document.querySelectorAll(`.card[data-name="${CSS.escape(name)}"]`).forEach(card => {
+    const qty = calcItems[name] ? calcItems[name].qty : 0;
+    const qtyEl = card.querySelector(".calc-qty");
+    const remBtn = card.querySelector(".rem-btn");
+    if (qtyEl) qtyEl.textContent = qty > 0 ? "×"+qty : "";
+    if (remBtn) remBtn.style.display = qty > 0 ? "flex" : "none";
+    card.classList.toggle("in-calc", qty > 0);
+  });
 }
 
 function updateInvPanel() {
   const keys = Object.keys(calcItems);
-  const total = keys.reduce((s, k) => s + calcItems[k], 0);
-  const panel = document.getElementById("invPanel");
+  const totalQty = keys.reduce((s,k) => s + calcItems[k].qty, 0);
+  const total = keys.reduce((s,k) => s + calcItems[k].value * calcItems[k].qty, 0);
   document.getElementById("invTotal").textContent = total.toLocaleString();
-  document.getElementById("invCount").textContent = keys.length ? `[${keys.length} item${keys.length>1?"s":""}]` : "";
-  panel.classList.toggle("hidden", keys.length === 0);
+  document.getElementById("invCount").textContent = totalQty > 0 ? `[${totalQty} item${totalQty>1?"s":""}]` : "";
+  document.getElementById("invPanel").classList.toggle("hidden", keys.length === 0);
 }
 
 function clearCalc() {
   calcItems = {};
-  document.querySelectorAll(".calc-btn.added").forEach(b => {
-    b.textContent = "+";
-    b.classList.remove("added");
-    b.closest(".card").classList.remove("in-calc");
+  document.querySelectorAll(".card").forEach(card => {
+    card.classList.remove("in-calc");
+    const qtyEl = card.querySelector(".calc-qty");
+    const remBtn = card.querySelector(".rem-btn");
+    if (qtyEl) qtyEl.textContent = "";
+    if (remBtn) remBtn.style.display = "none";
   });
   updateInvPanel();
 }
@@ -810,11 +826,15 @@ function cardHtml(item) {
     ? `<div class="card-range">Range — [${item.range[0].toLocaleString()} - ${item.range[1].toLocaleString()}]</div>`
     : `<div class="card-range">Range — [N/A]</div>`;
   const imgFb = `https://mm2checker.com/images/godlies/${(item.name||"").toLowerCase().replace(/[^a-z0-9]/g,"-").replace(/-+/g,"-")}.png`;
-  const inCalc = !!calcItems[item.name];
-  const escapedName = item.name.replace(/'/g,"\\'");
+  const qty = calcItems[item.name] ? calcItems[item.name].qty : 0;
+  const esc = item.name.replace(/\\/g,"\\\\").replace(/'/g,"\\'");
   return `
-  <div class="card${inCalc?" in-calc":""}">
-    <button class="calc-btn${inCalc?" added":""}" title="${inCalc?"Retirer du calcul":"Ajouter au calcul"}" onclick="toggleCalc('${escapedName}',${item.value},this)">${inCalc?"−":"+"}</button>
+  <div class="card${qty>0?" in-calc":""}" data-name="${item.name.replace(/"/g,'&quot;')}">
+    <div class="calc-controls">
+      <button class="calc-btn rem-btn" style="display:${qty>0?"flex":"none"}" onclick="removeFromCalc('${esc}')" title="Retirer un">−</button>
+      <span class="calc-qty">${qty>0?"×"+qty:""}</span>
+      <button class="calc-btn add-btn" onclick="addToCalc('${esc}',${item.value})" title="Ajouter au calcul">+</button>
+    </div>
     <div class="card-img-box">
       <img src="${item.img}" onerror="this.src='${imgFb}';this.onerror=null" loading="lazy" alt="${item.name}">
     </div>

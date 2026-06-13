@@ -127,6 +127,9 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:15
   <main class="main">
     <div class="filter-bar">
       <input class="filter-input" id="searchInput" placeholder="🔍 Search item name..." oninput="render()">
+      <select class="filter-select" id="eventSel" onchange="render()">
+        <option value="">All Events</option>
+      </select>
       <select class="filter-select" id="yearSel" onchange="render()">
         <option value="">All Years</option>
         <option>2015</option><option>2016</option><option>2017</option><option>2018</option>
@@ -711,18 +714,67 @@ const ALL_ITEMS = [
   {name:"Skeleton Key",rarity:"Misc",t:"K",value:5,demand:1,stab:"Stable",lc:0,origin:"Hallows 2018 (Tiers)",img:"https://supremevalues.com/media/mm2misc/Skeleton_Key.png"},
 ];
 
+// ─── EXTRACT EVENTS ───────────────────────────────────────────
+const EVENT_KEYWORDS = [
+  {key:"Xmas",      label:"🎄 Christmas"},
+  {key:"Hallows",   label:"🎃 Hallows"},
+  {key:"Valentine", label:"💝 Valentine"},
+  {key:"Easter",    label:"🐣 Easter"},
+  {key:"Summer",    label:"☀️ Summer"},
+  {key:"Halloween", label:"🎃 Halloween"},
+];
+
+function populateEventFilter() {
+  const sel = document.getElementById("eventSel");
+  // Detect which events actually exist in dataset
+  EVENT_KEYWORDS.forEach(ev => {
+    const exists = ALL_ITEMS.some(i => (i.origin||"").includes(ev.key));
+    if (exists) {
+      const opt = document.createElement("option");
+      opt.value = ev.key;
+      opt.textContent = ev.label;
+      sel.appendChild(opt);
+    }
+  });
+  // Also add any other origins that don't match keywords (Boxes, Packs, etc.)
+  const others = new Set();
+  ALL_ITEMS.forEach(i => {
+    if (!i.origin) return;
+    const matched = EVENT_KEYWORDS.some(ev => i.origin.includes(ev.key));
+    if (!matched) {
+      // Extract base origin name (strip year for grouping)
+      const base = i.origin.replace(/\s*\(.*\)/, "").replace(/\s*\d{4}/, "").trim();
+      if (base) others.add(base);
+    }
+  });
+  if (others.size) {
+    const sep = document.createElement("option");
+    sep.disabled = true;
+    sep.textContent = "──────────";
+    sel.appendChild(sep);
+    [...others].sort().forEach(o => {
+      const opt = document.createElement("option");
+      opt.value = o;
+      opt.textContent = "📦 " + o;
+      sel.appendChild(opt);
+    });
+  }
+}
+
 // ─── RENDER ───────────────────────────────────────────────────
 function render() {
-  const q    = (document.getElementById("searchInput").value || "").toLowerCase();
-  const year = document.getElementById("yearSel").value;
-  const stab = document.getElementById("stabSel").value;
+  const q     = (document.getElementById("searchInput").value || "").toLowerCase();
+  const year  = document.getElementById("yearSel").value;
+  const stab  = document.getElementById("stabSel").value;
+  const event = document.getElementById("eventSel").value;
 
   let data = ALL_ITEMS.filter(item => {
     if (currentRarity !== "all" && item.rarity !== currentRarity) return false;
     if (currentType   !== "all" && item.t      !== currentType)   return false;
-    if (q    && !item.name.toLowerCase().includes(q))             return false;
-    if (year && !(item.origin||"").includes(year))                return false;
-    if (stab && item.stab !== stab)                               return false;
+    if (q     && !item.name.toLowerCase().includes(q))            return false;
+    if (year  && !(item.origin||"").includes(year))               return false;
+    if (stab  && item.stab !== stab)                              return false;
+    if (event && !(item.origin||"").includes(event))              return false;
     return true;
   });
 
@@ -866,6 +918,7 @@ function clearFilters() {
   document.getElementById("searchInput").value = "";
   document.getElementById("yearSel").value = "";
   document.getElementById("stabSel").value = "";
+  document.getElementById("eventSel").value = "";
   render();
 }
 
@@ -874,6 +927,7 @@ window.addEventListener("scroll", () => {
 });
 
 updateCounts();
+populateEventFilter();
 render();
 </script>
 </body>

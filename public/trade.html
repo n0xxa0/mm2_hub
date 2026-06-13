@@ -167,27 +167,67 @@ textarea.form-input{resize:vertical;min-height:70px}
 .msg-btn{position:relative}
 .unread-badge{position:absolute;top:-5px;right:-5px;background:var(--red);color:#fff;font-size:10px;font-weight:900;border-radius:10px;padding:1px 5px;min-width:16px;text-align:center;line-height:1.4}
 
-/* PROFILE MODAL */
-.profile-modal{background:var(--surface);border:1px solid var(--border2);border-radius:16px;width:100%;max-width:560px;max-height:85vh;display:flex;flex-direction:column;overflow:hidden}
-.profile-modal-inner{padding:24px;overflow-y:auto;flex:1}
-.profile-hdr{display:flex;align-items:center;gap:14px;margin-bottom:16px}
-.profile-avatar{width:56px;height:56px;border-radius:50%;object-fit:cover;border:2px solid rgba(6,214,160,.4)}
-.profile-name{font-family:var(--fonthead);font-size:16px;font-weight:900}
-.profile-sub{font-size:12px;color:var(--muted)}
-.profile-bio{margin-top:6px}
-.profile-ads-title{font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--dimmed);margin:16px 0 10px}
-.profile-ads-list{display:flex;flex-direction:column;gap:8px}
-.profile-ad-row{background:var(--surface2);border:1px solid var(--border2);border-radius:10px;padding:10px 12px;display:flex;align-items:flex-start;gap:10px;cursor:pointer;transition:border-color .15s}
-.profile-ad-row:hover{border-color:var(--border)}
-.profile-ad-badge{font-size:9px;font-weight:900;letter-spacing:1.5px;padding:3px 7px;border-radius:5px;text-transform:uppercase;white-space:nowrap;flex-shrink:0;margin-top:2px}
-.profile-ad-badge.wtt{background:rgba(6,214,160,.15);color:var(--cyan)}
-.profile-ad-badge.wts{background:rgba(255,209,102,.15);color:var(--gold)}
-.profile-ad-badge.wtb{background:rgba(199,125,255,.15);color:#c77dff}
-.profile-ad-items{display:flex;flex-wrap:wrap;gap:4px;flex:1;min-width:0}
-.profile-ad-chip{background:var(--surface3);border:1px solid var(--border2);border-radius:6px;padding:3px 7px;font-size:11px;color:var(--text);display:flex;align-items:center;gap:4px}
-.profile-ad-chip img{width:20px;height:20px;object-fit:contain}
-.profile-ad-time{font-size:10px;color:var(--dimmed);flex-shrink:0;margin-top:2px}
-.profile-no-ads{font-size:12px;color:var(--dimmed);text-align:center;padding:16px 0}
+/* ══ PROFILE PAGE (full overlay, style Traderie) ══ */
+.profile-page{position:fixed;inset:0;background:var(--bg);z-index:600;overflow-y:auto;display:none}
+.profile-page.open{display:block}
+.profile-page-back{position:sticky;top:0;z-index:10;background:rgba(10,10,15,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--border);padding:10px 20px;display:flex;align-items:center;gap:10px}
+.profile-page-back-btn{background:none;border:1px solid var(--border2);border-radius:8px;color:var(--muted);font-family:var(--font);font-size:13px;font-weight:700;padding:6px 14px;cursor:pointer;transition:all .15s;display:flex;align-items:center;gap:6px}
+.profile-page-back-btn:hover{border-color:var(--red);color:var(--red)}
+.prof-banner{height:120px;background:linear-gradient(135deg,#1a0a1e 0%,#0d0d20 40%,#0a1a1a 100%);position:relative;overflow:hidden}
+.prof-banner::after{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 30% 50%,rgba(230,57,70,.18) 0%,transparent 60%),radial-gradient(ellipse at 70% 50%,rgba(6,214,160,.12) 0%,transparent 60%)}
+.prof-hdr{max-width:900px;margin:0 auto;padding:0 24px;position:relative}
+.prof-avatar-wrap{position:relative;margin-top:-40px;margin-bottom:0;display:inline-block}
+.prof-avatar{width:80px;height:80px;border-radius:50%;border:3px solid var(--bg);object-fit:cover;display:block;background:var(--surface2)}
+.prof-avatar-initials{width:80px;height:80px;border-radius:50%;border:3px solid var(--bg);background:linear-gradient(135deg,#e63946,#ff6b35);display:flex;align-items:center;justify-content:center;font-family:var(--fonthead);font-size:28px;font-weight:900;color:#fff}
+.prof-online-dot{position:absolute;bottom:4px;right:2px;width:14px;height:14px;border-radius:50%;background:var(--cyan);border:2px solid var(--bg);animation:pulse-dot 2s infinite}
+.prof-top-row{display:flex;align-items:flex-end;justify-content:space-between;padding:8px 0 12px;flex-wrap:wrap;gap:10px}
+.prof-username{font-family:var(--fonthead);font-size:22px;font-weight:900;letter-spacing:1px;display:flex;align-items:center;gap:8px}
+.prof-display{font-size:13px;color:var(--muted);margin-top:2px}
+.prof-since{font-size:11px;color:var(--dimmed);margin-top:4px}
+.prof-actions{display:flex;gap:8px;flex-wrap:wrap}
+.prof-btn-edit{padding:8px 18px;background:linear-gradient(135deg,#e63946,#ff6b35);border:none;border-radius:9px;color:#fff;font-family:var(--fonthead);font-size:11px;font-weight:900;letter-spacing:1px;cursor:pointer;transition:all .2s}
+.prof-btn-edit:hover{transform:translateY(-1px);box-shadow:0 4px 16px rgba(230,57,70,.4)}
+.prof-btn-msg{padding:8px 18px;background:rgba(6,214,160,.1);border:1px solid rgba(6,214,160,.35);border-radius:9px;color:var(--cyan);font-family:var(--font);font-size:13px;font-weight:700;cursor:pointer;transition:all .15s}
+.prof-btn-msg:hover{background:rgba(6,214,160,.18)}
+.prof-btn-disconnect{padding:8px 16px;background:none;border:1px solid var(--border2);border-radius:9px;color:var(--dimmed);font-family:var(--font);font-size:12px;font-weight:700;cursor:pointer;transition:all .15s}
+.prof-btn-disconnect:hover{border-color:var(--red);color:var(--red)}
+.prof-stats{max-width:900px;margin:0 auto;padding:0 24px 14px;display:flex;gap:28px;flex-wrap:wrap;border-bottom:1px solid var(--border)}
+.prof-stat-val{font-family:var(--fonthead);font-size:18px;font-weight:900;color:var(--text)}
+.prof-stat-lbl{font-size:10px;color:var(--dimmed);text-transform:uppercase;letter-spacing:1px;margin-top:2px}
+.prof-bio-section{max-width:900px;margin:14px auto 0;padding:0 24px}
+.prof-bio-edit{width:100%;background:var(--surface2);border:1px solid var(--border2);border-radius:8px;color:var(--text);padding:9px 12px;font-family:var(--font);font-size:13px;outline:none;resize:vertical;min-height:60px}
+.prof-bio-edit:focus{border-color:var(--red)}
+.prof-bio-edit::placeholder{color:var(--dimmed)}
+.prof-bio-text{font-size:13px;color:var(--muted);line-height:1.6;font-style:italic}
+.prof-tabs{max-width:900px;margin:14px auto 0;padding:0 24px;display:flex;gap:2px;border-bottom:1px solid var(--border)}
+.prof-tab{padding:10px 18px;background:none;border:none;border-bottom:2px solid transparent;color:var(--muted);font-family:var(--font);font-size:14px;font-weight:700;cursor:pointer;transition:all .15s;display:flex;align-items:center;gap:6px;margin-bottom:-1px}
+.prof-tab:hover{color:var(--text)}
+.prof-tab.active{color:var(--red);border-bottom-color:var(--red)}
+.prof-tab-count{background:var(--surface3);border-radius:10px;padding:1px 7px;font-size:10px;font-family:var(--fonthead)}
+.prof-content{max-width:900px;margin:20px auto;padding:0 24px 40px}
+.prof-ad-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:10px}
+.prof-ad-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;transition:border-color .15s,transform .15s}
+.prof-ad-card:hover{border-color:var(--border2);transform:translateY(-2px)}
+.prof-ad-card.wtt{border-top:2px solid var(--cyan)}
+.prof-ad-card.wts{border-top:2px solid var(--gold)}
+.prof-ad-card.wtb{border-top:2px solid #c77dff}
+.prof-ad-card-hdr{padding:10px 14px 8px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border)}
+.prof-ad-type{font-size:9px;font-weight:900;letter-spacing:1.5px;padding:3px 8px;border-radius:5px;text-transform:uppercase}
+.prof-ad-type.wtt{background:rgba(6,214,160,.15);color:var(--cyan)}
+.prof-ad-type.wts{background:rgba(255,209,102,.15);color:var(--gold)}
+.prof-ad-type.wtb{background:rgba(199,125,255,.15);color:#c77dff}
+.prof-ad-card-time{font-size:10px;color:var(--dimmed)}
+.prof-ad-card-body{padding:12px 14px}
+.prof-ad-items-row{display:flex;flex-wrap:wrap;gap:6px}
+.prof-ad-item-chip{background:var(--surface2);border:1px solid var(--border2);border-radius:8px;padding:5px 8px;display:flex;align-items:center;gap:5px}
+.prof-ad-item-chip img{width:28px;height:28px;object-fit:contain}
+.prof-ad-item-name{font-size:10px;font-weight:700;color:var(--text);max-width:80px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.prof-ad-item-val{font-size:9px;color:var(--gold);font-family:var(--fonthead)}
+.prof-ad-card-footer{padding:8px 14px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.prof-ad-total{font-family:var(--fonthead);font-size:12px;color:var(--gold)}
+.prof-no-ads{text-align:center;padding:60px 20px;color:var(--dimmed)}
+.prof-no-ads-icon{font-size:40px;opacity:.4;margin-bottom:10px}
+.prof-save-row{display:flex;gap:8px;margin-top:8px}
 
 /* MESSAGES MODAL */
 .msg-modal{background:var(--surface);border:1px solid var(--border2);border-radius:16px;width:100%;max-width:720px;max-height:85vh;display:flex;overflow:hidden}
@@ -346,35 +386,36 @@ textarea.form-input{resize:vertical;min-height:70px}
   </div>
 </div>
 
-<!-- PROFILE MODAL -->
-<div class="modal-overlay hidden" id="profileOverlay">
-  <div class="profile-modal">
-    <div class="modal-head" style="padding:16px 20px 14px;border-bottom:1px solid var(--border)">
-      <div class="modal-title">PROFIL</div>
-      <button class="modal-close" onclick="closeProfile()">✕</button>
-    </div>
-    <div class="profile-modal-inner">
-      <div class="profile-hdr">
-        <img class="profile-avatar" id="profAvatar" src="" alt="">
-        <div>
-          <div class="profile-name" id="profName"></div>
-          <div class="profile-sub" id="profSub"></div>
+<!-- PROFILE PAGE (full overlay) -->
+<div class="profile-page" id="profilePage">
+  <div class="profile-page-back">
+    <button class="profile-page-back-btn" onclick="closeProfile()">← Retour</button>
+    <span id="profPageTitle" style="font-size:13px;color:var(--muted);font-weight:700"></span>
+  </div>
+  <div class="prof-banner" id="profBanner"></div>
+  <div class="prof-hdr">
+    <div class="prof-top-row">
+      <div>
+        <div class="prof-avatar-wrap">
+          <img class="prof-avatar" id="profAvatar" src="" alt="" onerror="this.style.display='none'">
+          <div class="prof-avatar-initials" id="profAvatarInitials" style="display:none">?</div>
+          <div class="prof-online-dot" id="profOnlineDot"></div>
         </div>
+        <div class="prof-username" id="profName"></div>
+        <div class="prof-display" id="profDisplay"></div>
+        <div class="prof-since" id="profSince"></div>
       </div>
-      <div class="form-group profile-bio">
-        <label class="form-label">Bio</label>
-        <textarea class="form-input" id="profBio" placeholder="Aucune bio renseignée." disabled></textarea>
-      </div>
-      <div class="form-group" id="profSaveGroup" style="display:none">
-        <div style="display:flex;gap:8px">
-          <button class="btn-submit" onclick="saveProfileBio()">✓ ENREGISTRER</button>
-          <button class="btn-cancel" onclick="disconnectRoblox();closeProfile()">🔌 Déconnecter</button>
-        </div>
-      </div>
-      <div class="profile-ads-title" id="profAdsTitle" style="display:none">📋 ANNONCES ACTIVES</div>
-      <div class="profile-ads-list" id="profAdsList"></div>
+      <div class="prof-actions" id="profActions"></div>
     </div>
   </div>
+  <div class="prof-stats" id="profStats"></div>
+  <div class="prof-bio-section" id="profBioSection"></div>
+  <div class="prof-tabs">
+    <button class="prof-tab active" id="profTabAds" onclick="profSwitchTab('ads')">
+      📋 Annonces <span class="prof-tab-count" id="profTabAdsCount">0</span>
+    </button>
+  </div>
+  <div class="prof-content" id="profContent"></div>
 </div>
 
 <!-- MESSAGES MODAL -->
@@ -679,7 +720,11 @@ async function upsertProfile(u){
   }catch(e){ console.error("upsertProfile failed", e); }
 }
 
+let profCurrentTab = "ads";
+let profCurrentUserId = null;
+
 async function openProfile(userId){
+  profCurrentUserId = userId;
   const isMe = robloxUser && robloxUser.id === userId;
   let prof = getProfile(userId);
   if(!prof){
@@ -691,50 +736,153 @@ async function openProfile(userId){
   }
   if(!prof) prof = {id:userId, robloxName:"Joueur inconnu", avatarUrl:null, bio:""};
 
-  document.getElementById("profName").textContent = prof.displayName || prof.robloxName;
-  document.getElementById("profSub").textContent = "@"+prof.robloxName + (prof.createdAt ? " · membre depuis "+new Date(prof.createdAt).toLocaleDateString("fr-FR") : "");
-  const av = document.getElementById("profAvatar");
-  if(prof.avatarUrl){av.src=prof.avatarUrl;av.style.display="";}else{av.style.display="none";}
-  const bioEl = document.getElementById("profBio");
-  bioEl.value = prof.bio || "";
-  bioEl.placeholder = isMe ? "Parlez un peu de vous, vos jeux préférés, etc." : "Aucune bio renseignée.";
-  bioEl.disabled = !isMe;
-  document.getElementById("profSaveGroup").style.display = isMe ? "" : "none";
-  document.getElementById("profileOverlay").dataset.userId = userId;
+  // ── Page title ──
+  document.getElementById("profPageTitle").textContent = (prof.displayName || prof.robloxName) + "'s Profile";
 
-  // ── Annonces du profil ──
+  // ── Avatar ──
+  const av = document.getElementById("profAvatar");
+  const avInit = document.getElementById("profAvatarInitials");
+  if(prof.avatarUrl){
+    av.src = prof.avatarUrl;
+    av.style.display = "";
+    avInit.style.display = "none";
+  } else {
+    av.style.display = "none";
+    avInit.style.display = "";
+    avInit.textContent = (prof.robloxName||"?")[0].toUpperCase();
+  }
+
+  // ── Identity ──
+  document.getElementById("profName").textContent = prof.robloxName || "Joueur";
+  const dispEl = document.getElementById("profDisplay");
+  dispEl.textContent = prof.displayName && prof.displayName !== prof.robloxName ? prof.displayName : "";
+  const sinceEl = document.getElementById("profSince");
+  sinceEl.textContent = prof.createdAt ? "Membre depuis " + new Date(prof.createdAt).toLocaleDateString("fr-FR",{month:"long",year:"numeric"}) : "";
+
+  // ── Actions ──
+  const actionsEl = document.getElementById("profActions");
+  if(isMe){
+    actionsEl.innerHTML = `
+      <button class="prof-btn-edit" onclick="profToggleBioEdit()">✏️ Modifier la bio</button>
+      <button class="prof-btn-disconnect" onclick="disconnectRoblox();closeProfile()">🔌 Déconnecter</button>`;
+  } else {
+    actionsEl.innerHTML = `
+      <button class="prof-btn-msg" onclick="closeProfile();startOfferFromProfile('${userId}')">💬 Contacter</button>`;
+  }
+
+  // ── Stats ──
   const userAds = ads.filter(a => a.ownerId === userId);
-  const adsTitle = document.getElementById("profAdsTitle");
-  const adsList  = document.getElementById("profAdsList");
-  if(userAds.length){
-    adsTitle.style.display = "";
-    adsList.innerHTML = userAds.slice().reverse().map(ad => {
-      const typeLabel = {wtt:"WTT",wts:"WTS",wtb:"WTB"}[ad.type];
-      const items = ad.type === "wtb" ? ad.wantItems : ad.offerItems;
-      const chipsHtml = items.slice(0,4).map(it => {
-        const found = ALL_ITEMS.find(x=>x.name===it.name);
-        if(!found) return `<span class="profile-ad-chip">${it.name}</span>`;
-        return `<span class="profile-ad-chip"><img src="${found.img}" onerror="this.style.display='none'" alt="">${it.name}${it.qty>1?` ×${it.qty}`:""}</span>`;
-      }).join("") + (items.length>4?`<span class="profile-ad-chip" style="color:var(--dimmed)">+${items.length-4}</span>`:"");
-      return `<div class="profile-ad-row" onclick="closeProfile()">
-        <span class="profile-ad-badge ${ad.type}">${typeLabel}</span>
-        <div class="profile-ad-items">${chipsHtml||'<span style="font-size:11px;color:var(--dimmed)">—</span>'}</div>
-        <span class="profile-ad-time">${timeAgo(ad.ts)}</span>
+  document.getElementById("profStats").innerHTML = `
+    <div><div class="prof-stat-val">${userAds.length}</div><div class="prof-stat-lbl">Annonces</div></div>
+    <div><div class="prof-stat-val">${userAds.filter(a=>a.type==="wtt").length}</div><div class="prof-stat-lbl">WTT</div></div>
+    <div><div class="prof-stat-val">${userAds.filter(a=>a.type==="wts").length}</div><div class="prof-stat-lbl">WTS</div></div>
+    <div><div class="prof-stat-val">${userAds.filter(a=>a.type==="wtb").length}</div><div class="prof-stat-lbl">WTB</div></div>`;
+
+  // ── Bio section ──
+  const bioSection = document.getElementById("profBioSection");
+  if(isMe){
+    bioSection.innerHTML = `
+      <div id="profBioView" style="${prof.bio?'':'display:none'}">
+        <p class="prof-bio-text" id="profBioText">${prof.bio||""}</p>
+      </div>
+      <div id="profBioEditGroup" style="display:none">
+        <textarea class="prof-bio-edit" id="profBioInput" placeholder="Parlez un peu de vous...">${prof.bio||""}</textarea>
+        <div class="prof-save-row">
+          <button class="btn-submit" onclick="saveProfileBio()">✓ Enregistrer</button>
+          <button class="btn-cancel" onclick="profToggleBioEdit()">Annuler</button>
+        </div>
+      </div>`;
+  } else {
+    bioSection.innerHTML = prof.bio
+      ? `<p class="prof-bio-text">${prof.bio}</p>`
+      : `<p class="prof-bio-text" style="opacity:.4">Aucune bio renseignée.</p>`;
+  }
+
+  // ── Tab count ──
+  document.getElementById("profTabAdsCount").textContent = userAds.length;
+
+  // ── Render default tab ──
+  profCurrentTab = "ads";
+  document.querySelectorAll(".prof-tab").forEach(t=>t.classList.remove("active"));
+  document.getElementById("profTabAds").classList.add("active");
+  profRenderAds(userId);
+
+  // ── Open ──
+  document.getElementById("profilePage").classList.add("open");
+  document.getElementById("profilePage").scrollTop = 0;
+}
+
+function closeProfile(){
+  document.getElementById("profilePage").classList.remove("open");
+}
+
+function profToggleBioEdit(){
+  const view = document.getElementById("profBioView");
+  const edit = document.getElementById("profBioEditGroup");
+  if(!view || !edit) return;
+  const isHidden = edit.style.display === "none";
+  edit.style.display = isHidden ? "" : "none";
+  view.style.display = isHidden ? "none" : "";
+}
+
+function profSwitchTab(tab){
+  profCurrentTab = tab;
+  document.querySelectorAll(".prof-tab").forEach(t=>t.classList.remove("active"));
+  document.getElementById("profTabAds").classList.add("active");
+  profRenderAds(profCurrentUserId);
+}
+
+function profRenderAds(userId){
+  const isMe = robloxUser && robloxUser.id === userId;
+  const userAds = ads.filter(a => a.ownerId === userId).slice().reverse();
+  const content = document.getElementById("profContent");
+  if(!userAds.length){
+    content.innerHTML = `<div class="prof-no-ads"><div class="prof-no-ads-icon">📋</div>${isMe?"Vous n'avez pas encore posté d'annonce.":"Aucune annonce active."}</div>`;
+    return;
+  }
+  content.innerHTML = `<div class="prof-ad-grid">${userAds.map(ad => {
+    const typeLabel = {wtt:"WTT — Échange",wts:"WTS — Vente",wtb:"WTB — Recherche"}[ad.type];
+    const items = ad.type==="wtb" ? ad.wantItems : ad.offerItems;
+    const offerVal = ad.offerItems.reduce((s,it)=>{const f=ALL_ITEMS.find(x=>x.name===it.name);return s+(f?f.value*it.qty:0);},0);
+    const wantVal  = ad.wantItems.reduce((s,it)=>{const f=ALL_ITEMS.find(x=>x.name===it.name);return s+(f?f.value*it.qty:0);},0);
+    const chipsHtml = items.map(it=>{
+      const found = ALL_ITEMS.find(x=>x.name===it.name);
+      if(!found) return "";
+      const rc = RC[found.rarity]||{color:"#888"};
+      return `<div class="prof-ad-item-chip">
+        <img src="${found.img}" onerror="this.style.display='none'" alt="">
+        <div>
+          <div class="prof-ad-item-name" title="${it.name}">${it.name}${it.qty>1?` ×${it.qty}`:""}</div>
+          <div class="prof-ad-item-val" style="color:${rc.color}">${fmt(found.value)}</div>
+        </div>
       </div>`;
     }).join("");
-  } else {
-    adsTitle.style.display = "";
-    adsTitle.textContent = isMe ? "📋 MES ANNONCES" : "📋 ANNONCES ACTIVES";
-    adsList.innerHTML = `<div class="profile-no-ads">${isMe ? "Vous n'avez pas encore posté d'annonce." : "Aucune annonce active."}</div>`;
-  }
-  if(userAds.length) adsTitle.textContent = isMe ? `📋 MES ANNONCES (${userAds.length})` : `📋 ANNONCES ACTIVES (${userAds.length})`;
-
-  document.getElementById("profileOverlay").classList.remove("hidden");
+    const deleteBtn = isMe ? `<button class="ad-delete-btn" style="font-size:11px;padding:4px 10px" onclick="deleteAd(${ad.id})">🗑</button>` : "";
+    return `<div class="prof-ad-card ${ad.type}">
+      <div class="prof-ad-card-hdr">
+        <span class="prof-ad-type ${ad.type}">${typeLabel}</span>
+        <span class="prof-ad-card-time">${timeAgo(ad.ts)}</span>
+      </div>
+      <div class="prof-ad-card-body">
+        <div class="prof-ad-items-row">${chipsHtml||'<span style="font-size:12px;color:var(--dimmed)">—</span>'}</div>
+        ${ad.note?`<div style="font-size:11px;color:var(--muted);margin-top:8px;font-style:italic">💬 ${ad.note}</div>`:""}
+      </div>
+      <div class="prof-ad-card-footer">
+        <span class="prof-ad-total">📊 ${fmt(offerVal||wantVal)}</span>
+        ${deleteBtn}
+      </div>
+    </div>`;
+  }).join("")}</div>`;
 }
-function closeProfile(){ document.getElementById("profileOverlay").classList.add("hidden"); }
+
+function startOfferFromProfile(userId){
+  const ad = ads.find(a => a.ownerId === userId);
+  if(ad) startOffer(ad.id);
+}
 async function saveProfileBio(){
   if(!robloxUser) return;
-  const bio = document.getElementById("profBio").value.trim();
+  const bioInput = document.getElementById("profBioInput");
+  const bio = bioInput ? bioInput.value.trim() : "";
   await upsertProfile({
     id: robloxUser.id,
     robloxName: robloxUser.robloxName,
@@ -742,7 +890,12 @@ async function saveProfileBio(){
     avatarUrl: robloxUser.avatarUrl,
     bio,
   });
-  closeProfile();
+  // Update displayed bio in place
+  const bioText = document.getElementById("profBioText");
+  if(bioText) bioText.textContent = bio;
+  const bioView = document.getElementById("profBioView");
+  if(bioView) bioView.style.display = bio ? "" : "none";
+  profToggleBioEdit();
 }
 
 // ── STATE ──
@@ -854,6 +1007,11 @@ async function deleteAd(id){
   }catch(e){ console.error("deleteAd failed", e); }
   await fetchAds();
   renderAds();
+  // Refresh profile page if open
+  if(profCurrentUserId && document.getElementById("profilePage").classList.contains("open")){
+    document.getElementById("profTabAdsCount").textContent = ads.filter(a=>a.ownerId===profCurrentUserId).length;
+    profRenderAds(profCurrentUserId);
+  }
 }
 
 function itemChipHtml(it) {
@@ -1158,6 +1316,11 @@ function submitAd(){
   document.getElementById("fNote").value="";
   closeModal();
   renderAds();
+  // Refresh profile page if open
+  if(profCurrentUserId && document.getElementById("profilePage").classList.contains("open")){
+    document.getElementById("profTabAdsCount").textContent = ads.filter(a=>a.ownerId===profCurrentUserId).length;
+    profRenderAds(profCurrentUserId);
+  }
 }
 
 readOAuthReturn();

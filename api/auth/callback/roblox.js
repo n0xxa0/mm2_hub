@@ -1,35 +1,43 @@
 export default async function handler(req, res) {
-  const { code, state } = req.query;
+  const { code, error } = req.query;
+
+  if (error) {
+    return res.redirect(`/trade.html?error=${encodeURIComponent(error)}`);
+  }
 
   if (!code) {
-    return res.redirect('/?error=no_code');
+    return res.redirect('/trade.html?error=no_code');
   }
 
   const CLIENT_ID     = process.env.ROBLOX_CLIENT_ID;
   const CLIENT_SECRET = process.env.ROBLOX_CLIENT_SECRET;
   const REDIRECT_URI  = 'https://mm2-hub.vercel.app/api/auth/callback/roblox';
 
+  // Roblox exige Basic Auth : base64(client_id:client_secret)
+  const basicAuth = Buffer.from(`${CLIENT_ID}:${CLIENT_SECRET}`).toString('base64');
+
   try {
     // 1. Échange le code contre un access token
     const tokenRes = await fetch('https://apis.roblox.com/oauth/v1/token', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      headers: {
+        'Content-Type':  'application/x-www-form-urlencoded',
+        'Authorization': `Basic ${basicAuth}`,
+      },
       body: new URLSearchParams({
-        grant_type:    'authorization_code',
+        grant_type:   'authorization_code',
         code,
-        redirect_uri:  REDIRECT_URI,
-        client_id:     CLIENT_ID,
-        client_secret: CLIENT_SECRET,
+        redirect_uri: REDIRECT_URI,
       }),
     });
 
     if (!tokenRes.ok) {
       const err = await tokenRes.text();
-      console.error('Token error:', err);
-      return res.redirect('/trade.html?error=token_failed');
+      console.error('Token error:', tokenRes.status, err);
+      return res.redirect(`/trade.html?error=token_failed&detail=${encodeURIComponent(tokenRes.status)}`);
     }
 
-    const tokenData = await tokenRes.json();
+    const tokenData   = await tokenRes.json();
     const accessToken = tokenData.access_token;
 
     // 2. Récupère les infos du user
@@ -42,19 +50,13 @@ export default async function handler(req, res) {
     }
 
     const user = await userRes.json();
-    // user contient : sub (id), name, nickname, profile, picture...
+    // Roblox retourne : sub, name (username), nickname (displayName), picture (avatar URL)
 
-    const userId       = user.sub;
-    const username     = user.name || user.preferred_username || user.nickname;
-    const displayName  = user.nickname || username;
-    const avatarUrl    = user.picture || '';
-
-    // 3. Redirige vers trade.html avec les infos en query string
     const params = new URLSearchParams({
-      roblox_id:      userId,
-      roblox_user:    username,
-      roblox_display: displayName,
-      roblox_avatar:  avatarUrl,
+      roblox_id:      user.sub        || '',
+      roblox_user:    user.name       || user.preferred_username || '',
+      roblox_display: user.nickname   || user.name || '',
+      roblox_avatar:  user.picture    || '',
     });
 
     return res.redirect(`/trade.html?${params.toString()}`);

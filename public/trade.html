@@ -150,19 +150,9 @@ textarea.form-input{resize:vertical;min-height:70px}
 .rlogin-title{font-family:var(--fonthead);font-size:18px;font-weight:900;letter-spacing:2px;text-align:center;margin-bottom:6px}
 .rlogin-sub{font-size:13px;color:var(--muted);text-align:center;margin-bottom:24px;line-height:1.5}
 .rlogin-icon{text-align:center;font-size:48px;margin-bottom:16px}
-.rlogin-input-wrap{display:flex;gap:8px;margin-bottom:12px}
-.rlogin-input{flex:1;background:var(--surface2);border:1px solid var(--border2);border-radius:8px;color:var(--text);padding:10px 14px;font-family:var(--font);font-size:14px;outline:none}
-.rlogin-input:focus{border-color:var(--cyan)}
-.rlogin-input::placeholder{color:var(--dimmed)}
-.rlogin-input.error{border-color:var(--red)}
-.btn-rlogin{padding:10px 20px;background:linear-gradient(135deg,var(--cyan),#04b589);border:none;border-radius:8px;color:#000;font-family:var(--fonthead);font-size:12px;font-weight:900;letter-spacing:1px;cursor:pointer;transition:all .2s;white-space:nowrap}
-.btn-rlogin:hover{transform:translateY(-1px);box-shadow:0 4px 16px rgba(6,214,160,.35)}
-.rlogin-error{font-size:12px;color:var(--red);text-align:center;min-height:16px;margin-bottom:8px}
+.btn-rlogin-oauth{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;padding:13px 20px;background:linear-gradient(135deg,#e63946,#c0392b);border:none;border-radius:10px;color:#fff;font-family:var(--fonthead);font-size:13px;font-weight:900;letter-spacing:1px;cursor:pointer;transition:all .2s;box-shadow:0 4px 16px rgba(230,57,70,.35);margin-bottom:4px}
+.btn-rlogin-oauth:hover{transform:translateY(-1px);box-shadow:0 6px 24px rgba(230,57,70,.5)}
 .rlogin-note{font-size:11px;color:var(--dimmed);text-align:center;line-height:1.6}
-.rlogin-note a{color:var(--muted);text-decoration:underline;cursor:pointer}
-.rlogin-loading{display:flex;align-items:center;justify-content:center;gap:8px;font-size:13px;color:var(--muted);padding:8px 0}
-.spinner{width:16px;height:16px;border:2px solid var(--border2);border-top-color:var(--cyan);border-radius:50%;animation:spin .6s linear infinite}
-@keyframes spin{to{transform:rotate(360deg)}}
 
 ::-webkit-scrollbar{width:4px;height:4px}
 ::-webkit-scrollbar-track{background:transparent}
@@ -220,20 +210,13 @@ textarea.form-input{resize:vertical;min-height:70px}
   <div class="rlogin-modal">
     <div class="rlogin-icon">🎮</div>
     <div class="rlogin-title">CONNEXION ROBLOX</div>
-    <div class="rlogin-sub">Entrez votre pseudo Roblox pour poster des annonces.<br>Votre identité sera vérifiée automatiquement.</div>
-    <div id="rloginContent">
-      <div class="rlogin-input-wrap">
-        <input class="rlogin-input" id="rloginInput" placeholder="Votre pseudo Roblox..." maxlength="20" onkeydown="if(event.key==='Enter')doRobloxLogin()">
-        <button class="btn-rlogin" onclick="doRobloxLogin()">Vérifier</button>
-      </div>
-      <div class="rlogin-error" id="rloginError"></div>
-      <div class="rlogin-note">
-        Votre pseudo est utilisé uniquement pour identifier vos annonces.<br>
-        Aucun mot de passe requis.
-      </div>
-    </div>
-    <div id="rloginLoading" class="rlogin-loading hidden">
-      <div class="spinner"></div> Vérification en cours...
+    <div class="rlogin-sub">Connectez votre vrai compte Roblox pour poster des annonces.</div>
+    <button class="btn-rlogin-oauth" onclick="doOAuthLogin()">
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none" style="flex-shrink:0"><circle cx="10" cy="10" r="10" fill="#e63946"/><text x="10" y="14" text-anchor="middle" font-size="11" font-weight="900" fill="white" font-family="Arial">R</text></svg>
+      Se connecter avec Roblox
+    </button>
+    <div class="rlogin-note" style="margin-top:14px">
+      Vous serez redirigé vers Roblox pour autoriser la connexion.<br>Aucun mot de passe partagé avec ce site.
     </div>
     <div style="text-align:center;margin-top:16px">
       <button class="btn-cancel" onclick="closeRobloxLogin()">Annuler</button>
@@ -475,28 +458,42 @@ const ALL_ITEMS = [
 function fmt(v){if(v>=1000)return(v/1000).toFixed(v%1000===0?0:2)+"K";return v.toLocaleString();}
 function timeAgo(ts){const d=Date.now()-ts;if(d<60000)return"À l'instant";if(d<3600000)return Math.floor(d/60000)+"min";if(d<86400000)return Math.floor(d/3600000)+"h";return Math.floor(d/86400000)+"j";}
 
-// ── ROBLOX SESSION ──
-let robloxUser = null; // {username, avatarUrl}
+// ── ROBLOX OAUTH SESSION ──
+const ROBLOX_CLIENT_ID = "1029807529105283785";
+const ROBLOX_REDIRECT  = "https://mm2-hub.vercel.app/api/auth/callback/roblox";
+const ROBLOX_SCOPE     = "openid profile";
 
-// Fetch real Roblox user info via public API (no auth needed)
-async function fetchRobloxUser(username) {
-  try {
-    // Search user by username
-    const res = await fetch(`https://users.roblox.com/v1/usernames/users`, {
-      method: "POST",
-      headers: {"Content-Type":"application/json"},
-      body: JSON.stringify({usernames:[username], excludeBannedUsers:true})
-    });
-    const data = await res.json();
-    if (!data.data || !data.data.length) return null;
-    const user = data.data[0];
-    // Get avatar thumbnail
-    const thumbRes = await fetch(`https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds=${user.id}&size=48x48&format=Png&isCircular=true`);
-    const thumbData = await thumbRes.json();
-    const avatarUrl = thumbData.data && thumbData.data[0] ? thumbData.data[0].imageUrl : null;
-    return {username: user.displayName || user.name, robloxName: user.name, id: user.id, avatarUrl};
-  } catch(e) {
-    return null;
+let robloxUser = null; // {robloxName, displayName, avatarUrl, id}
+
+function doOAuthLogin() {
+  const state = Math.random().toString(36).slice(2);
+  sessionStorage.setItem("oauth_state", state);
+  const params = new URLSearchParams({
+    client_id:     ROBLOX_CLIENT_ID,
+    redirect_uri:  ROBLOX_REDIRECT,
+    response_type: "code",
+    scope:         ROBLOX_SCOPE,
+    state,
+  });
+  window.location.href = `https://apis.roblox.com/oauth/v1/authorize?${params}`;
+}
+
+// Lecture des params retournés par le callback Vercel
+function readOAuthReturn() {
+  const p = new URLSearchParams(window.location.search);
+  if (p.has("roblox_user")) {
+    robloxUser = {
+      robloxName:  p.get("roblox_user"),
+      displayName: p.get("roblox_display") || p.get("roblox_user"),
+      avatarUrl:   p.get("roblox_avatar") || null,
+      id:          p.get("roblox_id"),
+    };
+    // Nettoie l'URL
+    window.history.replaceState({}, "", "/trade.html");
+  }
+  if (p.has("error")) {
+    alert("Erreur de connexion Roblox : " + p.get("error"));
+    window.history.replaceState({}, "", "/trade.html");
   }
 }
 
@@ -518,40 +515,10 @@ function updateRobloxBadge() {
 
 function openRobloxLogin() {
   document.getElementById("robloxOverlay").classList.remove("hidden");
-  document.getElementById("rloginInput").value = "";
-  document.getElementById("rloginError").textContent = "";
-  document.getElementById("rloginContent").classList.remove("hidden");
-  document.getElementById("rloginLoading").classList.add("hidden");
-  setTimeout(() => document.getElementById("rloginInput").focus(), 100);
 }
 function closeRobloxLogin() {
   document.getElementById("robloxOverlay").classList.add("hidden");
 }
-
-async function doRobloxLogin() {
-  const raw = document.getElementById("rloginInput").value.trim();
-  const errEl = document.getElementById("rloginError");
-  if (!raw) { errEl.textContent = "Entrez votre pseudo Roblox !"; return; }
-  if (raw.length < 3) { errEl.textContent = "Pseudo trop court (min 3 caractères)."; return; }
-
-  errEl.textContent = "";
-  document.getElementById("rloginContent").classList.add("hidden");
-  document.getElementById("rloginLoading").classList.remove("hidden");
-
-  const user = await fetchRobloxUser(raw);
-  document.getElementById("rloginLoading").classList.add("hidden");
-  document.getElementById("rloginContent").classList.remove("hidden");
-
-  if (!user) {
-    document.getElementById("rloginInput").classList.add("error");
-    errEl.textContent = `Pseudo introuvable : "${raw}". Vérifiez l'orthographe.`;
-    return;
-  }
-  robloxUser = user;
-  updateRobloxBadge();
-  closeRobloxLogin();
-}
-
 function disconnectRoblox() {
   robloxUser = null;
   updateRobloxBadge();
@@ -780,6 +747,7 @@ function submitAd(){
   renderAds();
 }
 
+readOAuthReturn();
 updateRobloxBadge();
 renderAds();
 </script>

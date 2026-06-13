@@ -1291,7 +1291,7 @@ function renderPickedChips(side){
   }).join("");
 }
 
-function submitAd(){
+async function submitAd(){
   if(!robloxUser){alert("Connectez votre compte Roblox d'abord !");return;}
   const contact=document.getElementById("fContact").value.trim();
   const note=document.getElementById("fNote").value.trim();
@@ -1299,22 +1299,33 @@ function submitAd(){
   if(formType==="wts"&&!offerPicked.length){alert("Ajoutez ce que vous vendez !");return;}
   if(formType==="wtb"&&!wantPicked.length){alert("Ajoutez ce que vous cherchez !");return;}
 
-  ads.push({
-    id:nextId++,type:formType,
-    ownerId:robloxUser.id,
-    user:robloxUser.robloxName,
-    avatarUrl:robloxUser.avatarUrl,
-    contact:contact||robloxUser.robloxName,
-    offerItems:formType==="wtb"?[]:offerPicked.map(x=>({...x})),
-    wantItems:formType==="wts"?[]:wantPicked.map(x=>({...x})),
-    note,ts:Date.now()
-  });
-  saveAds();
+  try{
+    const r = await fetch(`${API_BASE}/api/ads`, {
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body: JSON.stringify({
+        type: formType,
+        ownerId: robloxUser.id,
+        user: robloxUser.robloxName,
+        avatarUrl: robloxUser.avatarUrl,
+        contact: contact||robloxUser.robloxName,
+        offerItems: formType==="wtb"?[]:offerPicked.map(x=>({...x})),
+        wantItems:  formType==="wts"?[]:wantPicked.map(x=>({...x})),
+        note,
+      }),
+    });
+    if(!r.ok) throw new Error("POST /api/ads failed: "+r.status);
+  }catch(e){
+    console.error("submitAd failed", e);
+    alert("Erreur lors de la publication. Réessaie.");
+    return;
+  }
 
   offerPicked=[];wantPicked=[];
   document.getElementById("fContact").value="";
   document.getElementById("fNote").value="";
   closeModal();
+  await fetchAds();
   renderAds();
   // Refresh profile page if open
   if(profCurrentUserId && document.getElementById("profilePage").classList.contains("open")){
@@ -1324,9 +1335,18 @@ function submitAd(){
 }
 
 readOAuthReturn();
-if(robloxUser) upsertProfile(robloxUser);
 updateRobloxBadge();
-renderAds();
+// Charger les données depuis l'API au démarrage
+(async()=>{
+  await Promise.all([fetchAds(), fetchProfiles()]);
+  renderAds();
+  if(robloxUser){
+    await upsertProfile(robloxUser);
+    // Rafraîchir le badge non-lu messages
+    await fetchConvos();
+    updateUnreadBadge();
+  }
+})();
 </script>
 </body>
 </html>

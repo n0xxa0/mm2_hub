@@ -15,10 +15,15 @@
   --font:'Rajdhani',sans-serif;--fonthead:'Orbitron',monospace;
 }
 body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:15px;min-height:100vh}
-.wrap{display:flex;min-height:100vh}
-.sidebar{width:240px;min-width:240px;background:var(--surface);border-right:1px solid var(--border);padding:18px 0;position:sticky;top:0;height:100vh;overflow-y:auto;flex-shrink:0}
-.sb-logo{font-family:var(--fonthead);font-size:15px;font-weight:900;letter-spacing:3px;background:linear-gradient(135deg,#e63946,#ffd166);-webkit-background-clip:text;-webkit-text-fill-color:transparent;padding:4px 18px 18px;display:block;border-bottom:1px solid var(--border);margin-bottom:10px}
-.sb-badge{display:inline-flex;align-items:center;gap:5px;background:rgba(6,214,160,.1);border:1px solid rgba(6,214,160,.3);border-radius:20px;padding:3px 10px;font-size:11px;color:var(--cyan);margin:0 18px 14px;white-space:nowrap}
+.topbar{background:#0d0d15;border-bottom:1px solid var(--border);padding:0 20px;height:52px;display:flex;align-items:center;gap:6px;position:sticky;top:0;z-index:100;flex-shrink:0}
+.tb-logo{font-family:var(--fonthead);font-size:14px;font-weight:900;letter-spacing:3px;background:linear-gradient(135deg,#e63946,#ffd166);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-right:10px;white-space:nowrap}
+.tb-link{background:none;border:none;color:var(--muted);font-family:var(--font);font-size:15px;font-weight:700;letter-spacing:1px;padding:7px 16px;cursor:pointer;border-radius:8px;transition:all .15s;white-space:nowrap}
+.tb-link:hover{color:var(--text);background:var(--surface3)}
+.tb-link.active{color:var(--text);background:var(--surface3)}
+.tb-right{margin-left:auto;display:flex;align-items:center;gap:10px}
+.data-badge{display:inline-flex;align-items:center;gap:5px;background:rgba(6,214,160,.1);border:1px solid rgba(6,214,160,.3);border-radius:20px;padding:3px 10px;font-size:11px;color:var(--cyan);white-space:nowrap}
+.wrap{display:flex;min-height:calc(100vh - 52px)}
+.sidebar{width:240px;min-width:240px;background:var(--surface);border-right:1px solid var(--border);padding:14px 0;position:sticky;top:52px;height:calc(100vh - 52px);overflow-y:auto;flex-shrink:0}
 .sb-title{font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--dimmed);padding:10px 18px 6px}
 .sb-item{display:flex;align-items:center;gap:10px;padding:9px 18px;cursor:pointer;transition:background .12s;color:var(--muted);font-size:15px;font-weight:600;border-left:3px solid transparent}
 .sb-item:hover{background:var(--surface2);color:var(--text)}
@@ -96,10 +101,17 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:15
 </head>
 <body>
 
+<div class="topbar">
+  <div class="tb-logo">MM2 HUB</div>
+  <button class="tb-link active">📊 Values</button>
+  <button class="tb-link" onclick="window.location.href='trade.html'">⚡ Trade</button>
+  <div class="tb-right">
+    <div class="data-badge">⚡ supremevalues.com · Jun 2026</div>
+  </div>
+</div>
+
 <div class="wrap">
   <aside class="sidebar">
-    <div class="sb-logo">MM2 HUB</div>
-    <div class="sb-badge">⚡ supremevalues.com · Jun 2026</div>
     <div class="sb-title">Rarity</div>
     <div class="sb-item active" data-r="all" onclick="setRarity('all',null,this)"><span class="sb-dot" style="background:#666"></span>All Items<span class="sb-count" id="cnt-all"></span></div>
     <div class="sb-item" data-r="Chroma"    onclick="setRarity('Chroma',null,this)"><span class="sb-dot" style="background:#ff6b35"></span>Chromas<span class="sb-count" id="cnt-Chroma"></span></div>

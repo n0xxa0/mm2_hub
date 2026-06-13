@@ -1,5 +1,5 @@
 export default async function handler(req) {
-  const url   = new URL(req.url);
+  const url = new URL(req.url, `https://${req.headers.host}`);
   const code  = url.searchParams.get('code');
   const error = url.searchParams.get('error');
   const BASE  = 'https://mm2-hub.vercel.app';

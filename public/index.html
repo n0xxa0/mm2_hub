@@ -17,7 +17,7 @@
 body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:15px;min-height:100vh}
 .topbar{background:#0d0d15;border-bottom:1px solid var(--border);padding:0 20px;height:52px;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:100;flex-wrap:nowrap;overflow-x:auto}
 .logo{font-family:var(--fonthead);font-size:14px;font-weight:900;letter-spacing:3px;background:linear-gradient(135deg,#e63946,#ffd166);-webkit-background-clip:text;-webkit-text-fill-color:transparent;white-space:nowrap;margin-right:8px}
-.top-link{background:none;border:none;color:var(--muted);font-family:var(--font);font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:5px 10px;cursor:pointer;border-radius:6px;transition:all .15s;white-space:nowrap;flex-shrink:0}
+.top-link{background:none;border:none;color:var(--muted);font-family:var(--font);font-size:14px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:8px 16px;cursor:pointer;border-radius:8px;transition:all .15s;white-space:nowrap;flex-shrink:0}
 .top-link:hover,.top-link.active{color:var(--text);background:var(--surface3)}
 .top-right{margin-left:auto;display:flex;align-items:center;gap:10px;flex-shrink:0}
 .data-badge{display:inline-flex;align-items:center;gap:5px;background:rgba(6,214,160,.1);border:1px solid rgba(6,214,160,.3);border-radius:20px;padding:3px 10px;font-size:11px;color:var(--cyan);white-space:nowrap}
@@ -81,8 +81,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:15
 
 <div class="topbar">
   <div class="logo">MM2 HUB</div>
-  <button class="top-link active" id="tl-all"       onclick="setRarity('all',this)">All</button>
-  <button class="top-link" id="tl-Chroma"    onclick="setRarity('Chroma',this)">Chromas</button>
+  <button id="tl-Chroma" class="top-link active" onclick="setRarity('Chroma',this)">Chromas</button>
   <button class="top-link" id="tl-Ancient"   onclick="setRarity('Ancient',this)">Ancients</button>
   <button class="top-link" id="tl-Godly"     onclick="setRarity('Godly',this)">Godlies</button>
   <button class="top-link" id="tl-Vintage"   onclick="setRarity('Vintage',this)">Vintages</button>
@@ -90,6 +89,10 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:15
   <button class="top-link" id="tl-Rare"      onclick="setRarity('Rare',this)">Rares</button>
   <button class="top-link" id="tl-Uncommon"  onclick="setRarity('Uncommon',this)">Uncommons</button>
   <button class="top-link" id="tl-Common"    onclick="setRarity('Common',this)">Commons</button>
+  <button class="top-link" id="tl-Unique"    onclick="setRarity('Unique',this)">Uniques</button>
+  <button class="top-link" id="tl-Pet"       onclick="setRarity('Pet',this)">Pets</button>
+  <button class="top-link" id="tl-Set"       onclick="setRarity('Set',this)">Sets</button>
+  <button class="top-link" id="tl-Misc"      onclick="setRarity('Misc',this)">Misc</button>
   <div class="top-right">
     <div class="data-badge">⚡ supremevalues.com · Jun 2026</div>
   </div>
@@ -158,11 +161,11 @@ const STAB = {
   "Fluctuating":  {cls:"stab-fluctuating",arrow:"~"},
 };
 
-let currentRarity="all", currentType="all", currentSort="value";
+let currentRarity="Chroma", currentType="all", currentSort="value";
 
 // ─── FULL DATASET (supremevalues.com — June 2nd, 2026) ────────
 const ALL_ITEMS = [
-  // ── CHROMA ────────────────────────────────────────────
+  // ── CHROMA ──────────────────────────────────────────
   {name:"Chroma Traveler's Gun",rarity:"Chroma",t:"G",value:225000,demand:9,stab:"Stable",lc:5000,origin:"Hallows 2023 (Unboxed)",img:"https://supremevalues.com/media/mm2chromas/CTG.png"},
   {name:"Chroma Evergun",rarity:"Chroma",t:"G",value:76000,demand:8,stab:"Stable",lc:-1000,origin:"Xmas 2023 (Gifting)",img:"https://supremevalues.com/media/mm2chromas/CEvergun.png"},
   {name:"Chroma Evergreen",rarity:"Chroma",t:"K",value:60000,demand:7,stab:"Stable",lc:-1000,origin:"Xmas 2023 (Unboxed)",img:"https://supremevalues.com/media/mm2chromas/CEvergreen.png"},
@@ -208,7 +211,7 @@ const ALL_ITEMS = [
   {name:"Chroma Fire Dog",rarity:"Chroma",t:"K",value:5,demand:1,stab:"Underpaid For",lc:-2,origin:"Season 1 Pet Egg",img:"https://supremevalues.com/media/mm2chromas/CDog.png"},
   {name:"Chroma Fire Fox",rarity:"Chroma",t:"K",value:5,demand:1,stab:"Underpaid For",lc:-2,origin:"Season 1 Pet Egg",img:"https://supremevalues.com/media/mm2chromas/CFox.png"},
   {name:"Chroma Fire Pig",rarity:"Chroma",t:"K",value:5,demand:1,stab:"Underpaid For",lc:-2,origin:"Season 1 Pet Egg",img:"https://supremevalues.com/media/mm2chromas/CPig.png"},
-  // ── ANCIENT ───────────────────────────────────────────
+  // ── ANCIENT ─────────────────────────────────────────
   {name:"Gingerscope",rarity:"Ancient",t:"K",value:17000,demand:6,stab:"Stable",lc:-250,origin:"Xmas 2023 (Tier 20)",img:"https://supremevalues.com/media/mm2ancients/Gingerscope.png"},
   {name:"Traveler's Axe",rarity:"Ancient",t:"K",value:8400,demand:6,stab:"Stable",lc:50,origin:"Hallows 2023 (Tier 30)",img:"https://supremevalues.com/media/mm2ancients/TravelersAxe.png"},
   {name:"Celestial",rarity:"Ancient",t:"K",value:1800,demand:5,stab:"Stable",lc:50,origin:"Xmas 2024 (Tier 20)",img:"https://supremevalues.com/media/mm2ancients/Celestial.png"},
@@ -222,7 +225,7 @@ const ALL_ITEMS = [
   {name:"Hallowscythe",rarity:"Ancient",t:"K",value:32,demand:1,stab:"Stable",lc:-3,origin:"Hallows 2020 (Tier 30)",img:"https://supremevalues.com/media/mm2ancients/Hallowscythe.png"},
   {name:"Logchopper",rarity:"Ancient",t:"K",value:18,demand:1,stab:"Stable",lc:-2,origin:"Xmas 2019 (Tier 30)",img:"https://supremevalues.com/media/mm2ancients/Logchopper.png"},
   {name:"Icewing",rarity:"Ancient",t:"K",value:15,demand:2,stab:"Fluctuating",lc:2,origin:"Xmas 2018 Item Pack",img:"https://supremevalues.com/media/mm2ancients/Icewing.png"},
-  // ── GODLY ─────────────────────────────────────────────
+  // ── GODLY ───────────────────────────────────────────
   {name:"Traveler's Gun",rarity:"Godly",t:"G",value:6000,demand:7,stab:"Overpaid For",lc:250,origin:"Hallows 2023 (Unboxed)",img:"https://supremevalues.com/media/mm2godlies/TravelersGun.png"},
   {name:"Evergun",rarity:"Godly",t:"G",value:3300,demand:5,stab:"Stable",lc:-50,origin:"Xmas 2023 (Gifting)",img:"https://supremevalues.com/media/mm2godlies/Evergun.png"},
   {name:"Constellation",rarity:"Godly",t:"K",value:2600,demand:5,stab:"Stable",lc:-50,origin:"Xmas 2024 (Unboxed)",img:"https://supremevalues.com/media/mm2godlies/Constellation.png"},
@@ -345,7 +348,7 @@ const ALL_ITEMS = [
   {name:"Seer",rarity:"Godly",t:"K",value:3,demand:1,stab:"Stable",lc:0,origin:"Crafting",img:"https://supremevalues.com/media/mm2godlies/Seer.png"},
   {name:"Orange Seer",rarity:"Godly",t:"K",value:2,demand:1,stab:"Stable",lc:0,origin:"Season 1 Crafting",img:"https://supremevalues.com/media/mm2godlies/Orange_Seer.png"},
   {name:"Yellow Seer",rarity:"Godly",t:"K",value:2,demand:1,stab:"Stable",lc:0,origin:"Season 1 Crafting",img:"https://supremevalues.com/media/mm2godlies/Yellow_Seer.png"},
-  // ── VINTAGE ───────────────────────────────────────────
+  // ── VINTAGE ─────────────────────────────────────────
   {name:"Ghost",rarity:"Vintage",t:"K",value:10,demand:1,stab:"Stable",lc:0,origin:"MM1 (1,200 Coins)",img:"https://supremevalues.com/media/mm2vintages/Ghost.png"},
   {name:"Blood",rarity:"Vintage",t:"K",value:8,demand:1,stab:"Stable",lc:0,origin:"MM1 (4,000 Coins)",img:"https://supremevalues.com/media/mm2vintages/Blood.png"},
   {name:"Laser",rarity:"Vintage",t:"K",value:8,demand:1,stab:"Stable",lc:0,origin:"MM1 (1,200 Coins)",img:"https://supremevalues.com/media/mm2vintages/Laser.png"},
@@ -356,7 +359,7 @@ const ALL_ITEMS = [
   {name:"Cowboy",rarity:"Vintage",t:"K",value:4,demand:1,stab:"Stable",lc:-1,origin:"MM1 (800 Coins)",img:"https://supremevalues.com/media/mm2vintages/Cowboy.png"},
   {name:"Golden",rarity:"Vintage",t:"K",value:4,demand:1,stab:"Stable",lc:0,origin:"MM1 (3,500 Coins)",img:"https://supremevalues.com/media/mm2vintages/Golden.png"},
   {name:"Splitter",rarity:"Vintage",t:"K",value:3,demand:1,stab:"Stable",lc:0,origin:"MM1 (800 Coins)",img:"https://supremevalues.com/media/mm2vintages/Splitter.png"},
-  // ── LEGENDARY ─────────────────────────────────────────
+  // ── LEGENDARY ───────────────────────────────────────
   {name:"JD",rarity:"Legendary",t:"K",value:35,demand:2,stab:"Stable",lc:-5,origin:"JD Giveaway",img:"https://supremevalues.com/media/mm2legendaries/JD.png"},
   {name:"Latte (Gun)",rarity:"Legendary",t:"G",value:135,demand:3,stab:"Stable",lc:5,origin:"Thanksgiving 2023 Pack",img:"https://supremevalues.com/media/mm2legendaries/Latte_Fade_Gun.png"},
   {name:"Latte (Knife)",rarity:"Legendary",t:"K",value:135,demand:3,stab:"Stable",lc:5,origin:"Thanksgiving 2023 Pack",img:"https://supremevalues.com/media/mm2legendaries/Latte_Fade_Knife.png"},
@@ -393,7 +396,7 @@ const ALL_ITEMS = [
   {name:"Icecracker",rarity:"Legendary",t:"K",value:1,demand:2,stab:"Stable",lc:-1,origin:"Xmas 2020 (Unboxed)",img:"https://supremevalues.com/media/mm2legendaries/Icecracker.png"},
   {name:"Red Fire",rarity:"Legendary",t:"K",value:1,demand:1,stab:"Stable",lc:0,origin:"Xmas 2017 (Challenge)",img:"https://supremevalues.com/media/mm2legendaries/Red_Fire.png"},
   {name:"Cavern (Gun)",rarity:"Legendary",t:"G",value:1,demand:1,stab:"Stable",lc:0,origin:"Xmas 2019 (Unboxed)",img:"https://supremevalues.com/media/mm2legendaries/Cavern_Gun.png"},
-  // ── RARE ──────────────────────────────────────────────
+  // ── RARE ────────────────────────────────────────────
   {name:"Cane Knife (2018)",rarity:"Rare",t:"K",value:900,demand:4,stab:"Receding",lc:-25,origin:"Xmas 2018 (Tier 30)",img:"https://supremevalues.com/media/mm2rares/Cane_Knife_2018.png"},
   {name:"Dungeon",rarity:"Rare",t:"K",value:80,demand:3,stab:"Stable",lc:5,origin:"Hallows 2019 (Unboxed)",img:"https://supremevalues.com/media/mm2rares/Dungeon.png"},
   {name:"Silent Night (Knife)",rarity:"Rare",t:"K",value:50,demand:2,stab:"Stable",lc:-5,origin:"Xmas 2020 (Tier 15)",img:"https://supremevalues.com/media/mm2rares/Silent_Night_Knife.png"},
@@ -429,7 +432,7 @@ const ALL_ITEMS = [
   {name:"Candy Swirl (Knife)",rarity:"Rare",t:"K",value:1,demand:1,stab:"Stable",lc:0,origin:"Xmas 2019 (Unboxed)",img:"https://supremevalues.com/media/mm2rares/Candy_Swirl_Knife.png"},
   {name:"Snakebite (Gun)",rarity:"Rare",t:"G",value:1,demand:1,stab:"Stable",lc:0,origin:"Hallows 2019 (Unboxed)",img:"https://supremevalues.com/media/mm2rares/Snakebite_Gun.png"},
   {name:"Vampire (Knife)",rarity:"Rare",t:"K",value:1,demand:1,stab:"Stable",lc:0,origin:"Hallows 2018 (Unboxed)",img:"https://supremevalues.com/media/mm2rares/Vampire_Knife.png"},
-  // ── UNCOMMON ──────────────────────────────────────────
+  // ── UNCOMMON ────────────────────────────────────────
   {name:"Bones",rarity:"Uncommon",t:"G",value:150,demand:3,stab:"Doing Well",lc:10,origin:"Hallows 2019 (Unboxed)",img:"https://supremevalues.com/media/mm2uncommons/Bones_Gun.png"},
   {name:"Zombified (Knife)",rarity:"Uncommon",t:"K",value:80,demand:3,stab:"Stable",lc:5,origin:"Hallows 2019 (Unboxed)",img:"https://supremevalues.com/media/mm2uncommons/Zombified_Knife.png"},
   {name:"Brains",rarity:"Uncommon",t:"K",value:60,demand:3,stab:"Stable",lc:5,origin:"Hallows 2019 (Unboxed)",img:"https://supremevalues.com/media/mm2uncommons/Brains.png"},
@@ -465,7 +468,7 @@ const ALL_ITEMS = [
   {name:"Moons",rarity:"Uncommon",t:"K",value:1,demand:1,stab:"Stable",lc:-1,origin:"Hallows 2016 (Unboxed)",img:"https://supremevalues.com/media/mm2uncommons/Moons.png"},
   {name:"Vampire",rarity:"Uncommon",t:"K",value:1,demand:1,stab:"Stable",lc:0,origin:"Hallows 2016 (Unboxed)",img:"https://supremevalues.com/media/mm2uncommons/Vampire.png"},
   {name:"Wolf",rarity:"Uncommon",t:"K",value:1,demand:1,stab:"Stable",lc:0,origin:"Hallows 2016 (Unboxed)",img:"https://supremevalues.com/media/mm2uncommons/Wolf.png"},
-  // ── COMMON ────────────────────────────────────────────
+  // ── COMMON ──────────────────────────────────────────
   {name:"Glitch1",rarity:"Common",t:"K",value:75,demand:3,stab:"Stable",lc:-5,origin:"Godly Batwing Deletion",img:"https://supremevalues.com/media/mm2commons/Glitch.png"},
   {name:"Glitch2",rarity:"Common",t:"K",value:50,demand:2,stab:"Stable",lc:-5,origin:"Black Luger Deletion",img:"https://supremevalues.com/media/mm2commons/Glitch.png"},
   {name:"Bats (Knife)",rarity:"Common",t:"K",value:135,demand:3,stab:"Stable",lc:10,origin:"Hallows 2018 (Tier 5)",img:"https://supremevalues.com/media/mm2commons/Bats_Knife.png"},
@@ -526,9 +529,9 @@ const ALL_ITEMS = [
   {name:"Bones",rarity:"Common",t:"K",value:1,demand:1,stab:"Stable",lc:-1,origin:"Hallows 2016 (Unboxed)",img:"https://supremevalues.com/media/mm2commons/Bones.png"},
   {name:"Brains",rarity:"Common",t:"K",value:1,demand:1,stab:"Stable",lc:-1,origin:"Hallows 2016 (Unboxed)",img:"https://supremevalues.com/media/mm2commons/Brains.png"},
   {name:"Witch",rarity:"Common",t:"K",value:1,demand:1,stab:"Stable",lc:-1,origin:"Hallows 2016 (Unboxed)",img:"https://supremevalues.com/media/mm2commons/Witch.png"},
-  // ── UNIQUE ────────────────────────────────────────────
+  // ── UNIQUE ──────────────────────────────────────────
   {name:"Corrupt",rarity:"Unique",t:"K",value:425,demand:4,stab:"Stable",lc:-25,origin:"Data Loss",img:"https://supremevalues.com/media/mm2uniques/Corrupt.png"},
-  // ── PET ───────────────────────────────────────────────
+  // ── PET ─────────────────────────────────────────────
   {name:"Zombie Dog",rarity:"Pet",t:"K",value:850,demand:4,stab:"Stable",lc:25,origin:"Hallows 2019 (Tier 25)",img:"https://supremevalues.com/media/mm2pets/Zombie_Dog.png"},
   {name:"Black Cat",rarity:"Pet",t:"K",value:280,demand:3,stab:"Stable",lc:10,origin:"Hallows 2019 (Tier 5)",img:"https://supremevalues.com/media/mm2pets/Black_Cat.png"},
   {name:"Elf (2019)",rarity:"Pet",t:"K",value:225,demand:3,stab:"Stable",lc:5,origin:"Xmas 2019 (Tier 12)",img:"https://supremevalues.com/media/mm2pets/Elf_2019.png"},
@@ -577,6 +580,122 @@ const ALL_ITEMS = [
   {name:"Skelly",rarity:"Pet",t:"K",value:1,demand:1,stab:"Underpaid For",lc:0,origin:"Shadow Item Pack",img:"https://supremevalues.com/media/mm2pets/Skelly.png"},
   {name:"Steambird",rarity:"Pet",t:"K",value:1,demand:1,stab:"Underpaid For",lc:0,origin:"Steampunk Item Pack",img:"https://supremevalues.com/media/mm2pets/Steambird.png"},
   {name:"Traveller",rarity:"Pet",t:"K",value:1,demand:1,stab:"Underpaid For",lc:0,origin:"Hallows 2017 Item Pack",img:"https://supremevalues.com/media/mm2pets/Traveller.png"},
+  // ── SET ─────────────────────────────────────────────
+  {name:"Chroma Ever Set",rarity:"Set",t:"G",value:136000,demand:8,stab:"Stable",lc:-1000,origin:"",img:"https://supremevalues.com/media/mm2chromas/CEvergun.png"},
+  {name:"Chroma Alien Set",rarity:"Set",t:"K",value:44500,demand:7,stab:"Stable",lc:-250,origin:"",img:"https://supremevalues.com/media/mm2chromas/CAB.png"},
+  {name:"Chroma Bauble Set",rarity:"Set",t:"K",value:40100,demand:7,stab:"Underpaid For",lc:-100,origin:"",img:"https://supremevalues.com/media/mm2chromas/CBaub.png"},
+  {name:"Chroma Sun Set",rarity:"Set",t:"K",value:17750,demand:6,stab:"Stable",lc:250,origin:"",img:"https://supremevalues.com/media/mm2chromas/CSS.png"},
+  {name:"Chroma Snow Set",rarity:"Set",t:"G",value:14250,demand:6,stab:"Stable",lc:250,origin:"",img:"https://supremevalues.com/media/mm2chromas/CCannon.png"},
+  {name:"Chroma Blizzard Set",rarity:"Set",t:"K",value:12250,demand:5,stab:"Stable",lc:-250,origin:"",img:"https://supremevalues.com/media/mm2chromas/CBZ.png"},
+  {name:"Chroma Sweet Set",rarity:"Set",t:"K",value:5500,demand:5,stab:"Underpaid For",lc:-350,origin:"",img:"https://supremevalues.com/media/mm2chromas/CTreat.png"},
+  {name:"Chroma Bringer Set",rarity:"Set",t:"K",value:145,demand:1,stab:"Stable",lc:-10,origin:"",img:"https://supremevalues.com/media/mm2chromas/CLB.png"},
+  {name:"Chroma Slasher Set",rarity:"Set",t:"K",value:80,demand:1,stab:"Stable",lc:-10,origin:"",img:"https://supremevalues.com/media/mm2chromas/CSlasher.png"},
+  {name:"Chroma Pet Set",rarity:"Set",t:"K",value:35,demand:1,stab:"Underpaid For",lc:-14,origin:"",img:"https://supremevalues.com/media/mm2chromas/CBunny.png"},
+  {name:"Traveler's Set",rarity:"Set",t:"K",value:14400,demand:7,stab:"Overpaid For",lc:250,origin:"",img:"https://supremevalues.com/media/mm2ancients/TravelersAxe.png"},
+  {name:"Ever Set",rarity:"Set",t:"G",value:5725,demand:5,stab:"Stable",lc:-25,origin:"",img:"https://supremevalues.com/media/mm2godlies/Evergun.png"},
+  {name:"Celestial Set",rarity:"Set",t:"K",value:4400,demand:5,stab:"Stable",lc:50,origin:"",img:"https://supremevalues.com/media/mm2ancients/Celestial.png"},
+  {name:"Alien Set",rarity:"Set",t:"G",value:3150,demand:5,stab:"Stable",lc:-50,origin:"",img:"https://supremevalues.com/media/mm2godlies/Alienbeam.png"},
+  {name:"Dark Set",rarity:"Set",t:"K",value:2980,demand:6,stab:"Stable",lc:40,origin:"",img:"https://supremevalues.com/media/mm2godlies/Darksword.png"},
+  {name:"Vampire's Set",rarity:"Set",t:"K",value:2900,demand:6,stab:"Doing Well",lc:50,origin:"",img:"https://supremevalues.com/media/mm2ancients/Vampires_Axe.png"},
+  {name:"Sakura Set",rarity:"Set",t:"K",value:2520,demand:6,stab:"Stable",lc:20,origin:"",img:"https://supremevalues.com/media/mm2godlies/Sakura.png"},
+  {name:"Sun Set",rarity:"Set",t:"K",value:1700,demand:5,stab:"Stable",lc:-25,origin:"",img:"https://supremevalues.com/media/mm2godlies/Sunset.png"},
+  {name:"Snow Set",rarity:"Set",t:"G",value:1000,demand:4,stab:"Underpaid For",lc:-60,origin:"",img:"https://supremevalues.com/media/mm2godlies/Snowcannon.png"},
+  {name:"Soul Set",rarity:"Set",t:"K",value:990,demand:5,stab:"Stable",lc:30,origin:"",img:"https://supremevalues.com/media/mm2godlies/Soul.png"},
+  {name:"Bauble Set",rarity:"Set",t:"K",value:930,demand:5,stab:"Stable",lc:0,origin:"",img:"https://supremevalues.com/media/mm2godlies/Bauble.png"},
+  {name:"Bloom Set",rarity:"Set",t:"K",value:810,demand:5,stab:"Stable",lc:20,origin:"",img:"https://supremevalues.com/media/mm2godlies/Bloom.png"},
+  {name:"Rainbow Set",rarity:"Set",t:"G",value:680,demand:5,stab:"Doing Well",lc:30,origin:"",img:"https://supremevalues.com/media/mm2godlies/Rainbow_Gun.png"},
+  {name:"Xeno Set",rarity:"Set",t:"K",value:550,demand:4,stab:"Stable",lc:30,origin:"",img:"https://supremevalues.com/media/mm2godlies/Xenoknife.png"},
+  {name:"Ocean Set",rarity:"Set",t:"K",value:545,demand:4,stab:"Doing Well",lc:40,origin:"",img:"https://supremevalues.com/media/mm2godlies/Waves.png"},
+  {name:"Flowerwood Set",rarity:"Set",t:"K",value:515,demand:4,stab:"Doing Well",lc:50,origin:"",img:"https://supremevalues.com/media/mm2godlies/Flowerwood.png"},
+  {name:"Corrupt Set",rarity:"Set",t:"K",value:470,demand:4,stab:"Stable",lc:-25,origin:"",img:"https://supremevalues.com/media/mm2uniques/Corrupt.png"},
+  {name:"Bow Set",rarity:"Set",t:"K",value:430,demand:3,stab:"Stable",lc:-20,origin:"",img:"https://supremevalues.com/media/mm2ancients/Harvester.png"},
+  {name:"Blizzard Set",rarity:"Set",t:"K",value:390,demand:3,stab:"Doing Well",lc:20,origin:"",img:"https://supremevalues.com/media/mm2godlies/Blizzard.png"},
+  {name:"Full Ice Set",rarity:"Set",t:"K",value:280,demand:3,stab:"Stable",lc:-10,origin:"",img:"https://supremevalues.com/media/mm2ancients/Icepiercer.png"},
+  {name:"Sweet Set",rarity:"Set",t:"K",value:275,demand:3,stab:"Stable",lc:-10,origin:"",img:"https://supremevalues.com/media/mm2godlies/Sweet.png"},
+  {name:"Borealis Set",rarity:"Set",t:"K",value:215,demand:2,stab:"Stable",lc:10,origin:"",img:"https://supremevalues.com/media/mm2godlies/Borealis.png"},
+  {name:"Pearl Set",rarity:"Set",t:"K",value:185,demand:3,stab:"Doing Well",lc:10,origin:"",img:"https://supremevalues.com/media/mm2godlies/Pearl.png"},
+  {name:"Bat Set",rarity:"Set",t:"K",value:165,demand:2,stab:"Stable",lc:-2,origin:"",img:"https://supremevalues.com/media/mm2godlies/Bat.png"},
+  {name:"Full Elderwood Set",rarity:"Set",t:"K",value:125,demand:1,stab:"Stable",lc:-7,origin:"",img:"https://supremevalues.com/media/mm2godlies/Elderwood_Blade.png"},
+  {name:"Candy Set",rarity:"Set",t:"K",value:123,demand:1,stab:"Stable",lc:-12,origin:"",img:"https://supremevalues.com/media/mm2godlies/Candy.png"},
+  {name:"Ice Set",rarity:"Set",t:"K",value:110,demand:1,stab:"Stable",lc:-5,origin:"",img:"https://supremevalues.com/media/mm2ancients/Icebreaker.png"},
+  {name:"Elderwood Set",rarity:"Set",t:"K",value:85,demand:1,stab:"Stable",lc:-5,origin:"",img:"https://supremevalues.com/media/mm2ancients/Elderwood_Scythe.png"},
+  {name:"Full Swirly Set",rarity:"Set",t:"K",value:80,demand:1,stab:"Stable",lc:-5,origin:"",img:"https://supremevalues.com/media/mm2godlies/Swirly_Blade.png"},
+  {name:"Spectre Set",rarity:"Set",t:"K",value:80,demand:1,stab:"Stable",lc:-4,origin:"",img:"https://supremevalues.com/media/mm2godlies/Spectre.png"},
+  {name:"Bringer Set",rarity:"Set",t:"K",value:77,demand:1,stab:"Stable",lc:-3,origin:"",img:"https://supremevalues.com/media/mm2godlies/Darkbringer.png"},
+  {name:"Swirly Set",rarity:"Set",t:"K",value:65,demand:1,stab:"Stable",lc:-5,origin:"",img:"https://supremevalues.com/media/mm2ancients/Swirly_Axe.png"},
+  {name:"Hallow Set",rarity:"Set",t:"K",value:55,demand:1,stab:"Stable",lc:-5,origin:"",img:"https://supremevalues.com/media/mm2ancients/Hallowscythe.png"},
+  {name:"Old Glory Set",rarity:"Set",t:"K",value:40,demand:1,stab:"Stable",lc:-3,origin:"",img:"https://supremevalues.com/media/mm2godlies/Old_Glory.png"},
+  {name:"Slasher Set",rarity:"Set",t:"K",value:40,demand:1,stab:"Stable",lc:-1,origin:"",img:"https://supremevalues.com/media/mm2godlies/Slasher.png"},
+  {name:"Iceflake Set",rarity:"Set",t:"K",value:38,demand:1,stab:"Stable",lc:-4,origin:"",img:"https://supremevalues.com/media/mm2godlies/Ice_Flake.png"},
+  {name:"Plasma Set",rarity:"Set",t:"K",value:35,demand:1,stab:"Stable",lc:-7,origin:"",img:"https://supremevalues.com/media/mm2godlies/Plasmablade.png"},
+  {name:"Logchopper Set",rarity:"Set",t:"K",value:33,demand:1,stab:"Stable",lc:-5,origin:"",img:"https://supremevalues.com/media/mm2ancients/Logchopper.png"},
+  {name:"Virtual Set",rarity:"Set",t:"K",value:33,demand:1,stab:"Stable",lc:-4,origin:"",img:"https://supremevalues.com/media/mm2godlies/Virtual.png"},
+  {name:"Ginger Set (Godly)",rarity:"Set",t:"K",value:32,demand:1,stab:"Stable",lc:-5,origin:"",img:"https://supremevalues.com/media/mm2godlies/Gingerblade.png"},
+  {name:"Cookie Set",rarity:"Set",t:"K",value:30,demand:1,stab:"Stable",lc:-6,origin:"",img:"https://supremevalues.com/media/mm2godlies/Cookiecane.png"},
+  {name:"Eternalcane Set",rarity:"Set",t:"K",value:30,demand:1,stab:"Stable",lc:-5,origin:"",img:"https://supremevalues.com/media/mm2godlies/Eternalcane.png"},
+  {name:"Pumpkin Set",rarity:"Set",t:"K",value:410,demand:3,stab:"Stable",lc:0,origin:"",img:"https://supremevalues.com/media/mm2pets/Purple_Pumpkin.png"},
+  {name:"Latte Set",rarity:"Set",t:"K",value:270,demand:3,stab:"Stable",lc:10,origin:"",img:"https://supremevalues.com/media/mm2legendaries/Latte_Fade_Knife.png"},
+  {name:"Bats Set",rarity:"Set",t:"K",value:136,demand:3,stab:"Stable",lc:6,origin:"",img:"https://supremevalues.com/media/mm2commons/Bats_Knife.png"},
+  {name:"Zombified Set",rarity:"Set",t:"K",value:95,demand:3,stab:"Stable",lc:5,origin:"",img:"https://supremevalues.com/media/mm2uncommons/Zombified_Knife.png"},
+  {name:"Silent Night Set",rarity:"Set",t:"K",value:62,demand:2,stab:"Stable",lc:-1,origin:"",img:"https://supremevalues.com/media/mm2rares/Silent_Night_Knife.png"},
+  {name:"Spectral Set",rarity:"Set",t:"K",value:58,demand:3,stab:"Doing Well",lc:5,origin:"",img:"https://supremevalues.com/media/mm2legendaries/Spectral_Knife.png"},
+  {name:"Traveler Set",rarity:"Set",t:"G",value:58,demand:3,stab:"Doing Well",lc:5,origin:"",img:"https://supremevalues.com/media/mm2legendaries/Traveler_Gun.png"},
+  {name:"Gingerbread Set (2019)",rarity:"Set",t:"K",value:58,demand:3,stab:"Stable",lc:5,origin:"",img:"https://supremevalues.com/media/mm2uncommons/Gingerbread_2019_Knife.png"},
+  {name:"Aurora Set (Legend.)",rarity:"Set",t:"G",value:48,demand:3,stab:"Stable",lc:5,origin:"",img:"https://supremevalues.com/media/mm2legendaries/Aurora_Gun.png"},
+  {name:"Vampire Set (Legend.)",rarity:"Set",t:"G",value:48,demand:3,stab:"Stable",lc:5,origin:"",img:"https://supremevalues.com/media/mm2legendaries/Vampire_Gun.png"},
+  {name:"Dark Set (Rare)",rarity:"Set",t:"K",value:41,demand:3,stab:"Stable",lc:6,origin:"",img:"https://supremevalues.com/media/mm2rares/Darkknife.png"},
+  {name:"Pumpkin Set (2020)",rarity:"Set",t:"K",value:21,demand:2,stab:"Stable",lc:5,origin:"",img:"https://supremevalues.com/media/mm2pets/Red_Pumpkin_2020.png"},
+  {name:"Pumpkin Set (2021)",rarity:"Set",t:"K",value:17,demand:2,stab:"Stable",lc:3,origin:"",img:"https://supremevalues.com/media/mm2pets/Red_Pumpkin_2021.png"},
+  {name:"Pumpkin Set (2019)",rarity:"Set",t:"K",value:16,demand:1,stab:"Underpaid For",lc:-2,origin:"",img:"https://supremevalues.com/media/mm2pets/Red_Pumpkin_2019.png"},
+  {name:"Eye Set",rarity:"Set",t:"K",value:14,demand:1,stab:"Underpaid For",lc:-4,origin:"",img:"https://supremevalues.com/media/mm2pets/Overseer_Eye.png"},
+  {name:"Aurora Set (Rare)",rarity:"Set",t:"K",value:13,demand:2,stab:"Stable",lc:-1,origin:"",img:"https://supremevalues.com/media/mm2rares/Aurora_Knife.png"},
+  {name:"Zombie Set",rarity:"Set",t:"G",value:10,demand:1,stab:"Stable",lc:-3,origin:"",img:"https://supremevalues.com/media/mm2uncommons/Zombie_Gun.png"},
+  {name:"Toxic Set",rarity:"Set",t:"K",value:9,demand:2,stab:"Stable",lc:-1,origin:"",img:"https://supremevalues.com/media/mm2rares/Toxic_Knife.png"},
+  {name:"Cavern Set",rarity:"Set",t:"K",value:8,demand:2,stab:"Stable",lc:-1,origin:"",img:"https://supremevalues.com/media/mm2legendaries/Cavern_Knife.png"},
+  {name:"Vampire Set (Rare)",rarity:"Set",t:"G",value:8,demand:2,stab:"Stable",lc:-1,origin:"",img:"https://supremevalues.com/media/mm2rares/Vampire_Gun.png"},
+  {name:"Potion Set",rarity:"Set",t:"K",value:8,demand:1,stab:"Stable",lc:-5,origin:"",img:"https://supremevalues.com/media/mm2uncommons/Potion_Knife.png"},
+  {name:"Frozen Set",rarity:"Set",t:"G",value:7,demand:1,stab:"Stable",lc:-4,origin:"",img:"https://supremevalues.com/media/mm2uncommons/Frozen_Gun.png"},
+  {name:"Ghost Set",rarity:"Set",t:"K",value:7,demand:1,stab:"Stable",lc:-1,origin:"",img:"https://supremevalues.com/media/mm2legendaries/Ghost_Knife.png"},
+  {name:"Mummy Set",rarity:"Set",t:"G",value:7,demand:1,stab:"Stable",lc:-6,origin:"",img:"https://supremevalues.com/media/mm2uncommons/Mummy_Gun2.png"},
+  {name:"Slime Set",rarity:"Set",t:"K",value:7,demand:1,stab:"Stable",lc:-1,origin:"",img:"https://supremevalues.com/media/mm2commons/Slime_Knife.png"},
+  {name:"Candy Swirl Set",rarity:"Set",t:"G",value:6,demand:2,stab:"Stable",lc:-2,origin:"",img:"https://supremevalues.com/media/mm2rares/Candy_Swirl_Gun.png"},
+  {name:"Icedriller Set",rarity:"Set",t:"K",value:6,demand:2,stab:"Stable",lc:-3,origin:"",img:"https://supremevalues.com/media/mm2legendaries/Icedriller.png"},
+  {name:"Full Elite Set",rarity:"Set",t:"K",value:6,demand:1,stab:"Stable",lc:-2,origin:"",img:"https://supremevalues.com/media/mm2legendaries/Elite.png"},
+  {name:"Lights Set",rarity:"Set",t:"G",value:6,demand:1,stab:"Stable",lc:-2,origin:"",img:"https://supremevalues.com/media/mm2uncommons/Lights_Gun.png"},
+  {name:"Santa's Set (Legendary)",rarity:"Set",t:"K",value:6,demand:1,stab:"Stable",lc:-4,origin:"",img:"https://supremevalues.com/media/mm2legendaries/Santas_Magic.png"},
+  {name:"Scratch Set",rarity:"Set",t:"K",value:6,demand:1,stab:"Stable",lc:-1,origin:"",img:"https://supremevalues.com/media/mm2legendaries/Scratch.png"},
+  {name:"Grave Set",rarity:"Set",t:"G",value:5,demand:1,stab:"Stable",lc:-1,origin:"",img:"https://supremevalues.com/media/mm2commons/Grave_Gun.png"},
+  {name:"Snakebite Set",rarity:"Set",t:"K",value:4,demand:2,stab:"Stable",lc:-2,origin:"",img:"https://supremevalues.com/media/mm2rares/Snakebite_Knife.png"},
+  {name:"Marble Set",rarity:"Set",t:"K",value:4,demand:1,stab:"Stable",lc:-1,origin:"",img:"https://supremevalues.com/media/mm2rares/Orangle_Marble.png"},
+  {name:"Wrap Set",rarity:"Set",t:"K",value:2,demand:2,stab:"Stable",lc:0,origin:"",img:"https://supremevalues.com/media/mm2uncommons/Wrap_Knife.png"},
+  {name:"Haunted Set",rarity:"Set",t:"K",value:2,demand:1,stab:"Stable",lc:-2,origin:"",img:"https://supremevalues.com/media/mm2commons/Haunted_Knife.png"},
+  {name:"Full Bringer Set",rarity:"Set",t:"K",value:225,demand:1,stab:"Stable",lc:-10,origin:"",img:"https://supremevalues.com/media/mm2godlies/Lightbringer.png"},
+  {name:"Full Luger Set",rarity:"Set",t:"K",value:200,demand:1,stab:"Stable",lc:-20,origin:"",img:"https://supremevalues.com/media/mm2chromas/CLuger.png"},
+  {name:"Luger Set",rarity:"Set",t:"K",value:145,demand:1,stab:"Stable",lc:-20,origin:"",img:"https://supremevalues.com/media/mm2godlies/Luger.png"},
+  {name:"Sparkle Set",rarity:"Set",t:"K",value:127,demand:2,stab:"Stable",lc:2,origin:"",img:"https://supremevalues.com/media/mm2commons/Sparkle10.png"},
+  {name:"Collectible Set",rarity:"Set",t:"K",value:71,demand:2,stab:"Stable",lc:-4,origin:"",img:"https://supremevalues.com/media/mm2legendaries/Green_Elite.png"},
+  {name:"Vintage Set",rarity:"Set",t:"K",value:61,demand:1,stab:"Stable",lc:-4,origin:"",img:"https://supremevalues.com/media/mm2vintages/America.png"},
+  {name:"Eternal Set",rarity:"Set",t:"K",value:51,demand:1,stab:"Stable",lc:-2,origin:"",img:"https://supremevalues.com/media/mm2godlies/Eternal4.png"},
+  {name:"Full Colored Seer Set",rarity:"Set",t:"K",value:48,demand:1,stab:"Stable",lc:-2,origin:"",img:"https://supremevalues.com/media/mm2godlies/CSeer.png"},
+  {name:"Skate Set",rarity:"Set",t:"K",value:30,demand:2,stab:"Stable",lc:-1,origin:"",img:"https://supremevalues.com/media/mm2commons/Ollie.png"},
+  {name:"Pals Set",rarity:"Set",t:"K",value:16,demand:2,stab:"Stable",lc:1,origin:"",img:"https://supremevalues.com/media/mm2commons/Denis.png"},
+  {name:"Colored Seer Set",rarity:"Set",t:"K",value:16,demand:1,stab:"Stable",lc:-6,origin:"",img:"https://supremevalues.com/media/mm2godlies/Red_Seer.png"},
+  {name:"Wrapping Paper Set",rarity:"Set",t:"K",value:14,demand:1,stab:"Stable",lc:-2,origin:"",img:"https://supremevalues.com/media/mm2misc/Gold_Papers.png"},
+  {name:"Godly Pet Set",rarity:"Set",t:"K",value:10,demand:1,stab:"Underpaid For",lc:-3,origin:"",img:"https://supremevalues.com/media/mm2pets/Steambird.png"},
+  {name:"Small Set (107 Items)",rarity:"Set",t:"K",value:1450,demand:4,stab:"Fluctuating",lc:5,origin:"",img:"https://supremevalues.com/media/mm2godlies/Yellow_Seer.png"},
+  {name:"Small Set (103 Items)",rarity:"Set",t:"K",value:1375,demand:4,stab:"Fluctuating",lc:5,origin:"",img:"https://supremevalues.com/media/mm2godlies/Red_Seer.png"},
+  {name:"Full Chroma Set",rarity:"Set",t:"K",value:640,demand:1,stab:"Stable",lc:-60,origin:"",img:"https://supremevalues.com/media/mm2chromas/CDB.png"},
+  {name:"Chroma Weapon Set",rarity:"Set",t:"K",value:605,demand:1,stab:"Stable",lc:-50,origin:"",img:"https://supremevalues.com/media/mm2chromas/CLuger.png"},
+  // ── MISC ────────────────────────────────────────────
+  {name:"Mystery Key",rarity:"Misc",t:"K",value:1,demand:2,stab:"Stable",lc:0,origin:"MM2 In-Game Shop",img:"https://supremevalues.com/media/mm2misc/Mystery_Key.png"},
+  {name:"Box of Blue Papers",rarity:"Misc",t:"K",value:2,demand:1,stab:"Stable",lc:-1,origin:"Xmas 2017 (Bought)",img:"https://supremevalues.com/media/mm2misc/Blue_Papers.png"},
+  {name:"Box of Fertilizer",rarity:"Misc",t:"K",value:2,demand:1,stab:"Stable",lc:0,origin:"Xmas 2018 (Bought)",img:"https://supremevalues.com/media/mm2misc/Fert.png"},
+  {name:"Box of Gold Papers",rarity:"Misc",t:"K",value:2,demand:1,stab:"Stable",lc:-1,origin:"Xmas 2016 (Bought)",img:"https://supremevalues.com/media/mm2misc/Gold_Papers.png"},
+  {name:"Box of Green Papers",rarity:"Misc",t:"K",value:2,demand:1,stab:"Stable",lc:0,origin:"Xmas 2016 (Bought)",img:"https://supremevalues.com/media/mm2misc/Green_Papers.png"},
+  {name:"Box of Purple Papers",rarity:"Misc",t:"K",value:2,demand:1,stab:"Stable",lc:-1,origin:"Xmas 2016 (Bought)",img:"https://supremevalues.com/media/mm2misc/Purple_Papers.png"},
+  {name:"Box of Red Papers",rarity:"Misc",t:"K",value:2,demand:1,stab:"Stable",lc:-1,origin:"Xmas 2016 (Bought)",img:"https://supremevalues.com/media/mm2misc/Red_Papers.png"},
+  {name:"Box of Ultra Wrap",rarity:"Misc",t:"K",value:2,demand:1,stab:"Stable",lc:-1,origin:"Xmas 2017 (Bought)",img:"https://supremevalues.com/media/mm2misc/Ultra_Papers.png"},
+  {name:"Skeleton Key",rarity:"Misc",t:"K",value:5,demand:1,stab:"Stable",lc:0,origin:"Hallows 2018 (Tiers)",img:"https://supremevalues.com/media/mm2misc/Skeleton_Key.png"},
 ];
 
 // ─── RENDER ───────────────────────────────────────────────────

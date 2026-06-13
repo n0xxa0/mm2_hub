@@ -1,15 +1,13 @@
-function redirect(url) {
-  return new Response(null, {
-    status: 302,
-    headers: { Location: url },
-  });
-}
-
-export default async function handler(req) {
+export default async function handler(req, res) {
   const url   = new URL(req.url, `https://${req.headers.host}`);
   const code  = url.searchParams.get('code');
   const error = url.searchParams.get('error');
   const BASE  = 'https://mm2-hub.vercel.app';
+
+  const redirect = (location) => {
+    res.writeHead(302, { Location: location });
+    res.end();
+  };
 
   if (error) return redirect(`${BASE}/trade.html?error=${encodeURIComponent(error)}`);
   if (!code)  return redirect(`${BASE}/trade.html?error=no_code`);

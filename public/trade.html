@@ -1,4 +1,4 @@
-upda  te<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
@@ -205,26 +205,7 @@ textarea.form-input{resize:vertical;min-height:70px}
 .prof-tab.active{color:var(--red);border-bottom-color:var(--red)}
 .prof-tab-count{background:var(--surface3);border-radius:10px;padding:1px 7px;font-size:10px;font-family:var(--fonthead)}
 .prof-content{max-width:900px;margin:20px auto;padding:0 24px 40px}
-.prof-ad-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:10px}
-.prof-ad-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;transition:border-color .15s,transform .15s}
-.prof-ad-card:hover{border-color:var(--border2);transform:translateY(-2px)}
-.prof-ad-card.wtt{border-top:2px solid var(--cyan)}
-.prof-ad-card.wts{border-top:2px solid var(--gold)}
-.prof-ad-card.wtb{border-top:2px solid #c77dff}
-.prof-ad-card-hdr{padding:10px 14px 8px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border)}
-.prof-ad-type{font-size:9px;font-weight:900;letter-spacing:1.5px;padding:3px 8px;border-radius:5px;text-transform:uppercase}
-.prof-ad-type.wtt{background:rgba(6,214,160,.15);color:var(--cyan)}
-.prof-ad-type.wts{background:rgba(255,209,102,.15);color:var(--gold)}
-.prof-ad-type.wtb{background:rgba(199,125,255,.15);color:#c77dff}
-.prof-ad-card-time{font-size:10px;color:var(--dimmed)}
-.prof-ad-card-body{padding:12px 14px}
-.prof-ad-items-row{display:flex;flex-wrap:wrap;gap:6px}
-.prof-ad-item-chip{background:var(--surface2);border:1px solid var(--border2);border-radius:8px;padding:5px 8px;display:flex;align-items:center;gap:5px}
-.prof-ad-item-chip img{width:28px;height:28px;object-fit:contain}
-.prof-ad-item-name{font-size:10px;font-weight:700;color:var(--text);max-width:80px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.prof-ad-item-val{font-size:9px;color:var(--gold);font-family:var(--fonthead)}
-.prof-ad-card-footer{padding:8px 14px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
-.prof-ad-total{font-family:var(--fonthead);font-size:12px;color:var(--gold)}
+.prof-ad-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:12px}
 .prof-no-ads{text-align:center;padding:60px 20px;color:var(--dimmed)}
 .prof-no-ads-icon{font-size:40px;opacity:.4;margin-bottom:10px}
 .prof-save-row{display:flex;gap:8px;margin-top:8px}
@@ -884,39 +865,45 @@ function profRenderAds(userId) {
   const userAds = ads.filter(a => a.ownerId === userId).slice().reverse();
   const content = document.getElementById("profContent");
   if (!userAds.length) {
-    content.innerHTML = `<div class="prof-no-ads"><div class="prof-no-ads-icon">📋</div>${isMe ? "Vous n'avez pas encore posté d'annonce." : "Aucune annonce active."}</div>`;
+    content.innerHTML = `<div class="prof-no-ads"><div class="prof-no-ads-icon" style="font-size:40px;opacity:.4;margin-bottom:10px">📋</div>${isMe ? "Vous n'avez pas encore posté d'annonce." : "Aucune annonce active."}</div>`;
     return;
   }
   content.innerHTML = `<div class="prof-ad-grid">${userAds.map(ad => {
     const typeLabel = { wtt: "WTT — Échange", wts: "WTS — Vente", wtb: "WTB — Recherche" }[ad.type];
-    const items     = ad.type === "wtb" ? ad.wantItems : ad.offerItems;
+    const offerHtml = ad.offerItems.map(it => itemChipHtml(it)).join("");
+    const wantHtml  = ad.wantItems.map(it  => itemChipHtml(it)).join("");
     const offerVal  = ad.offerItems.reduce((s, it) => { const f = ALL_ITEMS.find(x => x.name === it.name); return s + (f ? f.value * it.qty : 0); }, 0);
     const wantVal   = ad.wantItems.reduce((s, it)  => { const f = ALL_ITEMS.find(x => x.name === it.name); return s + (f ? f.value * it.qty : 0); }, 0);
-    const chipsHtml = items.map(it => {
-      const found = ALL_ITEMS.find(x => x.name === it.name);
-      if (!found) return "";
-      const rc = RC[found.rarity] || { color: "#888" };
-      return `<div class="prof-ad-item-chip">
-        <img src="${found.img}" onerror="this.style.display='none'" alt="">
-        <div>
-          <div class="prof-ad-item-name" title="${it.name}">${it.name}${it.qty > 1 ? ` ×${it.qty}` : ""}</div>
-          <div class="prof-ad-item-val" style="color:${rc.color}">${fmt(found.value)}</div>
-        </div>
-      </div>`;
-    }).join("");
-    const deleteBtn = isMe ? `<button class="ad-delete-btn" style="font-size:11px;padding:4px 10px" onclick="deleteAd(${ad.id})">🗑</button>` : "";
-    return `<div class="prof-ad-card ${ad.type}">
-      <div class="prof-ad-card-hdr">
-        <span class="prof-ad-type ${ad.type}">${typeLabel}</span>
-        <span class="prof-ad-card-time">${timeAgo(ad.ts)}</span>
+
+    let bodyHtml = "";
+    if (ad.type === "wtt") {
+      bodyHtml = `<div class="ad-section-label">Offre</div><div class="ad-items">${offerHtml || emptyItems()}</div>
+      <div class="ad-arrow">⇄</div>
+      <div class="ad-section-label">Veut en échange</div><div class="ad-items">${wantHtml || emptyItems()}</div>`;
+    } else if (ad.type === "wts") {
+      bodyHtml = `<div class="ad-section-label">Vend</div><div class="ad-items">${offerHtml || emptyItems()}</div>
+      <div class="ad-section-label" style="margin-top:8px">Cherche</div><div class="ad-for-label">${ad.note || "Faire une offre"}</div>`;
+    } else {
+      bodyHtml = `<div class="ad-section-label">Cherche</div><div class="ad-items">${wantHtml || emptyItems()}</div>
+      <div class="ad-section-label" style="margin-top:8px">Peut offrir</div><div class="ad-for-label">${ad.note || "Faire une offre"}</div>`;
+    }
+
+    const footerBtn = isMe
+      ? `<button class="ad-delete-btn" onclick="deleteAd(${ad.id})">🗑 Supprimer</button>`
+      : `<button class="ad-offer-btn" onclick="startOffer(${ad.id})">🤝 Offrir / J'accepte</button>`;
+
+    return `<div class="ad-card ${ad.type}">
+      <div class="ad-header">
+        <span class="ad-type ${ad.type}">${typeLabel}</span>
+        <span class="ad-time">${timeAgo(ad.ts)}</span>
       </div>
-      <div class="prof-ad-card-body">
-        <div class="prof-ad-items-row">${chipsHtml || '<span style="font-size:12px;color:var(--dimmed)">—</span>'}</div>
-        ${ad.note ? `<div style="font-size:11px;color:var(--muted);margin-top:8px;font-style:italic">💬 ${ad.note}</div>` : ""}
+      <div class="ad-body">
+        ${bodyHtml}
+        ${ad.note && ad.type === "wtt" ? `<div class="ad-note">💬 ${ad.note}</div>` : ""}
       </div>
-      <div class="prof-ad-card-footer">
-        <span class="prof-ad-total">📊 ${fmt(offerVal || wantVal)}</span>
-        ${deleteBtn}
+      <div class="ad-footer">
+        <span class="ad-total">📊 ${fmt(offerVal || wantVal)}</span>
+        <div class="ad-actions">${footerBtn}</div>
       </div>
     </div>`;
   }).join("")}</div>`;

@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Profil — MM2 Hub</title>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0a0a0f;--surface:#111118;--surface2:#16161f;--surface3:#1c1c28;
+  --border:#232336;--border2:#2a2a40;
+  --text:#e8eaf6;--muted:#8888aa;--dimmed:#44445a;
+  --red:#e63946;--gold:#ffd166;--cyan:#06d6a0;
+  --font:'Rajdhani',sans-serif;--fonthead:'Orbitron',monospace;
+}
+body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:15px;min-height:100vh}
+a{text-decoration:none;color:inherit}
+
+@keyframes pulse-dot{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.6;transform:scale(.8)}}
+
+/* TOPBAR */
+.topbar{background:#0d0d15;border-bottom:1px solid var(--border);padding:0 20px;height:52px;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:100}
+.tb-logo{font-family:var(--fonthead);font-size:14px;font-weight:900;letter-spacing:3px;background:linear-gradient(135deg,#e63946,#ffd166);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.back-btn{background:none;border:1px solid var(--border2);border-radius:8px;color:var(--muted);font-family:var(--font);font-size:13px;font-weight:700;padding:6px 14px;cursor:pointer;transition:all .15s;display:inline-flex;align-items:center;gap:6px}
+.back-btn:hover{border-color:var(--red);color:var(--red)}
+
+/* PROFILE PAGE */
+.prof-banner{height:140px;background:linear-gradient(135deg,#1a0a1e 0%,#0d0d20 40%,#0a1a1a 100%);position:relative;overflow:hidden}
+.prof-banner::after{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 30% 50%,rgba(230,57,70,.18) 0%,transparent 60%),radial-gradient(ellipse at 70% 50%,rgba(6,214,160,.12) 0%,transparent 60%)}
+.prof-hdr{max-width:900px;margin:0 auto;padding:0 24px;position:relative}
+.prof-avatar-wrap{position:relative;margin-top:-44px;display:inline-block}
+.prof-avatar{width:88px;height:88px;border-radius:50%;border:4px solid var(--bg);object-fit:cover;display:block;background:var(--surface2)}
+.prof-avatar-initials{width:88px;height:88px;border-radius:50%;border:4px solid var(--bg);background:linear-gradient(135deg,#e63946,#ff6b35);display:flex;align-items:center;justify-content:center;font-family:var(--fonthead);font-size:30px;font-weight:900;color:#fff}
+.prof-online-dot{position:absolute;bottom:4px;right:2px;width:15px;height:15px;border-radius:50%;background:var(--cyan);border:2px solid var(--bg);animation:pulse-dot 2s infinite}
+.prof-top-row{display:flex;align-items:flex-end;justify-content:space-between;padding:10px 0 14px;flex-wrap:wrap;gap:10px}
+.prof-username{font-family:var(--fonthead);font-size:24px;font-weight:900;letter-spacing:1px;display:flex;align-items:center;gap:8px}
+.prof-display{font-size:13px;color:var(--muted);margin-top:3px}
+.prof-since{font-size:11px;color:var(--dimmed);margin-top:5px}
+.prof-actions{display:flex;gap:8px;flex-wrap:wrap}
+.prof-btn-edit{padding:9px 20px;background:linear-gradient(135deg,#e63946,#ff6b35);border:none;border-radius:9px;color:#fff;font-family:var(--fonthead);font-size:11px;font-weight:900;letter-spacing:1px;cursor:pointer;transition:all .2s}
+.prof-btn-edit:hover{transform:translateY(-1px);box-shadow:0 4px 16px rgba(230,57,70,.4)}
+.prof-btn-msg{padding:9px 20px;background:rgba(6,214,160,.1);border:1px solid rgba(6,214,160,.35);border-radius:9px;color:var(--cyan);font-family:var(--font);font-size:13px;font-weight:700;cursor:pointer;transition:all .15s}
+.prof-btn-msg:hover{background:rgba(6,214,160,.18)}
+.prof-btn-disconnect{padding:9px 18px;background:none;border:1px solid var(--border2);border-radius:9px;color:var(--dimmed);font-family:var(--font);font-size:12px;font-weight:700;cursor:pointer;transition:all .15s}
+.prof-btn-disconnect:hover{border-color:var(--red);color:var(--red)}
+.prof-stats{max-width:900px;margin:0 auto;padding:0 24px 16px;display:flex;gap:32px;flex-wrap:wrap;border-bottom:1px solid var(--border)}
+.prof-stat-val{font-family:var(--fonthead);font-size:20px;font-weight:900;color:var(--text)}
+.prof-stat-lbl{font-size:10px;color:var(--dimmed);text-transform:uppercase;letter-spacing:1px;margin-top:3px}
+.prof-bio-section{max-width:900px;margin:16px auto 0;padding:0 24px}
+.prof-bio-edit{width:100%;background:var(--surface2);border:1px solid var(--border2);border-radius:8px;color:var(--text);padding:10px 12px;font-family:var(--font);font-size:13px;outline:none;resize:vertical;min-height:70px}
+.prof-bio-edit:focus{border-color:var(--red)}
+.prof-bio-edit::placeholder{color:var(--dimmed)}
+.prof-bio-text{font-size:13px;color:var(--muted);line-height:1.6;font-style:italic}
+.prof-save-row{display:flex;gap:8px;margin-top:8px}
+.prof-tabs{max-width:900px;margin:16px auto 0;padding:0 24px;display:flex;gap:2px;border-bottom:1px solid var(--border)}
+.prof-tab{padding:10px 18px;background:none;border:none;border-bottom:2px solid transparent;color:var(--muted);font-family:var(--font);font-size:14px;font-weight:700;cursor:pointer;transition:all .15s;display:flex;align-items:center;gap:6px;margin-bottom:-1px}
+.prof-tab:hover{color:var(--text)}
+.prof-tab.active{color:var(--red);border-bottom-color:var(--red)}
+.prof-tab-count{background:var(--surface3);border-radius:10px;padding:1px 7px;font-size:10px;font-family:var(--fonthead)}
+.prof-content{max-width:900px;margin:20px auto;padding:0 24px 60px}
+.prof-no-ads{text-align:center;padding:60px 20px;color:var(--dimmed)}
+.prof-no-ads-icon{font-size:40px;opacity:.4;margin-bottom:10px}
+
+.prof-ad-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:12px}
+
+/* AD CARD (réutilisé depuis trade.html) */
+.ad-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;transition:border-color .15s,transform .15s}
+.ad-card:hover{border-color:var(--border2);transform:translateY(-2px)}
+.ad-card.wtb{border-left:3px solid var(--cyan)}
+.ad-card.wts{border-left:3px solid var(--gold)}
+.ad-card.wtt{border-left:3px solid #c77dff}
+.ad-header{padding:12px 14px 10px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--border)}
+.ad-type{font-size:10px;font-weight:900;letter-spacing:2px;padding:3px 8px;border-radius:5px;text-transform:uppercase}
+.ad-type.wtb{background:rgba(6,214,160,.15);color:var(--cyan)}
+.ad-type.wts{background:rgba(255,209,102,.15);color:var(--gold)}
+.ad-type.wtt{background:rgba(199,125,255,.15);color:#c77dff}
+.ad-time{font-size:11px;color:var(--dimmed);margin-left:auto}
+.ad-body{padding:12px 14px}
+.ad-section-label{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--dimmed);margin-bottom:8px}
+.ad-items{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
+.ad-item{background:var(--surface2);border:1px solid var(--border2);border-radius:8px;padding:6px 8px;display:flex;align-items:center;gap:6px;min-width:0}
+.ad-item img{width:36px;height:36px;object-fit:contain;flex-shrink:0;filter:drop-shadow(0 1px 4px rgba(0,0,0,.5))}
+.ad-item-info{min-width:0}
+.ad-item-name{font-size:11px;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100px}
+.ad-item-val{font-size:10px;color:var(--gold);font-family:var(--fonthead)}
+.ad-item-qty{font-size:10px;color:var(--cyan);font-weight:700}
+.ad-arrow{text-align:center;color:var(--dimmed);font-size:18px;margin:4px 0 8px}
+.ad-for-label{font-size:12px;color:var(--muted);font-weight:600}
+.ad-note{font-size:12px;color:var(--muted);margin-top:8px;padding-top:8px;border-top:1px solid var(--border);font-style:italic;line-height:1.5}
+.ad-footer{padding:10px 14px;border-top:1px solid var(--border);display:flex;align-items:center;gap:8px}
+.ad-total{font-family:var(--fonthead);font-size:13px;color:var(--gold)}
+.ad-actions{margin-left:auto;display:flex;gap:8px}
+.ad-delete-btn{padding:6px 12px;background:rgba(230,57,70,.1);border:1px solid rgba(230,57,70,.3);border-radius:7px;color:var(--red);font-family:var(--font);font-size:12px;font-weight:700;cursor:pointer;transition:all .15s}
+.ad-delete-btn:hover{background:rgba(230,57,70,.2);border-color:var(--red)}
+.ad-offer-btn{padding:6px 16px;background:linear-gradient(135deg,#06d6a0,#04a884);border:none;border-radius:7px;color:#04241c;font-family:var(--font);font-size:12px;font-weight:700;cursor:pointer;transition:all .15s}
+.ad-offer-btn:hover{transform:translateY(-1px);box-shadow:0 4px 14px rgba(6,214,160,.35)}
+
+/* SHARED BUTTONS */
+.btn-cancel{padding:9px 20px;background:none;border:1px solid var(--border2);border-radius:8px;color:var(--muted);font-family:var(--font);font-size:13px;font-weight:700;cursor:pointer;transition:all .15s}
+.btn-cancel:hover{border-color:var(--red);color:var(--red)}
+.btn-submit{padding:9px 24px;background:linear-gradient(135deg,#e63946,#ff6b35);border:none;border-radius:8px;color:#fff;font-family:var(--fonthead);font-size:12px;font-weight:900;letter-spacing:1px;cursor:pointer;transition:all .2s;box-shadow:0 3px 12px rgba(230,57,70,.3)}
+.btn-submit:hover{transform:translateY(-1px);box-shadow:0 5px 18px rgba(230,57,70,.45)}
+
+.not-found{max-width:600px;margin:80px auto;text-align:center;padding:0 24px;color:var(--dimmed)}
+.not-found-icon{font-size:48px;opacity:.4;margin-bottom:14px}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <a href="trade.html" class="tb-logo">MM2 HUB</a>
+  <a href="trade.html" class="back-btn">← Retour aux annonces</a>
+</div>
+
+<div id="profileRoot"></div>
+
+<script>
+const RC = {
+  Chroma:{color:"#ff6b35"},Ancient:{color:"#c77dff"},Godly:{color:"#e74c3c"},
+  Vintage:{color:"#c8a882"},Legendary:{color:"#f1c40f"},Rare:{color:"#3498db"},
+  Uncommon:{color:"#5dade2"},Common:{color:"#95a5a6"},
+};
+
+// ── FULL DATASET (from index.html / supremevalues.com) ──
+const ALL_ITEMS = [
+  // CHROMA
+  {name:"Chroma Traveler's Gun",rarity:"Chroma",value:225000,img:"https://supremevalues.com/media/mm2chromas/CTG.png"},
+  {name:"Chroma Evergun",rarity:"Chroma",value:76000,img:"https://supremevalues.com/media/mm2chromas/CEvergun.png"},
+  {name:"Chroma Evergreen",rarity:"Chroma",value:60000,img:"https://supremevalues.com/media/mm2chromas/CEvergreen.png"},
+  {name:"Chroma Bauble",rarity:"Chroma",value:38000,img:"https://supremevalues.com/media/mm2chromas/CBaub.png"},
+  {name:"Chroma Vampire's Gun",rarity:"Chroma",value:35000,img:"https://supremevalues.com/media/mm2chromas/CVG.png"},
+  {name:"Chroma Constellation",rarity:"Chroma",value:33000,img:"https://supremevalues.com/media/mm2chromas/CConst.png"},
+  {name:"Chroma Alienbeam",rarity:"Chroma",value:30000,img:"https://supremevalues.com/media/mm2chromas/CAB.png"},
+  {name:"Chroma Raygun",rarity:"Chroma",value:14500,img:"https://supremevalues.com/media/mm2chromas/CRG.png"},
+  {name:"Chroma Sunrise",rarity:"Chroma",value:11250,img:"https://supremevalues.com/media/mm2chromas/CSR.png"},
+  {name:"Chroma Snowcannon",rarity:"Chroma",value:8500,img:"https://supremevalues.com/media/mm2chromas/CCannon.png"},
+  {name:"Chroma Blizzard",rarity:"Chroma",value:8000,img:"https://supremevalues.com/media/mm2chromas/CBZ.png"},
+  {name:"Chroma Sunset",rarity:"Chroma",value:6500,img:"https://supremevalues.com/media/mm2chromas/CSS.png"},
+  {name:"Chroma Snow Dagger",rarity:"Chroma",value:5750,img:"https://supremevalues.com/media/mm2chromas/CDagger.png"},
+  {name:"Chroma Heart Wand",rarity:"Chroma",value:4750,img:"https://supremevalues.com/media/mm2chromas/CHW.png"},
+  {name:"Chroma Snowstorm",rarity:"Chroma",value:4250,img:"https://supremevalues.com/media/mm2chromas/CSnowstorm.png"},
+  {name:"Chroma Watergun",rarity:"Chroma",value:3400,img:"https://supremevalues.com/media/mm2chromas/CWG.png"},
+  {name:"Chroma Treat",rarity:"Chroma",value:3000,img:"https://supremevalues.com/media/mm2chromas/CTreat.png"},
+  {name:"Chroma Sweet",rarity:"Chroma",value:2500,img:"https://supremevalues.com/media/mm2chromas/CSweet.png"},
+  {name:"Chroma Ornament",rarity:"Chroma",value:2100,img:"https://supremevalues.com/media/mm2chromas/COR.png"},
+  {name:"Chroma Darkbringer",rarity:"Chroma",value:75,img:"https://supremevalues.com/media/mm2chromas/CDB.png"},
+  {name:"Chroma Lightbringer",rarity:"Chroma",value:70,img:"https://supremevalues.com/media/mm2chromas/CLB.png"},
+  {name:"Chroma Luger",rarity:"Chroma",value:55,img:"https://supremevalues.com/media/mm2chromas/CLuger.png"},
+  {name:"Chroma Candleflame",rarity:"Chroma",value:45,img:"https://supremevalues.com/media/mm2chromas/CCF.png"},
+  {name:"Chroma Elderwood Blade",rarity:"Chroma",value:45,img:"https://supremevalues.com/media/mm2chromas/CEB.png"},
+  {name:"Chroma Swirly Gun",rarity:"Chroma",value:45,img:"https://supremevalues.com/media/mm2chromas/CSG.png"},
+  {name:"Chroma Laser",rarity:"Chroma",value:42,img:"https://supremevalues.com/media/mm2chromas/CLaser.png"},
+  {name:"Chroma Cookiecane",rarity:"Chroma",value:38,img:"https://supremevalues.com/media/mm2chromas/CCC.png"},
+  {name:"Chroma Deathshard",rarity:"Chroma",value:38,img:"https://supremevalues.com/media/mm2chromas/CDS.png"},
+  {name:"Chroma Slasher",rarity:"Chroma",value:38,img:"https://supremevalues.com/media/mm2chromas/CSlasher.png"},
+  {name:"Chroma Fang",rarity:"Chroma",value:35,img:"https://supremevalues.com/media/mm2chromas/CFang.png"},
+  {name:"Chroma Shark",rarity:"Chroma",value:35,img:"https://supremevalues.com/media/mm2chromas/CShark.png"},
+  {name:"Chroma Gemstone",rarity:"Chroma",value:32,img:"https://supremevalues.com/media/mm2chromas/CGem.png"},
+  {name:"Chroma Gingerblade",rarity:"Chroma",value:32,img:"https://supremevalues.com/media/mm2chromas/CGB.png"},
+  {name:"Chroma Heat",rarity:"Chroma",value:32,img:"https://supremevalues.com/media/mm2chromas/CHeat.png"},
+  {name:"Chroma Seer",rarity:"Chroma",value:32,img:"https://supremevalues.com/media/mm2chromas/CSeer.png"},
+  {name:"Chroma Saw",rarity:"Chroma",value:30,img:"https://supremevalues.com/media/mm2chromas/CSaw.png"},
+  {name:"Chroma Tides",rarity:"Chroma",value:30,img:"https://supremevalues.com/media/mm2chromas/CTides.png"},
+  {name:"Chroma Boneblade",rarity:"Chroma",value:27,img:"https://supremevalues.com/media/mm2chromas/CBB.png"},
+  // ANCIENT
+  {name:"Gingerscope",rarity:"Ancient",value:17000,img:"https://supremevalues.com/media/mm2ancients/Gingerscope.png"},
+  {name:"Traveler's Axe",rarity:"Ancient",value:8400,img:"https://supremevalues.com/media/mm2ancients/TravelersAxe.png"},
+  {name:"Celestial",rarity:"Ancient",value:1800,img:"https://supremevalues.com/media/mm2ancients/Celestial.png"},
+  {name:"Vampire's Axe",rarity:"Ancient",value:1200,img:"https://supremevalues.com/media/mm2ancients/Vampires_Axe.png"},
+  {name:"Harvester",rarity:"Ancient",value:260,img:"https://supremevalues.com/media/mm2ancients/Harvester.png"},
+  {name:"Icepiercer",rarity:"Ancient",value:170,img:"https://supremevalues.com/media/mm2ancients/Icepiercer.png"},
+  {name:"Icebreaker",rarity:"Ancient",value:70,img:"https://supremevalues.com/media/mm2ancients/Icebreaker.png"},
+  {name:"Batwing",rarity:"Ancient",value:45,img:"https://supremevalues.com/media/mm2ancients/Batwing.png"},
+  {name:"Elderwood Scythe",rarity:"Ancient",value:45,img:"https://supremevalues.com/media/mm2ancients/Elderwood_Scythe.png"},
+  {name:"Swirly Axe",rarity:"Ancient",value:42,img:"https://supremevalues.com/media/mm2ancients/Swirly_Axe.png"},
+  {name:"Hallowscythe",rarity:"Ancient",value:32,img:"https://supremevalues.com/media/mm2ancients/Hallowscythe.png"},
+  {name:"Logchopper",rarity:"Ancient",value:18,img:"https://supremevalues.com/media/mm2ancients/Logchopper.png"},
+  {name:"Icewing",rarity:"Ancient",value:15,img:"https://supremevalues.com/media/mm2ancients/Icewing.png"},
+  // GODLY
+  {name:"Traveler's Gun",rarity:"Godly",value:6000,img:"https://supremevalues.com/media/mm2godlies/TravelersGun.png"},
+  {name:"Evergun",rarity:"Godly",value:3300,img:"https://supremevalues.com/media/mm2godlies/Evergun.png"},
+  {name:"Constellation",rarity:"Godly",value:2600,img:"https://supremevalues.com/media/mm2godlies/Constellation.png"},
+  {name:"Turkey",rarity:"Godly",value:2450,img:"https://supremevalues.com/media/mm2godlies/Turkey.png"},
+  {name:"Evergreen",rarity:"Godly",value:2425,img:"https://supremevalues.com/media/mm2godlies/Evergreen.png"},
+  {name:"Alienbeam",rarity:"Godly",value:2000,img:"https://supremevalues.com/media/mm2godlies/Alienbeam.png"},
+  {name:"Vampire's Gun",rarity:"Godly",value:1700,img:"https://supremevalues.com/media/mm2godlies/Vampires_Gun.png"},
+  {name:"Darkshot",rarity:"Godly",value:1500,img:"https://supremevalues.com/media/mm2godlies/Darkshot.png"},
+  {name:"Darksword",rarity:"Godly",value:1480,img:"https://supremevalues.com/media/mm2godlies/Darksword.png"},
+  {name:"Blossom",rarity:"Godly",value:1265,img:"https://supremevalues.com/media/mm2godlies/Blossom.png"},
+  {name:"Sakura",rarity:"Godly",value:1255,img:"https://supremevalues.com/media/mm2godlies/Sakura.png"},
+  {name:"Sunrise",rarity:"Godly",value:1150,img:"https://supremevalues.com/media/mm2godlies/Sunrise.png"},
+  {name:"Raygun",rarity:"Godly",value:1150,img:"https://supremevalues.com/media/mm2godlies/Raygun.png"},
+  {name:"Bauble",rarity:"Godly",value:900,img:"https://supremevalues.com/media/mm2godlies/Bauble.png"},
+  {name:"Snowcannon",rarity:"Godly",value:750,img:"https://supremevalues.com/media/mm2godlies/Snowcannon.png"},
+  {name:"Sunset",rarity:"Godly",value:550,img:"https://supremevalues.com/media/mm2godlies/Sunset.png"},
+  {name:"Soul",rarity:"Godly",value:500,img:"https://supremevalues.com/media/mm2godlies/Soul.png"},
+  {name:"Spirit",rarity:"Godly",value:490,img:"https://supremevalues.com/media/mm2godlies/Spirit.png"},
+  {name:"Flora",rarity:"Godly",value:410,img:"https://supremevalues.com/media/mm2godlies/Flora.png"},
+  {name:"Bloom",rarity:"Godly",value:400,img:"https://supremevalues.com/media/mm2godlies/Bloom.png"},
+  {name:"Rainbow Gun",rarity:"Godly",value:345,img:"https://supremevalues.com/media/mm2godlies/Rainbow_Gun.png"},
+  {name:"Rainbow",rarity:"Godly",value:335,img:"https://supremevalues.com/media/mm2godlies/Rainbow_Knife.png"},
+  {name:"Heart Wand",rarity:"Godly",value:300,img:"https://supremevalues.com/media/mm2godlies/Heart_Wand.png"},
+  {name:"Ocean",rarity:"Godly",value:275,img:"https://supremevalues.com/media/mm2godlies/Ocean.png"},
+  {name:"Xenoknife",rarity:"Godly",value:275,img:"https://supremevalues.com/media/mm2godlies/Xenoknife.png"},
+  {name:"Xenoshot",rarity:"Godly",value:275,img:"https://supremevalues.com/media/mm2godlies/Xenoshot.png"},
+  {name:"Waves",rarity:"Godly",value:270,img:"https://supremevalues.com/media/mm2godlies/Waves.png"},
+  {name:"Watergun",rarity:"Godly",value:270,img:"https://supremevalues.com/media/mm2godlies/Watergun.png"},
+  {name:"Flowerwood Gun",rarity:"Godly",value:260,img:"https://supremevalues.com/media/mm2godlies/Flowerwood_Gun.png"},
+  {name:"Flowerwood",rarity:"Godly",value:255,img:"https://supremevalues.com/media/mm2godlies/Flowerwood.png"},
+  {name:"Snow Dagger",rarity:"Godly",value:250,img:"https://supremevalues.com/media/mm2godlies/Snow_Dagger.png"},
+  {name:"Pearlshine",rarity:"Godly",value:95,img:"https://supremevalues.com/media/mm2godlies/Pearlshine.png"},
+  {name:"Candy",rarity:"Godly",value:85,img:"https://supremevalues.com/media/mm2godlies/Candy.png"},
+  {name:"Luger",rarity:"Godly",value:45,img:"https://supremevalues.com/media/mm2godlies/Luger.png"},
+  {name:"Elderwood Revolver",rarity:"Godly",value:40,img:"https://supremevalues.com/media/mm2godlies/Elderwood_Revolver.png"},
+  {name:"Iceblaster",rarity:"Godly",value:40,img:"https://supremevalues.com/media/mm2godlies/Iceblaster.png"},
+  {name:"Makeshift",rarity:"Godly",value:40,img:"https://supremevalues.com/media/mm2godlies/Makeshift.png"},
+  {name:"Phantom",rarity:"Godly",value:40,img:"https://supremevalues.com/media/mm2godlies/Phantom.png"},
+  {name:"Spectre",rarity:"Godly",value:40,img:"https://supremevalues.com/media/mm2godlies/Spectre.png"},
+  {name:"Lightbringer",rarity:"Godly",value:37,img:"https://supremevalues.com/media/mm2godlies/Lightbringer.png"},
+  {name:"Ornament",rarity:"Godly",value:28,img:"https://supremevalues.com/media/mm2godlies/Ornament.png"},
+  {name:"Green Luger",rarity:"Godly",value:25,img:"https://supremevalues.com/media/mm2godlies/Green_Luger.png"},
+  {name:"Amerilaser",rarity:"Godly",value:23,img:"https://supremevalues.com/media/mm2godlies/Amerilaser.png"},
+  {name:"Laser",rarity:"Godly",value:23,img:"https://supremevalues.com/media/mm2godlies/Laser.png"},
+  {name:"Swirly Gun",rarity:"Godly",value:23,img:"https://supremevalues.com/media/mm2godlies/Swirly_Gun.png"},
+  {name:"Icebeam",rarity:"Godly",value:20,img:"https://supremevalues.com/media/mm2godlies/Ice_Beam.png"},
+  {name:"Nightblade",rarity:"Godly",value:20,img:"https://supremevalues.com/media/mm2godlies/Nightblade.png"},
+  {name:"Shark",rarity:"Godly",value:20,img:"https://supremevalues.com/media/mm2godlies/Shark.png"},
+  {name:"Blaster",rarity:"Godly",value:18,img:"https://supremevalues.com/media/mm2godlies/Blaster.png"},
+  {name:"Iceflake",rarity:"Godly",value:18,img:"https://supremevalues.com/media/mm2godlies/Ice_Flake.png"},
+  {name:"Plasmabeam",rarity:"Godly",value:18,img:"https://supremevalues.com/media/mm2godlies/Plasmabeam.png"},
+  {name:"Gingerblade",rarity:"Godly",value:15,img:"https://supremevalues.com/media/mm2godlies/Gingerblade.png"},
+  {name:"Deathshard",rarity:"Godly",value:13,img:"https://supremevalues.com/media/mm2godlies/Deathshard.png"},
+  {name:"Battleaxe",rarity:"Godly",value:12,img:"https://supremevalues.com/media/mm2godlies/Battleaxe.png"},
+  {name:"Fang",rarity:"Godly",value:10,img:"https://supremevalues.com/media/mm2godlies/Fang.png"},
+  {name:"Saw",rarity:"Godly",value:7,img:"https://supremevalues.com/media/mm2godlies/Saw.png"},
+  {name:"Seer",rarity:"Godly",value:3,img:"https://supremevalues.com/media/mm2godlies/Seer.png"},
+  {name:"Blue Seer",rarity:"Godly",value:3,img:"https://supremevalues.com/media/mm2godlies/Blue_Seer.png"},
+  {name:"Yellow Seer",rarity:"Godly",value:2,img:"https://supremevalues.com/media/mm2godlies/Yellow_Seer.png"},
+  // VINTAGE
+  {name:"Ghost",rarity:"Vintage",value:10,img:"https://supremevalues.com/media/mm2vintages/Ghost.png"},
+  {name:"Blood",rarity:"Vintage",value:8,img:"https://supremevalues.com/media/mm2vintages/Blood.png"},
+  {name:"Laser (Vintage)",rarity:"Vintage",value:8,img:"https://supremevalues.com/media/mm2vintages/Laser.png"},
+  {name:"America",rarity:"Vintage",value:7,img:"https://supremevalues.com/media/mm2vintages/America.png"},
+  {name:"Prince",rarity:"Vintage",value:6,img:"https://supremevalues.com/media/mm2vintages/Prince.png"},
+  {name:"Shadow",rarity:"Vintage",value:6,img:"https://supremevalues.com/media/mm2vintages/Shadow.png"},
+  {name:"Phaser",rarity:"Vintage",value:5,img:"https://supremevalues.com/media/mm2vintages/Phaser.png"},
+  // LEGENDARY
+  {name:"Latte (Gun)",rarity:"Legendary",value:135,img:"https://supremevalues.com/media/mm2legendaries/Latte_Fade_Gun.png"},
+  {name:"Latte (Knife)",rarity:"Legendary",value:135,img:"https://supremevalues.com/media/mm2legendaries/Latte_Fade_Knife.png"},
+  {name:"Spectral (Knife)",rarity:"Legendary",value:55,img:"https://supremevalues.com/media/mm2legendaries/Spectral_Knife.png"},
+  {name:"Traveler (Gun)",rarity:"Legendary",value:55,img:"https://supremevalues.com/media/mm2legendaries/Traveler_Gun.png"},
+  {name:"Aurora (Gun)",rarity:"Legendary",value:45,img:"https://supremevalues.com/media/mm2legendaries/Aurora_Gun.png"},
+  {name:"Vampire (Gun)",rarity:"Legendary",value:45,img:"https://supremevalues.com/media/mm2legendaries/Vampire_Gun.png"},
+  {name:"Cotton Candy",rarity:"Legendary",value:40,img:"https://supremevalues.com/media/mm2legendaries/Cotton_Candy.png"},
+  {name:"JD",rarity:"Legendary",value:35,img:"https://supremevalues.com/media/mm2legendaries/JD.png"},
+  {name:"Beach",rarity:"Legendary",value:30,img:"https://supremevalues.com/media/mm2legendaries/Beach.png"},
+  {name:"Icewing (Legendary)",rarity:"Legendary",value:700,img:"https://supremevalues.com/media/mm2legendaries/Icewing.png"},
+  {name:"Slaughter",rarity:"Legendary",value:550,img:"https://supremevalues.com/media/mm2legendaries/Slaughter.png"},
+  {name:"Flames (Legendary)",rarity:"Legendary",value:310,img:"https://supremevalues.com/media/mm2legendaries/Flames.png"},
+  {name:"Hallows Edge",rarity:"Legendary",value:115,img:"https://supremevalues.com/media/mm2legendaries/Hallows_Edge.png"},
+  {name:"Saw (Legendary)",rarity:"Legendary",value:90,img:"https://supremevalues.com/media/mm2legendaries/Saw.png"},
+  // RARE
+  {name:"Cane Knife (2018)",rarity:"Rare",value:900,img:"https://supremevalues.com/media/mm2rares/Cane_Knife_2018.png"},
+  {name:"Dungeon",rarity:"Rare",value:80,img:"https://supremevalues.com/media/mm2rares/Dungeon.png"},
+  {name:"Silent Night (Knife)",rarity:"Rare",value:50,img:"https://supremevalues.com/media/mm2rares/Silent_Night_Knife.png"},
+  {name:"Darkknife",rarity:"Rare",value:40,img:"https://supremevalues.com/media/mm2rares/Darkknife.png"},
+  {name:"Makeshift (Knife)",rarity:"Rare",value:35,img:"https://supremevalues.com/media/mm2rares/Makeshift.png"},
+  {name:"Zombified",rarity:"Rare",value:35,img:"https://supremevalues.com/media/mm2rares/Zombified.png"},
+  {name:"Spooky",rarity:"Rare",value:18,img:"https://supremevalues.com/media/mm2rares/Spooky.png"},
+  {name:"Starry (Gun)",rarity:"Rare",value:15,img:"https://supremevalues.com/media/mm2rares/Starry_Gun.png"},
+  {name:"Swirl",rarity:"Rare",value:15,img:"https://supremevalues.com/media/mm2rares/Swirl.png"},
+  {name:"Shark Seeker",rarity:"Rare",value:12,img:"https://supremevalues.com/media/mm2rares/Shark_Seeker.png"},
+  {name:"Aurora (Rare)",rarity:"Rare",value:12,img:"https://supremevalues.com/media/mm2rares/Aurora_Knife.png"},
+  {name:"Floral (Knife)",rarity:"Rare",value:10,img:"https://supremevalues.com/media/mm2rares/Floral.png"},
+  {name:"Magma (Gun)",rarity:"Rare",value:8,img:"https://supremevalues.com/media/mm2rares/Magma_Gun.png"},
+  {name:"Gingerblade (Rare)",rarity:"Rare",value:8,img:"https://supremevalues.com/media/mm2rares/Gingerblade.png"},
+  {name:"Icicles (Gun)",rarity:"Rare",value:8,img:"https://supremevalues.com/media/mm2rares/Icicles_Gun.png"},
+  {name:"Jack",rarity:"Rare",value:3,img:"https://supremevalues.com/media/mm2rares/Jack.png"},
+  {name:"Bats",rarity:"Rare",value:3,img:"https://supremevalues.com/media/mm2rares/Bats.png"},
+  // UNCOMMON
+  {name:"Bones",rarity:"Uncommon",value:150,img:"https://supremevalues.com/media/mm2uncommons/Bones_Gun.png"},
+  {name:"Zombified (Knife)",rarity:"Uncommon",value:80,img:"https://supremevalues.com/media/mm2uncommons/Zombified_Knife.png"},
+];
+// ── HELPERS ──
+function fmt(v){if(v>=1000)return(v/1000).toFixed(v%1000===0?0:2)+"K";return v.toLocaleString();}
+function timeAgo(ts){const d=Date.now()-ts;if(d<60000)return"À l'instant";if(d<3600000)return Math.floor(d/60000)+"min";if(d<86400000)return Math.floor(d/3600000)+"h";return Math.floor(d/86400000)+"j";}
+function escapeHtml(s){const d=document.createElement("div");d.textContent=s;return d.innerHTML;}
+
+// ── STORAGE (localStorage, identique à trade.html) ──
+const LS = {
+  user:     "mm2_roblox_user",
+  ads:      "mm2_ads",
+  profiles: "mm2_profiles",
+  convos:   "mm2_convos",
+  reads:    "mm2_reads",
+};
+function lsGet(key, fallback){
+  try{const v=localStorage.getItem(key);return v?JSON.parse(v):fallback;}catch(e){return fallback;}
+}
+function lsSet(key, val){
+  try{localStorage.setItem(key, JSON.stringify(val));}catch(e){}
+}
+
+const robloxUser   = lsGet(LS.user, null);
+const ads          = lsGet(LS.ads, []);
+let   profilesCache = lsGet(LS.profiles, {});
+
+function getProfile(id){ return profilesCache[id] || null; }
+function upsertProfile(u){
+  if(!u || !u.id) return;
+  const existing = profilesCache[u.id] || {};
+  profilesCache[u.id] = {
+    id:          u.id,
+    robloxName:  u.robloxName  || existing.robloxName  || "Joueur",
+    displayName: u.displayName || existing.displayName || u.robloxName || "Joueur",
+    avatarUrl:   u.avatarUrl   || existing.avatarUrl   || null,
+    bio:         u.bio !== undefined ? u.bio : (existing.bio || ""),
+    createdAt:   existing.createdAt || Date.now(),
+  };
+  lsSet(LS.profiles, profilesCache);
+}
+
+// ── ITEM CHIP (identique à trade.html) ──
+function itemChipHtml(it){
+  const found = ALL_ITEMS.find(x=>x.name===it.name);
+  if(!found) return "";
+  const rc = RC[found.rarity]||{color:"#888"};
+  return `<div class="ad-item">
+    <img src="${found.img}" onerror="this.style.display='none'" alt="${it.name}">
+    <div class="ad-item-info">
+      <div class="ad-item-name" title="${it.name}">${it.name}</div>
+      <div class="ad-item-val" style="color:${rc.color}">${fmt(found.value)}${it.qty>1?`<span class="ad-item-qty"> ×${it.qty}</span>`:""}</div>
+    </div>
+  </div>`;
+}
+function emptyItems(){return`<span style="font-size:12px;color:var(--dimmed)">—</span>`;}
+
+// ── MESSAGERIE : démarrer une conversation depuis le profil ──
+function loadConvos(userId){
+  const all = lsGet(LS.convos, []);
+  return all.filter(c => c.participants.includes(userId));
+}
+function saveConvo(convo){
+  const all = lsGet(LS.convos, []);
+  const idx = all.findIndex(c=>c.id===convo.id);
+  if(idx>=0) all[idx]=convo; else all.push(convo);
+  lsSet(LS.convos, all);
+}
+function startOfferFromProfile(targetUserId){
+  if(!robloxUser){ alert("Connectez-vous d'abord depuis la page des annonces !"); window.location.href="trade.html"; return; }
+  if(targetUserId === robloxUser.id){ alert("C'est votre propre profil !"); return; }
+
+  const ad = ads.find(a=>a.ownerId===targetUserId);
+  const typeLabel = ad ? ({wtt:"WTT",wts:"WTS",wtb:"WTB"}[ad.type]) : "Profil";
+  const adId = ad ? ad.id : `profile_${targetUserId}`;
+  const adLabel = ad ? `${typeLabel} de ${ad.user}` : "Contact direct";
+
+  const userConvos = loadConvos(robloxUser.id);
+  let convo = userConvos.find(c => c.adId===adId && c.participants.includes(targetUserId));
+  if(!convo){
+    convo = { id:`c_${Date.now()}`, adId, adLabel, participants:[robloxUser.id, targetUserId], messages:[] };
+  }
+  if(!convo.messages.length){
+    convo.messages.push({from:robloxUser.id, text:"👋 Bonjour, je suis intéressé par votre annonce !", ts:Date.now()});
+  }
+  saveConvo(convo);
+  window.location.href = `trade.html?openConvo=${convo.id}`;
+}
+
+// ── RENDU DES ANNONCES (cartes identiques à trade.html) ──
+function renderProfileAds(userId, isMe){
+  const userAds = ads.filter(a => a.ownerId === userId).slice().reverse();
+  const content = document.getElementById("profContent");
+  if(!userAds.length){
+    content.innerHTML = `<div class="prof-no-ads"><div class="prof-no-ads-icon">📋</div>${isMe?"Vous n'avez pas encore posté d'annonce.":"Aucune annonce active."}</div>`;
+    return;
+  }
+  content.innerHTML = `<div class="prof-ad-grid">${userAds.map(ad=>{
+    const typeLabel = {wtt:"WTT — Échange",wts:"WTS — Vente",wtb:"WTB — Recherche"}[ad.type];
+    const offerHtml = ad.offerItems.map(it=>itemChipHtml(it)).join("");
+    const wantHtml  = ad.wantItems.map(it=>itemChipHtml(it)).join("");
+    const offerVal  = ad.offerItems.reduce((s,it)=>{const f=ALL_ITEMS.find(x=>x.name===it.name);return s+(f?f.value*it.qty:0);},0);
+    const wantVal   = ad.wantItems.reduce((s,it)=>{const f=ALL_ITEMS.find(x=>x.name===it.name);return s+(f?f.value*it.qty:0);},0);
+
+    let bodyHtml="";
+    if(ad.type==="wtt"){
+      bodyHtml = `<div class="ad-section-label">Offre</div><div class="ad-items">${offerHtml||emptyItems()}</div>
+      <div class="ad-arrow">⇄</div>
+      <div class="ad-section-label">Veut en échange</div><div class="ad-items">${wantHtml||emptyItems()}</div>`;
+    } else if(ad.type==="wts"){
+      bodyHtml = `<div class="ad-section-label">Vend</div><div class="ad-items">${offerHtml||emptyItems()}</div>
+      <div class="ad-section-label" style="margin-top:8px">Cherche</div><div class="ad-for-label">${ad.note||"Faire une offre"}</div>`;
+    } else {
+      bodyHtml = `<div class="ad-section-label">Cherche</div><div class="ad-items">${wantHtml||emptyItems()}</div>
+      <div class="ad-section-label" style="margin-top:8px">Peut offrir</div><div class="ad-for-label">${ad.note||"Faire une offre"}</div>`;
+    }
+
+    const footerBtn = isMe
+      ? `<button class="ad-delete-btn" onclick="deleteAdFromProfile(${ad.id})">🗑 Supprimer</button>`
+      : `<button class="ad-offer-btn" onclick="startOfferFromProfile('${userId}')">🤝 Offrir / J'accepte</button>`;
+
+    return `<div class="ad-card ${ad.type}">
+      <div class="ad-header">
+        <span class="ad-type ${ad.type}">${typeLabel}</span>
+        <span class="ad-time">${timeAgo(ad.ts)}</span>
+      </div>
+      <div class="ad-body">
+        ${bodyHtml}
+        ${ad.note && ad.type==="wtt" ? `<div class="ad-note">💬 ${ad.note}</div>` : ""}
+      </div>
+      <div class="ad-footer">
+        <span class="ad-total">📊 ${fmt(offerVal||wantVal)}</span>
+        <div class="ad-actions">${footerBtn}</div>
+      </div>
+    </div>`;
+  }).join("")}</div>`;
+}
+
+function deleteAdFromProfile(id){
+  if(!robloxUser) return;
+  if(!confirm("Supprimer cette annonce ?")) return;
+  let all = lsGet(LS.ads, []);
+  const ad = all.find(a=>a.id===id);
+  if(!ad || ad.ownerId!==robloxUser.id) return;
+  all = all.filter(a=>a.id!==id);
+  lsSet(LS.ads, all);
+  // re-render avec la nouvelle liste
+  const idx = ads.findIndex(a=>a.id===id);
+  if(idx>=0) ads.splice(idx,1);
+  const userAds = ads.filter(a=>a.ownerId===robloxUser.id);
+  document.getElementById("profTabAdsCount").textContent = userAds.length;
+  renderProfileAds(robloxUser.id, true);
+}
+
+// ── BIO ──
+function toggleBioEdit(){
+  const view = document.getElementById("profBioView");
+  const edit = document.getElementById("profBioEditGroup");
+  if(!view||!edit) return;
+  const isHidden = edit.style.display==="none";
+  edit.style.display = isHidden?"":"none";
+  view.style.display = isHidden?"none":"";
+}
+function saveBio(){
+  if(!robloxUser) return;
+  const bioInput = document.getElementById("profBioInput");
+  const bio = bioInput ? bioInput.value.trim() : "";
+  upsertProfile({...robloxUser, bio});
+  const bioText = document.getElementById("profBioText");
+  if(bioText) bioText.textContent = bio;
+  const bioView = document.getElementById("profBioView");
+  if(bioView) bioView.style.display = bio?"":"none";
+  toggleBioEdit();
+}
+function disconnect(){
+  lsSet(LS.user, null);
+  window.location.href = "trade.html";
+}
+
+// ── INIT ──
+function init(){
+  const params = new URLSearchParams(window.location.search);
+  let userId = params.get("id");
+  if(!userId && robloxUser) userId = robloxUser.id;
+
+  const root = document.getElementById("profileRoot");
+
+  if(!userId){
+    root.innerHTML = `<div class="not-found"><div class="not-found-icon">👤</div><p>Aucun profil à afficher.<br>Connectez-vous depuis la page des annonces.</p><br><a href="trade.html" class="btn-submit" style="display:inline-block;text-decoration:none">← Retour</a></div>`;
+    return;
+  }
+
+  const isMe = robloxUser && robloxUser.id === userId;
+  let prof = getProfile(userId);
+  if(!prof) prof = { id:userId, robloxName:"Joueur inconnu", displayName:"Joueur inconnu", avatarUrl:null, bio:"" };
+
+  document.title = (prof.displayName||prof.robloxName) + " — MM2 Hub";
+
+  const userAds = ads.filter(a=>a.ownerId===userId);
+
+  const avatarHtml = prof.avatarUrl
+    ? `<img class="prof-avatar" id="profAvatar" src="${prof.avatarUrl}" alt="">`
+    : `<div class="prof-avatar-initials">${(prof.robloxName||"?")[0].toUpperCase()}</div>`;
+
+  const sinceText = prof.createdAt
+    ? "Membre depuis " + new Date(prof.createdAt).toLocaleDateString("fr-FR",{month:"long",year:"numeric"})
+    : "";
+
+  const displayLine = (prof.displayName && prof.displayName!==prof.robloxName) ? prof.displayName : "";
+
+  let actionsHtml;
+  if(isMe){
+    actionsHtml = `
+      <button class="prof-btn-edit" onclick="toggleBioEdit()">✏️ Modifier la bio</button>
+      <button class="prof-btn-disconnect" onclick="disconnect()">🔌 Déconnecter</button>`;
+  } else {
+    actionsHtml = `<button class="prof-btn-msg" onclick="startOfferFromProfile('${userId}')">💬 Contacter</button>`;
+  }
+
+  let bioHtml;
+  if(isMe){
+    bioHtml = `
+      <div id="profBioView" ${prof.bio?'':'style="display:none"'}>
+        <p class="prof-bio-text" id="profBioText">${escapeHtml(prof.bio||"")}</p>
+      </div>
+      <div id="profBioEditGroup" style="display:none">
+        <textarea class="prof-bio-edit" id="profBioInput" placeholder="Parlez un peu de vous...">${escapeHtml(prof.bio||"")}</textarea>
+        <div class="prof-save-row">
+          <button class="btn-submit" onclick="saveBio()">✓ Enregistrer</button>
+          <button class="btn-cancel" onclick="toggleBioEdit()">Annuler</button>
+        </div>
+      </div>`;
+  } else {
+    bioHtml = prof.bio
+      ? `<p class="prof-bio-text">${escapeHtml(prof.bio)}</p>`
+      : `<p class="prof-bio-text" style="opacity:.4">Aucune bio renseignée.</p>`;
+  }
+
+  root.innerHTML = `
+    <div class="prof-banner"></div>
+    <div class="prof-hdr">
+      <div class="prof-top-row">
+        <div>
+          <div class="prof-avatar-wrap">
+            ${avatarHtml}
+            <div class="prof-online-dot"></div>
+          </div>
+          <div class="prof-username">${escapeHtml(prof.robloxName||"Joueur")}</div>
+          <div class="prof-display">${escapeHtml(displayLine)}</div>
+          <div class="prof-since">${sinceText}</div>
+        </div>
+        <div class="prof-actions">${actionsHtml}</div>
+      </div>
+    </div>
+    <div class="prof-stats">
+      <div><div class="prof-stat-val">${userAds.length}</div><div class="prof-stat-lbl">Annonces</div></div>
+      <div><div class="prof-stat-val">${userAds.filter(a=>a.type==="wtt").length}</div><div class="prof-stat-lbl">WTT</div></div>
+      <div><div class="prof-stat-val">${userAds.filter(a=>a.type==="wts").length}</div><div class="prof-stat-lbl">WTS</div></div>
+      <div><div class="prof-stat-val">${userAds.filter(a=>a.type==="wtb").length}</div><div class="prof-stat-lbl">WTB</div></div>
+    </div>
+    <div class="prof-bio-section">${bioHtml}</div>
+    <div class="prof-tabs">
+      <button class="prof-tab active">📋 Annonces <span class="prof-tab-count" id="profTabAdsCount">${userAds.length}</span></button>
+    </div>
+    <div class="prof-content" id="profContent"></div>
+  `;
+
+  renderProfileAds(userId, isMe);
+}
+
+init();
+
+</script>
+</body>
+</html>

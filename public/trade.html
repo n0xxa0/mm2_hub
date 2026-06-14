@@ -167,48 +167,6 @@ textarea.form-input{resize:vertical;min-height:70px}
 .msg-btn{position:relative}
 .unread-badge{position:absolute;top:-5px;right:-5px;background:var(--red);color:#fff;font-size:10px;font-weight:900;border-radius:10px;padding:1px 5px;min-width:16px;text-align:center;line-height:1.4}
 
-/* ══ PROFILE PAGE (full overlay, style Traderie) ══ */
-.profile-page{position:fixed;inset:0;background:var(--bg);z-index:600;overflow-y:auto;display:none}
-.profile-page.open{display:block}
-.profile-page-back{position:sticky;top:0;z-index:10;background:rgba(10,10,15,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--border);padding:10px 20px;display:flex;align-items:center;gap:10px}
-.profile-page-back-btn{background:none;border:1px solid var(--border2);border-radius:8px;color:var(--muted);font-family:var(--font);font-size:13px;font-weight:700;padding:6px 14px;cursor:pointer;transition:all .15s;display:flex;align-items:center;gap:6px}
-.profile-page-back-btn:hover{border-color:var(--red);color:var(--red)}
-.prof-banner{height:120px;background:linear-gradient(135deg,#1a0a1e 0%,#0d0d20 40%,#0a1a1a 100%);position:relative;overflow:hidden}
-.prof-banner::after{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 30% 50%,rgba(230,57,70,.18) 0%,transparent 60%),radial-gradient(ellipse at 70% 50%,rgba(6,214,160,.12) 0%,transparent 60%)}
-.prof-hdr{max-width:900px;margin:0 auto;padding:0 24px;position:relative}
-.prof-avatar-wrap{position:relative;margin-top:-40px;margin-bottom:0;display:inline-block}
-.prof-avatar{width:80px;height:80px;border-radius:50%;border:3px solid var(--bg);object-fit:cover;display:block;background:var(--surface2)}
-.prof-avatar-initials{width:80px;height:80px;border-radius:50%;border:3px solid var(--bg);background:linear-gradient(135deg,#e63946,#ff6b35);display:flex;align-items:center;justify-content:center;font-family:var(--fonthead);font-size:28px;font-weight:900;color:#fff}
-.prof-online-dot{position:absolute;bottom:4px;right:2px;width:14px;height:14px;border-radius:50%;background:var(--cyan);border:2px solid var(--bg);animation:pulse-dot 2s infinite}
-.prof-top-row{display:flex;align-items:flex-end;justify-content:space-between;padding:8px 0 12px;flex-wrap:wrap;gap:10px}
-.prof-username{font-family:var(--fonthead);font-size:22px;font-weight:900;letter-spacing:1px;display:flex;align-items:center;gap:8px}
-.prof-display{font-size:13px;color:var(--muted);margin-top:2px}
-.prof-since{font-size:11px;color:var(--dimmed);margin-top:4px}
-.prof-actions{display:flex;gap:8px;flex-wrap:wrap}
-.prof-btn-edit{padding:8px 18px;background:linear-gradient(135deg,#e63946,#ff6b35);border:none;border-radius:9px;color:#fff;font-family:var(--fonthead);font-size:11px;font-weight:900;letter-spacing:1px;cursor:pointer;transition:all .2s}
-.prof-btn-edit:hover{transform:translateY(-1px);box-shadow:0 4px 16px rgba(230,57,70,.4)}
-.prof-btn-msg{padding:8px 18px;background:rgba(6,214,160,.1);border:1px solid rgba(6,214,160,.35);border-radius:9px;color:var(--cyan);font-family:var(--font);font-size:13px;font-weight:700;cursor:pointer;transition:all .15s}
-.prof-btn-msg:hover{background:rgba(6,214,160,.18)}
-.prof-btn-disconnect{padding:8px 16px;background:none;border:1px solid var(--border2);border-radius:9px;color:var(--dimmed);font-family:var(--font);font-size:12px;font-weight:700;cursor:pointer;transition:all .15s}
-.prof-btn-disconnect:hover{border-color:var(--red);color:var(--red)}
-.prof-stats{max-width:900px;margin:0 auto;padding:0 24px 14px;display:flex;gap:28px;flex-wrap:wrap;border-bottom:1px solid var(--border)}
-.prof-stat-val{font-family:var(--fonthead);font-size:18px;font-weight:900;color:var(--text)}
-.prof-stat-lbl{font-size:10px;color:var(--dimmed);text-transform:uppercase;letter-spacing:1px;margin-top:2px}
-.prof-bio-section{max-width:900px;margin:14px auto 0;padding:0 24px}
-.prof-bio-edit{width:100%;background:var(--surface2);border:1px solid var(--border2);border-radius:8px;color:var(--text);padding:9px 12px;font-family:var(--font);font-size:13px;outline:none;resize:vertical;min-height:60px}
-.prof-bio-edit:focus{border-color:var(--red)}
-.prof-bio-edit::placeholder{color:var(--dimmed)}
-.prof-bio-text{font-size:13px;color:var(--muted);line-height:1.6;font-style:italic}
-.prof-tabs{max-width:900px;margin:14px auto 0;padding:0 24px;display:flex;gap:2px;border-bottom:1px solid var(--border)}
-.prof-tab{padding:10px 18px;background:none;border:none;border-bottom:2px solid transparent;color:var(--muted);font-family:var(--font);font-size:14px;font-weight:700;cursor:pointer;transition:all .15s;display:flex;align-items:center;gap:6px;margin-bottom:-1px}
-.prof-tab:hover{color:var(--text)}
-.prof-tab.active{color:var(--red);border-bottom-color:var(--red)}
-.prof-tab-count{background:var(--surface3);border-radius:10px;padding:1px 7px;font-size:10px;font-family:var(--fonthead)}
-.prof-content{max-width:900px;margin:20px auto;padding:0 24px 40px}
-.prof-ad-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:12px}
-.prof-no-ads{text-align:center;padding:60px 20px;color:var(--dimmed)}
-.prof-no-ads-icon{font-size:40px;opacity:.4;margin-bottom:10px}
-.prof-save-row{display:flex;gap:8px;margin-top:8px}
 
 /* MESSAGES MODAL */
 .msg-modal{background:var(--surface);border:1px solid var(--border2);border-radius:16px;width:100%;max-width:720px;max-height:85vh;display:flex;overflow:hidden}
@@ -369,38 +327,6 @@ textarea.form-input{resize:vertical;min-height:70px}
       <button class="btn-submit" onclick="submitAd()">✓ PUBLIER</button>
     </div>
   </div>
-</div>
-
-<!-- PROFILE PAGE (full overlay) -->
-<div class="profile-page" id="profilePage">
-  <div class="profile-page-back">
-    <button class="profile-page-back-btn" onclick="closeProfile()">← Retour</button>
-    <span id="profPageTitle" style="font-size:13px;color:var(--muted);font-weight:700"></span>
-  </div>
-  <div class="prof-banner" id="profBanner"></div>
-  <div class="prof-hdr">
-    <div class="prof-top-row">
-      <div>
-        <div class="prof-avatar-wrap">
-          <img class="prof-avatar" id="profAvatar" src="" alt="" onerror="this.style.display='none'">
-          <div class="prof-avatar-initials" id="profAvatarInitials" style="display:none">?</div>
-          <div class="prof-online-dot" id="profOnlineDot"></div>
-        </div>
-        <div class="prof-username" id="profName"></div>
-        <div class="prof-display" id="profDisplay"></div>
-        <div class="prof-since" id="profSince"></div>
-      </div>
-      <div class="prof-actions" id="profActions"></div>
-    </div>
-  </div>
-  <div class="prof-stats" id="profStats"></div>
-  <div class="prof-bio-section" id="profBioSection"></div>
-  <div class="prof-tabs">
-    <button class="prof-tab active" id="profTabAds" onclick="profSwitchTab('ads')">
-      📋 Annonces <span class="prof-tab-count" id="profTabAdsCount">0</span>
-    </button>
-  </div>
-  <div class="prof-content" id="profContent"></div>
 </div>
 
 <!-- MESSAGES MODAL -->
@@ -756,163 +682,10 @@ function upsertProfile(u) {
   lsSet(LS.profiles, profilesCache);
 }
 
-let profCurrentTab    = "ads";
-let profCurrentUserId = null;
-
 function openProfile(userId) {
-  profCurrentUserId = userId;
-  const isMe = robloxUser && robloxUser.id === userId;
-  let prof = getProfile(userId);
-  if (!prof) prof = { id: userId, robloxName: "Joueur inconnu", avatarUrl: null, bio: "" };
-
-  document.getElementById("profPageTitle").textContent = (prof.displayName || prof.robloxName) + "'s Profile";
-
-  const av     = document.getElementById("profAvatar");
-  const avInit = document.getElementById("profAvatarInitials");
-  if (prof.avatarUrl) {
-    av.src = prof.avatarUrl; av.style.display = ""; avInit.style.display = "none";
-  } else {
-    av.style.display = "none"; avInit.style.display = "";
-    avInit.textContent = (prof.robloxName || "?")[0].toUpperCase();
-  }
-
-  document.getElementById("profName").textContent = prof.robloxName || "Joueur";
-  const dispEl = document.getElementById("profDisplay");
-  dispEl.textContent = prof.displayName && prof.displayName !== prof.robloxName ? prof.displayName : "";
-  const sinceEl = document.getElementById("profSince");
-  sinceEl.textContent = prof.createdAt
-    ? "Membre depuis " + new Date(prof.createdAt).toLocaleDateString("fr-FR", { month: "long", year: "numeric" })
-    : "";
-
-  const actionsEl = document.getElementById("profActions");
-  if (isMe) {
-    actionsEl.innerHTML = `
-      <button class="prof-btn-edit" onclick="profToggleBioEdit()">✏️ Modifier la bio</button>
-      <button class="prof-btn-disconnect" onclick="disconnectRoblox();closeProfile()">🔌 Déconnecter</button>`;
-  } else {
-    actionsEl.innerHTML = `
-      <button class="prof-btn-msg" onclick="closeProfile();startOfferFromProfile('${userId}')">💬 Contacter</button>`;
-  }
-
-  const userAds = ads.filter(a => a.ownerId === userId);
-  document.getElementById("profStats").innerHTML = `
-    <div><div class="prof-stat-val">${userAds.length}</div><div class="prof-stat-lbl">Annonces</div></div>
-    <div><div class="prof-stat-val">${userAds.filter(a => a.type === "wtt").length}</div><div class="prof-stat-lbl">WTT</div></div>
-    <div><div class="prof-stat-val">${userAds.filter(a => a.type === "wts").length}</div><div class="prof-stat-lbl">WTS</div></div>
-    <div><div class="prof-stat-val">${userAds.filter(a => a.type === "wtb").length}</div><div class="prof-stat-lbl">WTB</div></div>`;
-
-  const bioSection = document.getElementById("profBioSection");
-  if (isMe) {
-    bioSection.innerHTML = `
-      <div id="profBioView" ${prof.bio ? '' : 'style="display:none"'}>
-        <p class="prof-bio-text" id="profBioText">${prof.bio || ""}</p>
-      </div>
-      <div id="profBioEditGroup" style="display:none">
-        <textarea class="prof-bio-edit" id="profBioInput" placeholder="Parlez un peu de vous...">${prof.bio || ""}</textarea>
-        <div class="prof-save-row">
-          <button class="btn-submit" onclick="saveProfileBio()">✓ Enregistrer</button>
-          <button class="btn-cancel" onclick="profToggleBioEdit()">Annuler</button>
-        </div>
-      </div>`;
-  } else {
-    bioSection.innerHTML = prof.bio
-      ? `<p class="prof-bio-text">${prof.bio}</p>`
-      : `<p class="prof-bio-text" style="opacity:.4">Aucune bio renseignée.</p>`;
-  }
-
-  document.getElementById("profTabAdsCount").textContent = userAds.length;
-  profCurrentTab = "ads";
-  document.querySelectorAll(".prof-tab").forEach(t => t.classList.remove("active"));
-  document.getElementById("profTabAds").classList.add("active");
-  profRenderAds(userId);
-
-  document.getElementById("profilePage").classList.add("open");
-  document.getElementById("profilePage").scrollTop = 0;
+  window.location.href = "profile.html?id=" + encodeURIComponent(userId);
 }
 
-function closeProfile() { document.getElementById("profilePage").classList.remove("open"); }
-
-function profToggleBioEdit() {
-  const view = document.getElementById("profBioView");
-  const edit = document.getElementById("profBioEditGroup");
-  if (!view || !edit) return;
-  const isHidden = edit.style.display === "none";
-  edit.style.display = isHidden ? "" : "none";
-  view.style.display = isHidden ? "none" : "";
-}
-
-function profSwitchTab(tab) {
-  profCurrentTab = tab;
-  document.querySelectorAll(".prof-tab").forEach(t => t.classList.remove("active"));
-  document.getElementById("profTabAds").classList.add("active");
-  profRenderAds(profCurrentUserId);
-}
-
-function saveProfileBio() {
-  if (!robloxUser) return;
-  const bioInput = document.getElementById("profBioInput");
-  const bio = bioInput ? bioInput.value.trim() : "";
-  upsertProfile({ ...robloxUser, bio });
-  const bioText = document.getElementById("profBioText");
-  if (bioText) bioText.textContent = bio;
-  const bioView = document.getElementById("profBioView");
-  if (bioView) bioView.style.display = bio ? "" : "none";
-  profToggleBioEdit();
-}
-
-function profRenderAds(userId) {
-  const isMe    = robloxUser && robloxUser.id === userId;
-  const userAds = ads.filter(a => a.ownerId === userId).slice().reverse();
-  const content = document.getElementById("profContent");
-  if (!userAds.length) {
-    content.innerHTML = `<div class="prof-no-ads"><div class="prof-no-ads-icon" style="font-size:40px;opacity:.4;margin-bottom:10px">📋</div>${isMe ? "Vous n'avez pas encore posté d'annonce." : "Aucune annonce active."}</div>`;
-    return;
-  }
-  content.innerHTML = `<div class="prof-ad-grid">${userAds.map(ad => {
-    const typeLabel = { wtt: "WTT — Échange", wts: "WTS — Vente", wtb: "WTB — Recherche" }[ad.type];
-    const offerHtml = ad.offerItems.map(it => itemChipHtml(it)).join("");
-    const wantHtml  = ad.wantItems.map(it  => itemChipHtml(it)).join("");
-    const offerVal  = ad.offerItems.reduce((s, it) => { const f = ALL_ITEMS.find(x => x.name === it.name); return s + (f ? f.value * it.qty : 0); }, 0);
-    const wantVal   = ad.wantItems.reduce((s, it)  => { const f = ALL_ITEMS.find(x => x.name === it.name); return s + (f ? f.value * it.qty : 0); }, 0);
-
-    let bodyHtml = "";
-    if (ad.type === "wtt") {
-      bodyHtml = `<div class="ad-section-label">Offre</div><div class="ad-items">${offerHtml || emptyItems()}</div>
-      <div class="ad-arrow">⇄</div>
-      <div class="ad-section-label">Veut en échange</div><div class="ad-items">${wantHtml || emptyItems()}</div>`;
-    } else if (ad.type === "wts") {
-      bodyHtml = `<div class="ad-section-label">Vend</div><div class="ad-items">${offerHtml || emptyItems()}</div>
-      <div class="ad-section-label" style="margin-top:8px">Cherche</div><div class="ad-for-label">${ad.note || "Faire une offre"}</div>`;
-    } else {
-      bodyHtml = `<div class="ad-section-label">Cherche</div><div class="ad-items">${wantHtml || emptyItems()}</div>
-      <div class="ad-section-label" style="margin-top:8px">Peut offrir</div><div class="ad-for-label">${ad.note || "Faire une offre"}</div>`;
-    }
-
-    const footerBtn = isMe
-      ? `<button class="ad-delete-btn" onclick="deleteAd(${ad.id})">🗑 Supprimer</button>`
-      : `<button class="ad-offer-btn" onclick="startOffer(${ad.id})">🤝 Offrir / J'accepte</button>`;
-
-    return `<div class="ad-card ${ad.type}">
-      <div class="ad-header">
-        <span class="ad-type ${ad.type}">${typeLabel}</span>
-        <span class="ad-time">${timeAgo(ad.ts)}</span>
-      </div>
-      <div class="ad-body">
-        ${bodyHtml}
-        ${ad.note && ad.type === "wtt" ? `<div class="ad-note">💬 ${ad.note}</div>` : ""}
-      </div>
-      <div class="ad-footer">
-        <span class="ad-total">📊 ${fmt(offerVal || wantVal)}</span>
-        <div class="ad-actions">${footerBtn}</div>
-      </div>
-    </div>`;
-  }).join("")}</div>`;
-}
-
-function startOfferFromProfile(userId) {
-  const ad = ads.find(a => a.ownerId === userId);
-  if (ad) startOffer(ad.id);
-}
 
 // ── ADS (localStorage) ──
 let ads        = lsGet(LS.ads, []);
@@ -1009,10 +782,6 @@ function deleteAd(id) {
   ads = ads.filter(a => a.id !== id);
   saveAds();
   renderAds();
-  if (profCurrentUserId && document.getElementById("profilePage").classList.contains("open")) {
-    document.getElementById("profTabAdsCount").textContent = ads.filter(a => a.ownerId === profCurrentUserId).length;
-    profRenderAds(profCurrentUserId);
-  }
 }
 
 function itemChipHtml(it) {
@@ -1300,10 +1069,6 @@ function submitAd() {
   document.getElementById("fNote").value    = "";
   closeModal();
   renderAds();
-  if (profCurrentUserId && document.getElementById("profilePage").classList.contains("open")) {
-    document.getElementById("profTabAdsCount").textContent = ads.filter(a => a.ownerId === profCurrentUserId).length;
-    profRenderAds(profCurrentUserId);
-  }
 }
 
 // ── INIT ──
@@ -1311,6 +1076,16 @@ readOAuthReturn();
 upsertProfile(robloxUser);   // met à jour avatarUrl/pseudo si reconnexion
 updateRobloxBadge();
 renderAds();
+
+// Si on arrive depuis profile.html avec ?openConvo=...
+(function(){
+  const params = new URLSearchParams(window.location.search);
+  const convoId = params.get("openConvo");
+  if (convoId && robloxUser) {
+    window.history.replaceState({}, "", "trade.html");
+    openMessages(convoId);
+  }
+})();
 </script>
 </body>
 </html>

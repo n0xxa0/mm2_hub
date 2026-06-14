@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+upda  te<!DOCTYPE html>
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
@@ -309,13 +309,17 @@ textarea.form-input{resize:vertical;min-height:70px}
   <div class="rlogin-modal">
     <div class="rlogin-icon">🎮</div>
     <div class="rlogin-title">CONNEXION ROBLOX</div>
-    <div class="rlogin-sub">Connectez votre vrai compte Roblox pour poster des annonces.</div>
-    <button class="btn-rlogin-oauth" onclick="doOAuthLogin()">
+    <div class="rlogin-sub">Entrez votre pseudo Roblox pour récupérer votre avatar et créer votre profil.</div>
+    <div class="form-group" style="margin-top:14px">
+      <input class="form-input" id="rloginUsername" type="text" placeholder="Votre pseudo Roblox (ex: Builderman)" onkeydown="if(event.key==='Enter')connectByUsername()">
+    </div>
+    <div id="rloginError" style="color:var(--red);font-size:12px;margin-top:6px;display:none"></div>
+    <button class="btn-rlogin-oauth" id="rloginBtn" onclick="connectByUsername()">
       <svg width="20" height="20" viewBox="0 0 20 20" fill="none" style="flex-shrink:0"><circle cx="10" cy="10" r="10" fill="#e63946"/><text x="10" y="14" text-anchor="middle" font-size="11" font-weight="900" fill="white" font-family="Arial">R</text></svg>
-      Se connecter avec Roblox
+      Se connecter
     </button>
     <div class="rlogin-note" style="margin-top:14px">
-      Vous serez redirigé vers Roblox pour autoriser la connexion.<br>Aucun mot de passe partagé avec ce site.
+      On récupère uniquement votre pseudo et votre photo de profil publique Roblox.<br>Aucun mot de passe demandé.
     </div>
     <div style="text-align:center;margin-top:16px">
       <button class="btn-cancel" onclick="closeRobloxLogin()">Annuler</button>
@@ -609,17 +613,16 @@ const ALL_ITEMS = [
 function fmt(v){if(v>=1000)return(v/1000).toFixed(v%1000===0?0:2)+"K";return v.toLocaleString();}
 function timeAgo(ts){const d=Date.now()-ts;if(d<60000)return"À l'instant";if(d<3600000)return Math.floor(d/60000)+"min";if(d<86400000)return Math.floor(d/3600000)+"h";return Math.floor(d/86400000)+"j";}
 
-// ── ROBLOX OAUTH SESSION ──
-const ROBLOX_CLIENT_ID = "1029807529105283785";
-const ROBLOX_REDIRECT  = "https://mm2-hub.vercel.app/api/auth/callback/roblox";
-const ROBLOX_SCOPE     = "openid profile";
+// ══════════════════════════════════════════════
+// STORAGE 100% localStorage — zéro serveur
+// ══════════════════════════════════════════════
 
-const API_BASE = ""; // same-origin: /api/ads, /api/profiles, /api/conversations
-
-// ── LOCAL STORAGE HELPERS (session/login + local read-state only) ──
 const LS = {
-  user:  "mm2_roblox_user",
-  reads: "mm2_conv_reads",
+  user:     "mm2_roblox_user",
+  ads:      "mm2_ads",
+  profiles: "mm2_profiles",
+  convos:   "mm2_convos",
+  reads:    "mm2_reads",
 };
 function lsGet(key, fallback){
   try{const v=localStorage.getItem(key);return v?JSON.parse(v):fallback;}catch(e){return fallback;}
@@ -628,44 +631,103 @@ function lsSet(key, val){
   try{localStorage.setItem(key, JSON.stringify(val));}catch(e){}
 }
 
-let robloxUser = lsGet(LS.user, null); // {robloxName, displayName, avatarUrl, id}
+// ── CONNEXION ROBLOX (par pseudo, sans backend) ──
+let robloxUser = lsGet(LS.user, null);
 
-function doOAuthLogin() {
-  const state = Math.random().toString(36).slice(2);
-  sessionStorage.setItem("oauth_state", state);
-  const params = new URLSearchParams({
-    client_id:     ROBLOX_CLIENT_ID,
-    redirect_uri:  ROBLOX_REDIRECT,
-    response_type: "code",
-    scope:         ROBLOX_SCOPE,
-    state,
-  });
-  window.location.href = `https://apis.roblox.com/oauth/v1/authorize?${params}`;
+// Petit helper de fetch JSON avec fallback CORS proxy
+async function robloxFetch(url) {
+  try {
+    const r = await fetch(url);
+    if (!r.ok) throw new Error("status " + r.status);
+    return await r.json();
+  } catch (e1) {
+    // Fallback via proxy CORS public
+    const r2 = await fetch("https://corsproxy.io/?" + encodeURIComponent(url));
+    if (!r2.ok) throw new Error("proxy status " + r2.status);
+    return await r2.json();
+  }
 }
 
-// Lecture des params retournés par le callback Vercel
-function readOAuthReturn() {
-  const p = new URLSearchParams(window.location.search);
-  if (p.has("roblox_user")) {
+async function connectByUsername() {
+  const input = document.getElementById("rloginUsername");
+  const errEl = document.getElementById("rloginError");
+  const btn   = document.getElementById("rloginBtn");
+  const username = input.value.trim();
+  errEl.style.display = "none";
+
+  if (!username) { errEl.textContent = "Entrez un pseudo Roblox."; errEl.style.display = ""; return; }
+
+  btn.disabled = true;
+  const oldHtml = btn.innerHTML;
+  btn.innerHTML = "Connexion...";
+
+  try {
+    // 1. Récupérer l'ID + le vrai pseudo depuis Roblox
+    let robloxId, exactName, displayName;
+    try {
+      const r = await fetch("https://users.roblox.com/v1/usernames/users", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ usernames: [username], excludeBannedUsers: true }),
+      });
+      const d = await r.json();
+      if (!d.data || !d.data.length) throw new Error("not found");
+      robloxId   = d.data[0].id;
+      exactName  = d.data[0].name;
+      displayName = d.data[0].displayName || exactName;
+    } catch (e) {
+      // Fallback proxy
+      const proxied = await fetch("https://corsproxy.io/?" + encodeURIComponent("https://users.roblox.com/v1/usernames/users"), {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ usernames: [username], excludeBannedUsers: true }),
+      });
+      const d = await proxied.json();
+      if (!d.data || !d.data.length) throw new Error("not found");
+      robloxId   = d.data[0].id;
+      exactName  = d.data[0].name;
+      displayName = d.data[0].displayName || exactName;
+    }
+
+    // 2. Récupérer l'avatar headshot
+    let avatarUrl = null;
+    try {
+      const thumbUrl = `https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds=${robloxId}&size=150x150&format=Png&isCircular=false`;
+      const td = await robloxFetch(thumbUrl);
+      avatarUrl = td?.data?.[0]?.imageUrl || null;
+    } catch (e) { /* avatar optionnel */ }
+
     robloxUser = {
-      robloxName:  p.get("roblox_user"),
-      displayName: p.get("roblox_display") || p.get("roblox_user"),
-      avatarUrl:   p.get("roblox_avatar") || null,
-      id:          p.get("roblox_id"),
+      id: String(robloxId),
+      robloxName: exactName,
+      displayName: displayName,
+      avatarUrl: avatarUrl,
     };
     lsSet(LS.user, robloxUser);
     upsertProfile(robloxUser);
-    // Nettoie l'URL
-    window.history.replaceState({}, "", "/trade.html");
-  }
-  if (p.has("error")) {
-    alert("Erreur de connexion Roblox : " + p.get("error"));
-    window.history.replaceState({}, "", "/trade.html");
+    updateRobloxBadge();
+    input.value = "";
+    closeRobloxLogin();
+    loadConvos();
+    updateUnreadBadge();
+    renderAds();
+
+  } catch (e) {
+    console.error("connectByUsername failed", e);
+    errEl.textContent = "Pseudo introuvable, ou Roblox est inaccessible pour le moment. Réessayez.";
+    errEl.style.display = "";
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = oldHtml;
   }
 }
 
+function readOAuthReturn() {
+  // Conservé pour compatibilité (ne fait rien sans backend OAuth)
+}
+
 function updateRobloxBadge() {
-  const badge = document.getElementById("robloxBadge");
+  const badge  = document.getElementById("robloxBadge");
   const msgBtn = document.getElementById("msgBtn");
   if (robloxUser) {
     const avatarHtml = robloxUser.avatarUrl
@@ -673,23 +735,19 @@ function updateRobloxBadge() {
       : "🎮";
     badge.innerHTML = `${avatarHtml} ${robloxUser.robloxName} <div class="roblox-dot"></div>`;
     badge.className = "roblox-btn connected";
-    badge.onclick = () => openProfile(robloxUser.id);
+    badge.onclick   = () => openProfile(robloxUser.id);
     msgBtn.style.display = "";
     updateUnreadBadge();
   } else {
     badge.innerHTML = "🎮 Connecter Roblox";
     badge.className = "roblox-btn";
-    badge.onclick = openRobloxLogin;
+    badge.onclick   = openRobloxLogin;
     msgBtn.style.display = "none";
   }
 }
 
-function openRobloxLogin() {
-  document.getElementById("robloxOverlay").classList.remove("hidden");
-}
-function closeRobloxLogin() {
-  document.getElementById("robloxOverlay").classList.add("hidden");
-}
+function openRobloxLogin()  { document.getElementById("robloxOverlay").classList.remove("hidden"); }
+function closeRobloxLogin() { document.getElementById("robloxOverlay").classList.add("hidden"); }
 function disconnectRoblox() {
   robloxUser = null;
   lsSet(LS.user, null);
@@ -698,70 +756,55 @@ function disconnectRoblox() {
   renderAds();
 }
 
-// ── PROFILES (shared DB) ──
-let profilesCache = {};
-async function fetchProfiles(){
-  try{
-    const r = await fetch(`${API_BASE}/api/profiles`);
-    const d = await r.json();
-    profilesCache = d.profiles || {};
-  }catch(e){ console.error("fetchProfiles failed", e); }
-}
-function getProfile(id){ return profilesCache[id] || null; }
-async function upsertProfile(u){
-  try{
-    const r = await fetch(`${API_BASE}/api/profiles`, {
-      method:"POST",
-      headers:{"Content-Type":"application/json"},
-      body: JSON.stringify(u),
-    });
-    const d = await r.json();
-    if(d.profile) profilesCache[d.profile.id] = d.profile;
-  }catch(e){ console.error("upsertProfile failed", e); }
+// ── PROFILES (localStorage) ──
+let profilesCache = lsGet(LS.profiles, {});
+
+function getProfile(id) { return profilesCache[id] || null; }
+
+function upsertProfile(u) {
+  if (!u || !u.id) return;
+  const existing = profilesCache[u.id] || {};
+  profilesCache[u.id] = {
+    id:          u.id,
+    robloxName:  u.robloxName  || existing.robloxName  || "Joueur",
+    displayName: u.displayName || existing.displayName || u.robloxName || "Joueur",
+    avatarUrl:   u.avatarUrl   || existing.avatarUrl   || null,
+    bio:         u.bio !== undefined ? u.bio : (existing.bio || ""),
+    createdAt:   existing.createdAt || Date.now(),
+  };
+  lsSet(LS.profiles, profilesCache);
 }
 
-let profCurrentTab = "ads";
+let profCurrentTab    = "ads";
 let profCurrentUserId = null;
 
-async function openProfile(userId){
+function openProfile(userId) {
   profCurrentUserId = userId;
   const isMe = robloxUser && robloxUser.id === userId;
   let prof = getProfile(userId);
-  if(!prof){
-    try{
-      const r = await fetch(`${API_BASE}/api/profiles?id=${encodeURIComponent(userId)}`);
-      const d = await r.json();
-      prof = d.profile;
-    }catch(e){}
-  }
-  if(!prof) prof = {id:userId, robloxName:"Joueur inconnu", avatarUrl:null, bio:""};
+  if (!prof) prof = { id: userId, robloxName: "Joueur inconnu", avatarUrl: null, bio: "" };
 
-  // ── Page title ──
   document.getElementById("profPageTitle").textContent = (prof.displayName || prof.robloxName) + "'s Profile";
 
-  // ── Avatar ──
-  const av = document.getElementById("profAvatar");
+  const av     = document.getElementById("profAvatar");
   const avInit = document.getElementById("profAvatarInitials");
-  if(prof.avatarUrl){
-    av.src = prof.avatarUrl;
-    av.style.display = "";
-    avInit.style.display = "none";
+  if (prof.avatarUrl) {
+    av.src = prof.avatarUrl; av.style.display = ""; avInit.style.display = "none";
   } else {
-    av.style.display = "none";
-    avInit.style.display = "";
-    avInit.textContent = (prof.robloxName||"?")[0].toUpperCase();
+    av.style.display = "none"; avInit.style.display = "";
+    avInit.textContent = (prof.robloxName || "?")[0].toUpperCase();
   }
 
-  // ── Identity ──
   document.getElementById("profName").textContent = prof.robloxName || "Joueur";
   const dispEl = document.getElementById("profDisplay");
   dispEl.textContent = prof.displayName && prof.displayName !== prof.robloxName ? prof.displayName : "";
   const sinceEl = document.getElementById("profSince");
-  sinceEl.textContent = prof.createdAt ? "Membre depuis " + new Date(prof.createdAt).toLocaleDateString("fr-FR",{month:"long",year:"numeric"}) : "";
+  sinceEl.textContent = prof.createdAt
+    ? "Membre depuis " + new Date(prof.createdAt).toLocaleDateString("fr-FR", { month: "long", year: "numeric" })
+    : "";
 
-  // ── Actions ──
   const actionsEl = document.getElementById("profActions");
-  if(isMe){
+  if (isMe) {
     actionsEl.innerHTML = `
       <button class="prof-btn-edit" onclick="profToggleBioEdit()">✏️ Modifier la bio</button>
       <button class="prof-btn-disconnect" onclick="disconnectRoblox();closeProfile()">🔌 Déconnecter</button>`;
@@ -770,23 +813,21 @@ async function openProfile(userId){
       <button class="prof-btn-msg" onclick="closeProfile();startOfferFromProfile('${userId}')">💬 Contacter</button>`;
   }
 
-  // ── Stats ──
   const userAds = ads.filter(a => a.ownerId === userId);
   document.getElementById("profStats").innerHTML = `
     <div><div class="prof-stat-val">${userAds.length}</div><div class="prof-stat-lbl">Annonces</div></div>
-    <div><div class="prof-stat-val">${userAds.filter(a=>a.type==="wtt").length}</div><div class="prof-stat-lbl">WTT</div></div>
-    <div><div class="prof-stat-val">${userAds.filter(a=>a.type==="wts").length}</div><div class="prof-stat-lbl">WTS</div></div>
-    <div><div class="prof-stat-val">${userAds.filter(a=>a.type==="wtb").length}</div><div class="prof-stat-lbl">WTB</div></div>`;
+    <div><div class="prof-stat-val">${userAds.filter(a => a.type === "wtt").length}</div><div class="prof-stat-lbl">WTT</div></div>
+    <div><div class="prof-stat-val">${userAds.filter(a => a.type === "wts").length}</div><div class="prof-stat-lbl">WTS</div></div>
+    <div><div class="prof-stat-val">${userAds.filter(a => a.type === "wtb").length}</div><div class="prof-stat-lbl">WTB</div></div>`;
 
-  // ── Bio section ──
   const bioSection = document.getElementById("profBioSection");
-  if(isMe){
+  if (isMe) {
     bioSection.innerHTML = `
-      <div id="profBioView" style="${prof.bio?'':'display:none'}">
-        <p class="prof-bio-text" id="profBioText">${prof.bio||""}</p>
+      <div id="profBioView" ${prof.bio ? '' : 'style="display:none"'}>
+        <p class="prof-bio-text" id="profBioText">${prof.bio || ""}</p>
       </div>
       <div id="profBioEditGroup" style="display:none">
-        <textarea class="prof-bio-edit" id="profBioInput" placeholder="Parlez un peu de vous...">${prof.bio||""}</textarea>
+        <textarea class="prof-bio-edit" id="profBioInput" placeholder="Parlez un peu de vous...">${prof.bio || ""}</textarea>
         <div class="prof-save-row">
           <button class="btn-submit" onclick="saveProfileBio()">✓ Enregistrer</button>
           <button class="btn-cancel" onclick="profToggleBioEdit()">Annuler</button>
@@ -798,61 +839,67 @@ async function openProfile(userId){
       : `<p class="prof-bio-text" style="opacity:.4">Aucune bio renseignée.</p>`;
   }
 
-  // ── Tab count ──
   document.getElementById("profTabAdsCount").textContent = userAds.length;
-
-  // ── Render default tab ──
   profCurrentTab = "ads";
-  document.querySelectorAll(".prof-tab").forEach(t=>t.classList.remove("active"));
+  document.querySelectorAll(".prof-tab").forEach(t => t.classList.remove("active"));
   document.getElementById("profTabAds").classList.add("active");
   profRenderAds(userId);
 
-  // ── Open ──
   document.getElementById("profilePage").classList.add("open");
   document.getElementById("profilePage").scrollTop = 0;
 }
 
-function closeProfile(){
-  document.getElementById("profilePage").classList.remove("open");
-}
+function closeProfile() { document.getElementById("profilePage").classList.remove("open"); }
 
-function profToggleBioEdit(){
+function profToggleBioEdit() {
   const view = document.getElementById("profBioView");
   const edit = document.getElementById("profBioEditGroup");
-  if(!view || !edit) return;
+  if (!view || !edit) return;
   const isHidden = edit.style.display === "none";
   edit.style.display = isHidden ? "" : "none";
   view.style.display = isHidden ? "none" : "";
 }
 
-function profSwitchTab(tab){
+function profSwitchTab(tab) {
   profCurrentTab = tab;
-  document.querySelectorAll(".prof-tab").forEach(t=>t.classList.remove("active"));
+  document.querySelectorAll(".prof-tab").forEach(t => t.classList.remove("active"));
   document.getElementById("profTabAds").classList.add("active");
   profRenderAds(profCurrentUserId);
 }
 
-function profRenderAds(userId){
-  const isMe = robloxUser && robloxUser.id === userId;
+function saveProfileBio() {
+  if (!robloxUser) return;
+  const bioInput = document.getElementById("profBioInput");
+  const bio = bioInput ? bioInput.value.trim() : "";
+  upsertProfile({ ...robloxUser, bio });
+  const bioText = document.getElementById("profBioText");
+  if (bioText) bioText.textContent = bio;
+  const bioView = document.getElementById("profBioView");
+  if (bioView) bioView.style.display = bio ? "" : "none";
+  profToggleBioEdit();
+}
+
+function profRenderAds(userId) {
+  const isMe    = robloxUser && robloxUser.id === userId;
   const userAds = ads.filter(a => a.ownerId === userId).slice().reverse();
   const content = document.getElementById("profContent");
-  if(!userAds.length){
-    content.innerHTML = `<div class="prof-no-ads"><div class="prof-no-ads-icon">📋</div>${isMe?"Vous n'avez pas encore posté d'annonce.":"Aucune annonce active."}</div>`;
+  if (!userAds.length) {
+    content.innerHTML = `<div class="prof-no-ads"><div class="prof-no-ads-icon">📋</div>${isMe ? "Vous n'avez pas encore posté d'annonce." : "Aucune annonce active."}</div>`;
     return;
   }
   content.innerHTML = `<div class="prof-ad-grid">${userAds.map(ad => {
-    const typeLabel = {wtt:"WTT — Échange",wts:"WTS — Vente",wtb:"WTB — Recherche"}[ad.type];
-    const items = ad.type==="wtb" ? ad.wantItems : ad.offerItems;
-    const offerVal = ad.offerItems.reduce((s,it)=>{const f=ALL_ITEMS.find(x=>x.name===it.name);return s+(f?f.value*it.qty:0);},0);
-    const wantVal  = ad.wantItems.reduce((s,it)=>{const f=ALL_ITEMS.find(x=>x.name===it.name);return s+(f?f.value*it.qty:0);},0);
-    const chipsHtml = items.map(it=>{
-      const found = ALL_ITEMS.find(x=>x.name===it.name);
-      if(!found) return "";
-      const rc = RC[found.rarity]||{color:"#888"};
+    const typeLabel = { wtt: "WTT — Échange", wts: "WTS — Vente", wtb: "WTB — Recherche" }[ad.type];
+    const items     = ad.type === "wtb" ? ad.wantItems : ad.offerItems;
+    const offerVal  = ad.offerItems.reduce((s, it) => { const f = ALL_ITEMS.find(x => x.name === it.name); return s + (f ? f.value * it.qty : 0); }, 0);
+    const wantVal   = ad.wantItems.reduce((s, it)  => { const f = ALL_ITEMS.find(x => x.name === it.name); return s + (f ? f.value * it.qty : 0); }, 0);
+    const chipsHtml = items.map(it => {
+      const found = ALL_ITEMS.find(x => x.name === it.name);
+      if (!found) return "";
+      const rc = RC[found.rarity] || { color: "#888" };
       return `<div class="prof-ad-item-chip">
         <img src="${found.img}" onerror="this.style.display='none'" alt="">
         <div>
-          <div class="prof-ad-item-name" title="${it.name}">${it.name}${it.qty>1?` ×${it.qty}`:""}</div>
+          <div class="prof-ad-item-name" title="${it.name}">${it.name}${it.qty > 1 ? ` ×${it.qty}` : ""}</div>
           <div class="prof-ad-item-val" style="color:${rc.color}">${fmt(found.value)}</div>
         </div>
       </div>`;
@@ -864,113 +911,87 @@ function profRenderAds(userId){
         <span class="prof-ad-card-time">${timeAgo(ad.ts)}</span>
       </div>
       <div class="prof-ad-card-body">
-        <div class="prof-ad-items-row">${chipsHtml||'<span style="font-size:12px;color:var(--dimmed)">—</span>'}</div>
-        ${ad.note?`<div style="font-size:11px;color:var(--muted);margin-top:8px;font-style:italic">💬 ${ad.note}</div>`:""}
+        <div class="prof-ad-items-row">${chipsHtml || '<span style="font-size:12px;color:var(--dimmed)">—</span>'}</div>
+        ${ad.note ? `<div style="font-size:11px;color:var(--muted);margin-top:8px;font-style:italic">💬 ${ad.note}</div>` : ""}
       </div>
       <div class="prof-ad-card-footer">
-        <span class="prof-ad-total">📊 ${fmt(offerVal||wantVal)}</span>
+        <span class="prof-ad-total">📊 ${fmt(offerVal || wantVal)}</span>
         ${deleteBtn}
       </div>
     </div>`;
   }).join("")}</div>`;
 }
 
-function startOfferFromProfile(userId){
+function startOfferFromProfile(userId) {
   const ad = ads.find(a => a.ownerId === userId);
-  if(ad) startOffer(ad.id);
-}
-async function saveProfileBio(){
-  if(!robloxUser) return;
-  const bioInput = document.getElementById("profBioInput");
-  const bio = bioInput ? bioInput.value.trim() : "";
-  await upsertProfile({
-    id: robloxUser.id,
-    robloxName: robloxUser.robloxName,
-    displayName: robloxUser.displayName,
-    avatarUrl: robloxUser.avatarUrl,
-    bio,
-  });
-  // Update displayed bio in place
-  const bioText = document.getElementById("profBioText");
-  if(bioText) bioText.textContent = bio;
-  const bioView = document.getElementById("profBioView");
-  if(bioView) bioView.style.display = bio ? "" : "none";
-  profToggleBioEdit();
+  if (ad) startOffer(ad.id);
 }
 
-// ── STATE ──
-let ads = [];
+// ── ADS (localStorage) ──
+let ads        = lsGet(LS.ads, []);
 let currentTab = "all";
-let formType = "wtt";
+let formType   = "wtt";
 let offerPicked = [];
 let wantPicked  = [];
 
-async function fetchAds(){
-  try{
-    const r = await fetch(`${API_BASE}/api/ads`);
-    const d = await r.json();
-    ads = d.ads || [];
-  }catch(e){ console.error("fetchAds failed", e); }
-}
+function saveAds() { lsSet(LS.ads, ads); }
 
-// ── TABS ──
 function setTab(t, btn) {
   currentTab = t;
-  document.querySelectorAll(".tab").forEach(b=>b.classList.remove("active"));
+  document.querySelectorAll(".tab").forEach(b => b.classList.remove("active"));
   btn.classList.add("active");
   renderAds();
 }
 
-// ── RENDER ADS ──
 function renderAds() {
-  const q = (document.getElementById("searchAds").value||"").toLowerCase();
-  const r = document.getElementById("rarityAds").value;
+  const q    = (document.getElementById("searchAds").value || "").toLowerCase();
+  const r    = document.getElementById("rarityAds").value;
   const grid = document.getElementById("adsGrid");
 
   let list = [...ads].reverse().filter(ad => {
-    if(currentTab!=="all" && ad.type!==currentTab) return false;
-    const allNames = [...ad.offerItems,...ad.wantItems].map(i=>i.name.toLowerCase());
-    if(q && !allNames.some(n=>n.includes(q))) return false;
-    if(r){
-      const allRarities = [...ad.offerItems,...ad.wantItems].map(i=>{
-        const found = ALL_ITEMS.find(x=>x.name===i.name);
+    if (currentTab !== "all" && ad.type !== currentTab) return false;
+    const allNames = [...ad.offerItems, ...ad.wantItems].map(i => i.name.toLowerCase());
+    if (q && !allNames.some(n => n.includes(q))) return false;
+    if (r) {
+      const allRarities = [...ad.offerItems, ...ad.wantItems].map(i => {
+        const found = ALL_ITEMS.find(x => x.name === i.name);
         return found ? found.rarity : "";
       });
-      if(!allRarities.includes(r)) return false;
+      if (!allRarities.includes(r)) return false;
     }
     return true;
   });
 
-  if(!list.length){
-    grid.innerHTML=`<div class="empty-state" style="grid-column:1/-1"><div class="empty-icon">📋</div><div class="empty-txt">Aucune annonce trouvée.<br><span style="color:var(--red);cursor:pointer;font-weight:700" onclick="onClickPost()">+ Poster la première !</span></div></div>`;
+  if (!list.length) {
+    grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1"><div class="empty-icon">📋</div><div class="empty-txt">Aucune annonce trouvée.<br><span style="color:var(--red);cursor:pointer;font-weight:700" onclick="onClickPost()">+ Poster la première !</span></div></div>`;
     return;
   }
 
   grid.innerHTML = list.map(ad => {
-    const typeLabel = {wtt:"WTT — Échange",wts:"WTS — Vente",wtb:"WTB — Recherche"}[ad.type];
+    const typeLabel = { wtt: "WTT — Échange", wts: "WTS — Vente", wtb: "WTB — Recherche" }[ad.type];
     const offerHtml = ad.offerItems.map(it => itemChipHtml(it)).join("");
-    const wantHtml  = ad.wantItems.map(it => itemChipHtml(it)).join("");
-    const offerVal  = ad.offerItems.reduce((s,it)=>{const f=ALL_ITEMS.find(x=>x.name===it.name);return s+(f?f.value*it.qty:0);},0);
-    const wantVal   = ad.wantItems.reduce((s,it)=>{const f=ALL_ITEMS.find(x=>x.name===it.name);return s+(f?f.value*it.qty:0);},0);
+    const wantHtml  = ad.wantItems.map(it  => itemChipHtml(it)).join("");
+    const offerVal  = ad.offerItems.reduce((s, it) => { const f = ALL_ITEMS.find(x => x.name === it.name); return s + (f ? f.value * it.qty : 0); }, 0);
+    const wantVal   = ad.wantItems.reduce((s, it)  => { const f = ALL_ITEMS.find(x => x.name === it.name); return s + (f ? f.value * it.qty : 0); }, 0);
 
     const avatarEl = ad.avatarUrl
       ? `<img class="ad-user-avatar" src="${ad.avatarUrl}" alt="" onerror="this.style.display='none'">`
       : "👤";
 
     let bodyHtml = "";
-    if(ad.type==="wtt"){
-      bodyHtml = `<div class="ad-section-label">Offre</div><div class="ad-items">${offerHtml||emptyItems()}</div>
+    if (ad.type === "wtt") {
+      bodyHtml = `<div class="ad-section-label">Offre</div><div class="ad-items">${offerHtml || emptyItems()}</div>
       <div class="ad-arrow">⇄</div>
-      <div class="ad-section-label">Veut en échange</div><div class="ad-items">${wantHtml||emptyItems()}</div>`;
-    } else if(ad.type==="wts"){
-      bodyHtml = `<div class="ad-section-label">Vend</div><div class="ad-items">${offerHtml||emptyItems()}</div>
-      <div class="ad-section-label" style="margin-top:8px">Cherche</div><div class="ad-for-label">${ad.note||"Faire une offre"}</div>`;
+      <div class="ad-section-label">Veut en échange</div><div class="ad-items">${wantHtml || emptyItems()}</div>`;
+    } else if (ad.type === "wts") {
+      bodyHtml = `<div class="ad-section-label">Vend</div><div class="ad-items">${offerHtml || emptyItems()}</div>
+      <div class="ad-section-label" style="margin-top:8px">Cherche</div><div class="ad-for-label">${ad.note || "Faire une offre"}</div>`;
     } else {
-      bodyHtml = `<div class="ad-section-label">Cherche</div><div class="ad-items">${wantHtml||emptyItems()}</div>
-      <div class="ad-section-label" style="margin-top:8px">Peut offrir</div><div class="ad-for-label">${ad.note||"Faire une offre"}</div>`;
+      bodyHtml = `<div class="ad-section-label">Cherche</div><div class="ad-items">${wantHtml || emptyItems()}</div>
+      <div class="ad-section-label" style="margin-top:8px">Peut offrir</div><div class="ad-for-label">${ad.note || "Faire une offre"}</div>`;
     }
 
-    const isOwner = robloxUser && ad.ownerId === robloxUser.id;
+    const isOwner   = robloxUser && ad.ownerId === robloxUser.id;
     const footerBtn = isOwner
       ? `<button class="ad-delete-btn" onclick="deleteAd(${ad.id})">🗑 Supprimer</button>`
       : `<button class="ad-offer-btn" onclick="startOffer(${ad.id})">🤝 Offrir / J'accepte</button>`;
@@ -983,148 +1004,140 @@ function renderAds() {
       </div>
       <div class="ad-body">
         ${bodyHtml}
-        ${ad.note && ad.type==="wtt" ? `<div class="ad-note">💬 ${ad.note}</div>` : ""}
+        ${ad.note && ad.type === "wtt" ? `<div class="ad-note">💬 ${ad.note}</div>` : ""}
       </div>
       <div class="ad-footer">
-        <span class="ad-total">📊 ${fmt(offerVal||wantVal)}</span>
+        <span class="ad-total">📊 ${fmt(offerVal || wantVal)}</span>
         <div class="ad-actions">${footerBtn}</div>
       </div>
     </div>`;
   }).join("");
 }
 
-async function deleteAd(id){
-  if(!robloxUser) return;
-  const ad = ads.find(a=>a.id===id);
-  if(!ad || ad.ownerId !== robloxUser.id) return;
-  if(!confirm("Supprimer cette annonce ?")) return;
-  try{
-    await fetch(`${API_BASE}/api/ads`, {
-      method:"DELETE",
-      headers:{"Content-Type":"application/json"},
-      body: JSON.stringify({id, ownerId: robloxUser.id}),
-    });
-  }catch(e){ console.error("deleteAd failed", e); }
-  await fetchAds();
+function deleteAd(id) {
+  if (!robloxUser) return;
+  const ad = ads.find(a => a.id === id);
+  if (!ad || ad.ownerId !== robloxUser.id) return;
+  if (!confirm("Supprimer cette annonce ?")) return;
+  ads = ads.filter(a => a.id !== id);
+  saveAds();
   renderAds();
-  // Refresh profile page if open
-  if(profCurrentUserId && document.getElementById("profilePage").classList.contains("open")){
-    document.getElementById("profTabAdsCount").textContent = ads.filter(a=>a.ownerId===profCurrentUserId).length;
+  if (profCurrentUserId && document.getElementById("profilePage").classList.contains("open")) {
+    document.getElementById("profTabAdsCount").textContent = ads.filter(a => a.ownerId === profCurrentUserId).length;
     profRenderAds(profCurrentUserId);
   }
 }
 
 function itemChipHtml(it) {
-  const found = ALL_ITEMS.find(x=>x.name===it.name);
-  if(!found) return "";
-  const rc = RC[found.rarity]||{color:"#888"};
+  const found = ALL_ITEMS.find(x => x.name === it.name);
+  if (!found) return "";
+  const rc = RC[found.rarity] || { color: "#888" };
   return `<div class="ad-item">
     <img src="${found.img}" onerror="this.style.display='none'" alt="${it.name}">
     <div class="ad-item-info">
       <div class="ad-item-name" title="${it.name}">${it.name}</div>
-      <div class="ad-item-val" style="color:${rc.color}">${fmt(found.value)}${it.qty>1?`<span class="ad-item-qty"> ×${it.qty}</span>`:""}</div>
+      <div class="ad-item-val" style="color:${rc.color}">${fmt(found.value)}${it.qty > 1 ? `<span class="ad-item-qty"> ×${it.qty}</span>` : ""}</div>
     </div>
   </div>`;
 }
 
-function emptyItems(){return`<span style="font-size:12px;color:var(--dimmed)">—</span>`;}
+function emptyItems() { return `<span style="font-size:12px;color:var(--dimmed)">—</span>`; }
 
-// ── MESSAGING SYSTEM ──
-// Conversation = {id, adId, adLabel, participants:[idA, idB], messages:[{from, text, ts}]}
+// ── MESSAGERIE (localStorage) ──
 let convosCache = [];
-async function fetchConvos(){
-  if(!robloxUser) { convosCache = []; return; }
-  try{
-    const r = await fetch(`${API_BASE}/api/conversations?userId=${encodeURIComponent(robloxUser.id)}`);
-    const d = await r.json();
-    convosCache = d.conversations || [];
-  }catch(e){ console.error("fetchConvos failed", e); }
+
+function loadConvos() {
+  if (!robloxUser) { convosCache = []; return; }
+  const all = lsGet(LS.convos, []);
+  convosCache = all.filter(c => c.participants.includes(robloxUser.id));
 }
-function getReads(){ return lsGet(LS.reads, {}); } // {convId: timestamp}
-function setRead(convId){
+function saveConvos() {
+  const all    = lsGet(LS.convos, []);
+  convosCache.forEach(c => {
+    const idx = all.findIndex(x => x.id === c.id);
+    if (idx >= 0) all[idx] = c; else all.push(c);
+  });
+  lsSet(LS.convos, all);
+}
+
+function getReads() { return lsGet(LS.reads, {}); }
+function setRead(convoId) {
   const reads = getReads();
-  reads[convId] = Date.now();
+  reads[convoId] = Date.now();
   lsSet(LS.reads, reads);
   updateUnreadBadge();
 }
 
-async function startOffer(adId){
-  if(!robloxUser){ openRobloxLogin(); return; }
-  const ad = ads.find(a=>a.id===adId);
-  if(!ad) return;
-  if(ad.ownerId === robloxUser.id){ alert("C'est votre propre annonce !"); return; }
+function startOffer(adId) {
+  if (!robloxUser) { openRobloxLogin(); return; }
+  const ad = ads.find(a => a.id === adId);
+  if (!ad) return;
+  if (ad.ownerId === robloxUser.id) { alert("C'est votre propre annonce !"); return; }
 
-  const typeLabel = {wtt:"WTT",wts:"WTS",wtb:"WTB"}[ad.type];
-  try{
-    const r = await fetch(`${API_BASE}/api/conversations`, {
-      method:"POST",
-      headers:{"Content-Type":"application/json"},
-      body: JSON.stringify({
-        action:"start",
-        adId: ad.id,
-        adLabel: `${typeLabel} de ${ad.user}`,
-        userId: robloxUser.id,
-        otherUserId: ad.ownerId,
-      }),
-    });
-    const d = await r.json();
-    let convo = d.conversation;
-    if(convo && !convo.messages.length){
-      // send the initial "interested" message
-      const mr = await fetch(`${API_BASE}/api/conversations`, {
-        method:"POST",
-        headers:{"Content-Type":"application/json"},
-        body: JSON.stringify({action:"message", convoId: convo.id, from: robloxUser.id, text:"👋 Bonjour, je suis intéressé par votre annonce !"}),
-      });
-      const md = await mr.json();
-      convo = md.conversation || convo;
-    }
-    await fetchConvos();
-    openMessages(convo.id);
-  }catch(e){ console.error("startOffer failed", e); }
+  const typeLabel = { wtt: "WTT", wts: "WTS", wtb: "WTB" }[ad.type];
+  loadConvos();
+  let convo = convosCache.find(c => c.adId === adId && c.participants.includes(ad.ownerId));
+  if (!convo) {
+    convo = {
+      id:           `c_${Date.now()}`,
+      adId:         ad.id,
+      adLabel:      `${typeLabel} de ${ad.user}`,
+      participants: [robloxUser.id, ad.ownerId],
+      messages:     [],
+    };
+    convosCache.push(convo);
+    // Ajouter aussi côté vendeur
+    const all = lsGet(LS.convos, []);
+    all.push(convo);
+    lsSet(LS.convos, all);
+  }
+  if (!convo.messages.length) {
+    convo.messages.push({ from: robloxUser.id, text: "👋 Bonjour, je suis intéressé par votre annonce !", ts: Date.now() });
+    saveConvos();
+  }
+  openMessages(convo.id);
 }
 
-async function openMessages(convoIdToOpen){
-  if(!robloxUser){ openRobloxLogin(); return; }
+function openMessages(convoIdToOpen) {
+  if (!robloxUser) { openRobloxLogin(); return; }
   document.getElementById("messagesOverlay").classList.remove("hidden");
-  await fetchConvos();
+  loadConvos();
   renderConvoList(convoIdToOpen);
 }
-function closeMessages(){ document.getElementById("messagesOverlay").classList.add("hidden"); }
+function closeMessages() { document.getElementById("messagesOverlay").classList.add("hidden"); }
 
-function renderConvoList(activeId){
-  const convos = convosCache;
-  const reads = getReads();
-  const listEl = document.getElementById("convList");
+function renderConvoList(activeId) {
+  const convos  = convosCache;
+  const reads   = getReads();
+  const listEl  = document.getElementById("convList");
 
-  if(!convos.length){
-    listEl.innerHTML = `<div class="msg-empty">Aucune conversation.<br>Cliquez sur "Offrir / J'accepte" sur une annonce pour démarrer une discussion.</div>`;
-    document.getElementById("msgThread").innerHTML = `<div class="msg-empty">Sélectionnez une conversation à gauche.</div>`;
+  if (!convos.length) {
+    listEl.innerHTML = `<div class="msg-empty">Aucune conversation.<br>Cliquez sur "Offrir / J'accepte" sur une annonce.</div>`;
+    document.getElementById("msgThread").innerHTML   = `<div class="msg-empty">Sélectionnez une conversation.</div>`;
     document.getElementById("msgInputRow").style.display = "none";
     document.getElementById("convTitle").textContent = "Messagerie";
     return;
   }
 
-  // sort by last message desc
-  convos.sort((a,b)=>{
-    const la = a.messages[a.messages.length-1]?.ts||0;
-    const lb = b.messages[b.messages.length-1]?.ts||0;
-    return lb-la;
+  convos.sort((a, b) => {
+    const la = a.messages[a.messages.length - 1]?.ts || 0;
+    const lb = b.messages[b.messages.length - 1]?.ts || 0;
+    return lb - la;
   });
 
-  if(!activeId) activeId = convos[0].id;
+  if (!activeId) activeId = convos[0].id;
 
-  listEl.innerHTML = convos.map(c=>{
-    const otherId = c.participants.find(p=>p!==robloxUser.id);
+  listEl.innerHTML = convos.map(c => {
+    const otherId   = c.participants.find(p => p !== robloxUser.id);
     const otherProf = getProfile(otherId);
-    const otherName = otherProf ? (otherProf.displayName||otherProf.robloxName) : "Joueur";
-    const last = c.messages[c.messages.length-1];
-    const lastRead = reads[c.id]||0;
-    const unread = last && last.from!==robloxUser.id && last.ts>lastRead;
-    return `<div class="conv-item ${c.id===activeId?'active':''}" onclick="openConversation('${c.id}')">
-      <div class="conv-item-user">${unread?'🔵 ':''}${otherName}</div>
+    const otherName = otherProf ? (otherProf.displayName || otherProf.robloxName) : "Joueur";
+    const last      = c.messages[c.messages.length - 1];
+    const lastRead  = reads[c.id] || 0;
+    const unread    = last && last.from !== robloxUser.id && last.ts > lastRead;
+    return `<div class="conv-item ${c.id === activeId ? 'active' : ''}" onclick="openConversation('${c.id}')">
+      <div class="conv-item-user">${unread ? '🔵 ' : ''}${otherName}</div>
       <div class="conv-item-ad">${c.adLabel}</div>
-      <div class="conv-item-preview">${last?last.text.slice(0,40):''}</div>
+      <div class="conv-item-preview">${last ? last.text.slice(0, 40) : ''}</div>
     </div>`;
   }).join("");
 
@@ -1132,124 +1145,105 @@ function renderConvoList(activeId){
 }
 
 let activeConvoId = null;
-function renderConversationThread(convoId){
+function renderConversationThread(convoId) {
   activeConvoId = convoId;
-  const c = convosCache.find(x=>x.id===convoId);
-  if(!c) return;
+  const c = convosCache.find(x => x.id === convoId);
+  if (!c) return;
   setRead(convoId);
 
-  const otherId = c.participants.find(p=>p!==robloxUser.id);
+  const otherId   = c.participants.find(p => p !== robloxUser.id);
   const otherProf = getProfile(otherId);
-  const otherName = otherProf ? (otherProf.displayName||otherProf.robloxName) : "Joueur";
+  const otherName = otherProf ? (otherProf.displayName || otherProf.robloxName) : "Joueur";
   document.getElementById("convTitle").innerHTML = `${otherName} <span style="color:var(--muted);font-size:12px;font-weight:400">— ${c.adLabel}</span>`;
 
   const threadEl = document.getElementById("msgThread");
-  threadEl.innerHTML = c.messages.map(m=>{
-    const mine = m.from===robloxUser.id;
-    const time = new Date(m.ts).toLocaleTimeString("fr-FR",{hour:'2-digit',minute:'2-digit'});
-    return `<div class="msg-bubble ${mine?'mine':'theirs'}">${escapeHtml(m.text)}<div class="msg-bubble-time">${time}</div></div>`;
+  threadEl.innerHTML = c.messages.map(m => {
+    const mine = m.from === robloxUser.id;
+    const time = new Date(m.ts).toLocaleTimeString("fr-FR", { hour: '2-digit', minute: '2-digit' });
+    return `<div class="msg-bubble ${mine ? 'mine' : 'theirs'}">${escapeHtml(m.text)}<div class="msg-bubble-time">${time}</div></div>`;
   }).join("");
   threadEl.scrollTop = threadEl.scrollHeight;
   document.getElementById("msgInputRow").style.display = "";
 }
 
-// re-render list + thread without losing the active conversation
-function openConversation(convoId){
-  renderConvoList(convoId);
-}
+function openConversation(convoId) { renderConvoList(convoId); }
 
-async function sendMessage(){
-  if(!activeConvoId || !robloxUser) return;
+function sendMessage() {
+  if (!activeConvoId || !robloxUser) return;
   const input = document.getElementById("msgInput");
-  const text = input.value.trim();
-  if(!text) return;
-  input.value="";
-  try{
-    const r = await fetch(`${API_BASE}/api/conversations`, {
-      method:"POST",
-      headers:{"Content-Type":"application/json"},
-      body: JSON.stringify({action:"message", convoId: activeConvoId, from: robloxUser.id, text}),
-    });
-    const d = await r.json();
-    const idx = convosCache.findIndex(c=>c.id===activeConvoId);
-    if(idx>=0 && d.conversation) convosCache[idx] = d.conversation;
-  }catch(e){ console.error("sendMessage failed", e); }
+  const text  = input.value.trim();
+  if (!text) return;
+  input.value = "";
+  const convo = convosCache.find(c => c.id === activeConvoId);
+  if (!convo) return;
+  convo.messages.push({ from: robloxUser.id, text, ts: Date.now() });
+  saveConvos();
   renderConvoList(activeConvoId);
 }
 
-function updateUnreadBadge(){
-  if(!robloxUser) return;
+function updateUnreadBadge() {
+  if (!robloxUser) return;
+  loadConvos();
   const reads = getReads();
-  let count = 0;
-  convosCache.forEach(c=>{
-    const last = c.messages[c.messages.length-1];
-    if(last && last.from!==robloxUser.id && last.ts>(reads[c.id]||0)) count++;
+  let count   = 0;
+  convosCache.forEach(c => {
+    const last = c.messages[c.messages.length - 1];
+    if (last && last.from !== robloxUser.id && last.ts > (reads[c.id] || 0)) count++;
   });
   const badge = document.getElementById("unreadBadge");
-  if(count>0){ badge.style.display=""; badge.textContent = count; }
+  if (count > 0) { badge.style.display = ""; badge.textContent = count; }
   else { badge.style.display = "none"; }
 }
 
-function escapeHtml(s){
+function escapeHtml(s) {
   const d = document.createElement("div");
   d.textContent = s;
   return d.innerHTML;
 }
 
-// ── OPEN POST MODAL (requires Roblox) ──
+// ── OPEN POST MODAL ──
 function onClickPost() {
-  if (!robloxUser) {
-    openRobloxLogin();
-    return;
-  }
+  if (!robloxUser) { openRobloxLogin(); return; }
   openModal();
 }
 
-// ── MODAL ──
-function openModal(){
-  // Fill roblox info box
+function openModal() {
   document.getElementById("robloxInfoName").textContent = robloxUser.robloxName;
   const avatarEl = document.getElementById("robloxInfoAvatar");
-  if (robloxUser.avatarUrl) {
-    avatarEl.src = robloxUser.avatarUrl;
-    avatarEl.style.display = "";
-  } else {
-    avatarEl.style.display = "none";
-  }
+  if (robloxUser.avatarUrl) { avatarEl.src = robloxUser.avatarUrl; avatarEl.style.display = ""; }
+  else { avatarEl.style.display = "none"; }
   document.getElementById("modalOverlay").classList.remove("hidden");
-  renderPicker("offer","");
-  renderPicker("want","");
-  renderPickedChips("offer");
-  renderPickedChips("want");
+  renderPicker("offer", ""); renderPicker("want", "");
+  renderPickedChips("offer"); renderPickedChips("want");
   updateModalLayout();
 }
-function closeModal(){document.getElementById("modalOverlay").classList.add("hidden");}
+function closeModal() { document.getElementById("modalOverlay").classList.add("hidden"); }
 
-function selectType(t){
-  formType=t;
-  ["wtt","wts","wtb"].forEach(x=>{
-    const btn=document.getElementById("tb"+x.toUpperCase());
-    btn.className="type-btn"+(t===x?" active-"+x:"");
+function selectType(t) {
+  formType = t;
+  ["wtt", "wts", "wtb"].forEach(x => {
+    const btn = document.getElementById("tb" + x.toUpperCase());
+    btn.className = "type-btn" + (t === x ? " active-" + x : "");
   });
   updateModalLayout();
 }
 
-function updateModalLayout(){
-  const grpO=document.getElementById("grpOffer");
-  const grpW=document.getElementById("grpWant");
-  const lbl=document.getElementById("wantLabel");
-  if(formType==="wtt"){grpO.style.display="";grpW.style.display="";lbl.textContent="Ce que vous voulez en échange";}
-  else if(formType==="wts"){grpO.style.display="";grpW.style.display="none";}
-  else{grpO.style.display="none";grpW.style.display="";lbl.textContent="Ce que vous cherchez";}
+function updateModalLayout() {
+  const grpO = document.getElementById("grpOffer");
+  const grpW = document.getElementById("grpWant");
+  const lbl  = document.getElementById("wantLabel");
+  if (formType === "wtt") { grpO.style.display = ""; grpW.style.display = ""; lbl.textContent = "Ce que vous voulez en échange"; }
+  else if (formType === "wts") { grpO.style.display = ""; grpW.style.display = "none"; }
+  else { grpO.style.display = "none"; grpW.style.display = ""; lbl.textContent = "Ce que vous cherchez"; }
 }
 
-function renderPicker(side, q){
-  const listId=side==="offer"?"offerPickerList":"wantPickerList";
-  const items=ALL_ITEMS.filter(i=>!q||i.name.toLowerCase().includes(q.toLowerCase())).slice(0,60);
-  document.getElementById(listId).innerHTML=items.map(item=>{
-    const rc = RC[item.rarity]||{color:"#888"};
-    const esc=item.name.replace(/'/g,"\\'");
-    return`<div class="picker-item" onclick="pickItem('${side}','${esc}')">
+function renderPicker(side, q) {
+  const listId = side === "offer" ? "offerPickerList" : "wantPickerList";
+  const items  = ALL_ITEMS.filter(i => !q || i.name.toLowerCase().includes(q.toLowerCase())).slice(0, 60);
+  document.getElementById(listId).innerHTML = items.map(item => {
+    const rc  = RC[item.rarity] || { color: "#888" };
+    const esc = item.name.replace(/'/g, "\\'");
+    return `<div class="picker-item" onclick="pickItem('${side}','${esc}')">
       <img src="${item.img}" onerror="this.style.display='none'" alt="${item.name}">
       <div class="picker-item-name">${item.name}</div>
       <div class="picker-item-val" style="color:${rc.color}">${fmt(item.value)}</div>
@@ -1257,96 +1251,79 @@ function renderPicker(side, q){
   }).join("");
 }
 
-function filterPicker(side){
-  const val=document.getElementById(side==="offer"?"offerSearch":"wantSearch").value;
-  renderPicker(side,val);
+function filterPicker(side) {
+  const val = document.getElementById(side === "offer" ? "offerSearch" : "wantSearch").value;
+  renderPicker(side, val);
 }
 
-function pickItem(side, name){
-  const arr=side==="offer"?offerPicked:wantPicked;
-  const ex=arr.find(x=>x.name===name);
-  if(ex){ex.qty++;}else{arr.push({name,qty:1});}
+function pickItem(side, name) {
+  const arr = side === "offer" ? offerPicked : wantPicked;
+  const ex  = arr.find(x => x.name === name);
+  if (ex) { ex.qty++; } else { arr.push({ name, qty: 1 }); }
   renderPickedChips(side);
 }
 
-function unpickItem(side, name){
-  if(side==="offer") offerPicked=offerPicked.filter(x=>x.name!==name);
-  else wantPicked=wantPicked.filter(x=>x.name!==name);
+function unpickItem(side, name) {
+  if (side === "offer") offerPicked = offerPicked.filter(x => x.name !== name);
+  else                  wantPicked  = wantPicked.filter(x  => x.name !== name);
   renderPickedChips(side);
 }
 
-function renderPickedChips(side){
-  const arr=side==="offer"?offerPicked:wantPicked;
-  const el=document.getElementById(side==="offer"?"offerPicked":"wantPicked");
-  if(!arr.length){el.innerHTML=`<span style="font-size:12px;color:var(--dimmed)">Cliquez sur un item pour l'ajouter</span>`;return;}
-  el.innerHTML=arr.map(it=>{
-    const found=ALL_ITEMS.find(x=>x.name===it.name);
-    if(!found)return"";
-    const esc=it.name.replace(/'/g,"\\'");
-    return`<div class="picked-chip">
+function renderPickedChips(side) {
+  const arr = side === "offer" ? offerPicked : wantPicked;
+  const el  = document.getElementById(side === "offer" ? "offerPicked" : "wantPicked");
+  if (!arr.length) { el.innerHTML = `<span style="font-size:12px;color:var(--dimmed)">Cliquez sur un item pour l'ajouter</span>`; return; }
+  el.innerHTML = arr.map(it => {
+    const found = ALL_ITEMS.find(x => x.name === it.name);
+    if (!found) return "";
+    const esc = it.name.replace(/'/g, "\\'");
+    return `<div class="picked-chip">
       <img src="${found.img}" onerror="this.style.display='none'" alt="${it.name}">
-      ${it.name}${it.qty>1?` ×${it.qty}`:""}
+      ${it.name}${it.qty > 1 ? ` ×${it.qty}` : ""}
       <span class="picked-chip-del" onclick="unpickItem('${side}','${esc}')">✕</span>
     </div>`;
   }).join("");
 }
 
-async function submitAd(){
-  if(!robloxUser){alert("Connectez votre compte Roblox d'abord !");return;}
-  const contact=document.getElementById("fContact").value.trim();
-  const note=document.getElementById("fNote").value.trim();
-  if(formType==="wtt"&&(!offerPicked.length||!wantPicked.length)){alert("Ajoutez des items des deux côtés !");return;}
-  if(formType==="wts"&&!offerPicked.length){alert("Ajoutez ce que vous vendez !");return;}
-  if(formType==="wtb"&&!wantPicked.length){alert("Ajoutez ce que vous cherchez !");return;}
+function submitAd() {
+  if (!robloxUser) { alert("Connectez votre compte Roblox d'abord !"); return; }
+  const contact = document.getElementById("fContact").value.trim();
+  const note    = document.getElementById("fNote").value.trim();
+  if (formType === "wtt" && (!offerPicked.length || !wantPicked.length)) { alert("Ajoutez des items des deux côtés !"); return; }
+  if (formType === "wts" && !offerPicked.length) { alert("Ajoutez ce que vous vendez !"); return; }
+  if (formType === "wtb" && !wantPicked.length)  { alert("Ajoutez ce que vous cherchez !"); return; }
 
-  try{
-    const r = await fetch(`${API_BASE}/api/ads`, {
-      method:"POST",
-      headers:{"Content-Type":"application/json"},
-      body: JSON.stringify({
-        type: formType,
-        ownerId: robloxUser.id,
-        user: robloxUser.robloxName,
-        avatarUrl: robloxUser.avatarUrl,
-        contact: contact||robloxUser.robloxName,
-        offerItems: formType==="wtb"?[]:offerPicked.map(x=>({...x})),
-        wantItems:  formType==="wts"?[]:wantPicked.map(x=>({...x})),
-        note,
-      }),
-    });
-    if(!r.ok) throw new Error("POST /api/ads failed: "+r.status);
-  }catch(e){
-    console.error("submitAd failed", e);
-    alert("Erreur lors de la publication. Réessaie.");
-    return;
-  }
+  const ad = {
+    id:         Date.now(),
+    type:       formType,
+    ownerId:    robloxUser.id,
+    user:       robloxUser.robloxName,
+    avatarUrl:  robloxUser.avatarUrl,
+    contact:    contact || robloxUser.robloxName,
+    offerItems: formType === "wtb" ? [] : offerPicked.map(x => ({ ...x })),
+    wantItems:  formType === "wts" ? [] : wantPicked.map(x  => ({ ...x })),
+    note,
+    ts: Date.now(),
+  };
+  ads.push(ad);
+  saveAds();
 
-  offerPicked=[];wantPicked=[];
-  document.getElementById("fContact").value="";
-  document.getElementById("fNote").value="";
+  offerPicked = []; wantPicked = [];
+  document.getElementById("fContact").value = "";
+  document.getElementById("fNote").value    = "";
   closeModal();
-  await fetchAds();
   renderAds();
-  // Refresh profile page if open
-  if(profCurrentUserId && document.getElementById("profilePage").classList.contains("open")){
-    document.getElementById("profTabAdsCount").textContent = ads.filter(a=>a.ownerId===profCurrentUserId).length;
+  if (profCurrentUserId && document.getElementById("profilePage").classList.contains("open")) {
+    document.getElementById("profTabAdsCount").textContent = ads.filter(a => a.ownerId === profCurrentUserId).length;
     profRenderAds(profCurrentUserId);
   }
 }
 
+// ── INIT ──
 readOAuthReturn();
+upsertProfile(robloxUser);   // met à jour avatarUrl/pseudo si reconnexion
 updateRobloxBadge();
-// Charger les données depuis l'API au démarrage
-(async()=>{
-  await Promise.all([fetchAds(), fetchProfiles()]);
-  renderAds();
-  if(robloxUser){
-    await upsertProfile(robloxUser);
-    // Rafraîchir le badge non-lu messages
-    await fetchConvos();
-    updateUnreadBadge();
-  }
-})();
+renderAds();
 </script>
 </body>
 </html>
